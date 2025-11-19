@@ -10,4 +10,6 @@ import com.example.demo.model.Paciente;
 @Repository
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
     List<Paciente> findByMedicoId(Long medicoId);
+    Paciente findByDocumento(String documento);
+    Paciente findByCorreo(String correo);
 }

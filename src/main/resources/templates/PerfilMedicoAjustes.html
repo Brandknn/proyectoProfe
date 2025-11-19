@@ -39,7 +39,7 @@
         <input type="text" name="nombre" th:value="${medico.nombre}" required><br><br>
 
         <label>Cédula / Documento:</label>
-        <input type="text" name="cedula" th:value="${medico.cedula}" required><br><br>
+            <input type="text" name="cedula" th:value="${medico.cedula}" required readonly><br><br>
 
         <label>Teléfono:</label>
         <input type="text" name="telefono" th:value="${medico.telefono}" required><br><br>
@@ -64,12 +64,5 @@
         <button type="submit">Cambiar Contraseña</button>
     </form>
 
-    <h2>Horario de Atención</h2>
-    <a href="/horario" style="color: #0077c8; font-weight: bold;">Ver / Editar Horario</a>
-
-    <h2>Cerrar Sesión</h2>
-    <form action="/logout" method="post">
-        <button type="submit" style="background-color: #dc3545;">Cerrar Sesión</button>
-    </form>
 </body>
 </html>

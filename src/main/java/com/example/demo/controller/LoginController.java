@@ -36,7 +36,7 @@ public class LoginController {
             return "redirect:/login?error=no-email";
         }
 
-        Medico existente = medicoRepository.findByEmail(email);
+        Medico existente = medicoRepository.findByEmail(email).orElse(null);
         if (existente != null && Boolean.TRUE.equals(existente.getPerfilCompleto())) {
             System.out.println("[OAuth2] Usuario con email " + email + " ya tiene perfil completo. Redirigiendo a gestionCitas");
             session.setAttribute("medicoId", existente.getId());
@@ -94,7 +94,7 @@ public class LoginController {
         }
         
         // Si ya existe y completo, redirigir
-        Medico existente = medicoRepository.findByEmail(email);
+        Medico existente = medicoRepository.findByEmail(email).orElse(null);
         if (existente != null && Boolean.TRUE.equals(existente.getPerfilCompleto())) {
             session.setAttribute("medicoId", existente.getId());
             session.setAttribute("medicoEmail", existente.getEmail());

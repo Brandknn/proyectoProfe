@@ -24,7 +24,23 @@ public class MedicoController {
     }
 
     @PostMapping("/agregarMedico")
-    public String agregarMedico(@ModelAttribute Medico medico, RedirectAttributes redirectAttributes) {
+    public String agregarMedico(@ModelAttribute Medico medico, Model model, RedirectAttributes redirectAttributes) {
+        // Validar que el email no esté duplicado
+        if (medicoRepository.findByEmail(medico.getEmail()).isPresent()) {
+            model.addAttribute("error", "El email ya está registrado en el sistema.");
+            model.addAttribute("medico", new Medico());
+            model.addAttribute("medicos", medicoRepository.findAll());
+            return "CrearCuentaMedico";
+        }
+        
+        // Validar que la cédula no esté duplicada
+        if (medicoRepository.findByCedula(medico.getCedula()).isPresent()) {
+            model.addAttribute("error", "La cédula ya está registrada en el sistema.");
+            model.addAttribute("medico", new Medico());
+            model.addAttribute("medicos", medicoRepository.findAll());
+            return "CrearCuentaMedico";
+        }
+        
         medico.setPerfilCompleto(true);
         medicoRepository.save(medico);
         redirectAttributes.addFlashAttribute("successMessage", "¡Cuenta creada exitosamente! Ya puedes iniciar sesión");

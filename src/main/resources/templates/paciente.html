@@ -3,6 +3,7 @@
 <head>
     <link rel="stylesheet" href="/estilosAdministrativos.css">
     <link rel="stylesheet" href="/gestionCitas.css">
+    <link rel="stylesheet" href="/mensajes-comunes.css">
     <meta charset="UTF-8">
     <title>Gestión de Pacientes</title>
 </head>
@@ -19,6 +20,9 @@
 </nav>
 
     <h1>Gestión de Pacientes</h1>
+
+    <div th:if="${error}" class="toast error" th:text="${error}"></div>
+    <div th:if="${success}" class="toast success" th:text="${success}"></div>
 
     <h2>Registrar Paciente</h2>
     <form action="/agregarPaciente" th:object="${paciente}" method="post" class="formulario-paciente">
@@ -109,6 +113,18 @@
                 cerrarModal();
             }
         }
+
+        // Auto-ocultar toasts después de 5 segundos
+        const toasts = document.querySelectorAll('.toast');
+        toasts.forEach(toast => {
+            setTimeout(function() {
+                toast.classList.add('hide');
+                setTimeout(function() {
+                    toast.remove();
+                }, 300);
+            }, 5000);
+        });
     </script>
 </body>
 </html>
+

@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Cuenta Médico</title>
     <link rel="stylesheet" href="/CrearCuentaMedico.css">
+    <link rel="stylesheet" href="/mensajes-comunes.css">
 </head>
 <body>
     <div class="container">
         <h2>Registro de Médico</h2>
+        <div th:if="${error}" class="toast error" th:text="${error}"></div>
         <form th:action="@{/agregarMedico}" th:object="${medico}" method="post">
             <div class="form-group">
                 <label for="nombre">Nombre Completo</label>
@@ -57,5 +59,18 @@
             </table>
         </div>
     </div>
+
+    <script>
+        // Auto-ocultar toast después de 5 segundos
+        const toast = document.querySelector('.toast');
+        if (toast) {
+            setTimeout(function() {
+                toast.classList.add('hide');
+                setTimeout(function() {
+                    toast.remove();
+                }, 300);
+            }, 5000);
+        }
+    </script>
 </body>
 </html>
