@@ -1,0 +1,75 @@
+<html lang="es">
+<head>
+     <link rel="stylesheet" href="/estilosAdministrativos.css">
+     <link rel="stylesheet" href="/mensajes-comunes.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Perfil del Médico</title>
+</head>
+<body>
+
+    <nav>
+    <p class="logo">Médico Independiente</p>
+    <div class="nav_bar">
+        <a href="/paciente">Pacientes</a>
+        <a href="/gestionCitas">Gestión de Citas</a>
+        <a href="/dictamen">Dictámenes</a>
+        <a href="/horario">Horarios</a>
+        <a href="/PerfilMedicoAjustes">Perfil Médico</a>
+    </div>
+</nav>
+
+
+    <h1>Perfil del Médico</h1>
+
+    <div th:if="${success}" class="success-message" th:text="${success}"></div>
+    <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+    <div class="info-box">
+        <h3>Información de la cuenta</h3>
+        <p><strong>Email:</strong> <span th:text="${medico.email}"></span></p>
+        <p th:if="${medico.googleId != null && medico.googleId != ''}">
+            <strong>Cuenta vinculada con:</strong> Google OAuth
+        </p>
+    </div>
+
+    <h2>Actualizar Datos del Perfil</h2>
+    <form action="/actualizarPerfil" method="post">
+        <label>Nombre:</label>
+        <input type="text" name="nombre" th:value="${medico.nombre}" required><br><br>
+
+        <label>Cédula / Documento:</label>
+        <input type="text" name="cedula" th:value="${medico.cedula}" required><br><br>
+
+        <label>Teléfono:</label>
+        <input type="text" name="telefono" th:value="${medico.telefono}" required><br><br>
+
+        <button type="submit">Actualizar Perfil</button>
+    </form>
+
+    <h2>Cambiar Contraseña</h2>
+    <form action="/actualizarPerfil" method="post">
+        <input type="hidden" name="nombre" th:value="${medico.nombre}">
+        <input type="hidden" name="cedula" th:value="${medico.cedula}">
+        <input type="hidden" name="telefono" th:value="${medico.telefono}">
+
+        <div th:if="${medico.password != null && medico.password != ''}">"
+            <label>Contraseña Actual:</label>
+            <input type="password" name="passwordActual"><br><br>
+        </div>
+
+        <label>Nueva Contraseña:</label>
+        <input type="password" name="passwordNueva"><br><br>
+
+        <button type="submit">Cambiar Contraseña</button>
+    </form>
+
+    <h2>Horario de Atención</h2>
+    <a href="/horario" style="color: #0077c8; font-weight: bold;">Ver / Editar Horario</a>
+
+    <h2>Cerrar Sesión</h2>
+    <form action="/logout" method="post">
+        <button type="submit" style="background-color: #dc3545;">Cerrar Sesión</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="stylesheet" href="/estilosAdministrativos.css">
+    <link rel="stylesheet" href="/gestionCitas.css">
+    <meta charset="UTF-8">
+    <title>Gestión de Pacientes</title>
+</head>
+<body>
+    <nav>
+    <p class="logo">Médico Independiente</p>
+    <div class="nav_bar">
+        <a href="/paciente">Pacientes</a>
+        <a href="/gestionCitas">Gestión de Citas</a>
+        <a href="/dictamen">Dictámenes</a>
+        <a href="/horario">Horarios</a>
+        <a href="/PerfilMedicoAjustes">Perfil Médico</a>
+    </div>
+</nav>
+
+    <h1>Gestión de Pacientes</h1>
+
+    <h2>Registrar Paciente</h2>
+    <form action="/agregarPaciente" th:object="${paciente}" method="post" class="formulario-paciente">
+       
+       NOMBRE: <input type="text" th:field="*{nombre}" name="nombre" required><br><br>
+       DOCUMENTO: <input type="text" th:field="*{documento}" name="documento" required><br><br>
+       TELÉFONO: <input type="number" th:field="*{telefono}" name="telefono" required><br><br>
+       CORREO: <input type="email" th:field="*{correo}" name="correo"><br><br>
+       
+        <button type="submit">Guardar Paciente</button>
+    </form>
+
+    <h2>Listado de Pacientes</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Documento</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="pac : ${pacientes}">
+                <td th:text="${pac.nombre}"></td>
+                <td th:text="${pac.documento}"></td>
+                <td th:text="${pac.telefono}"></td>
+                <td th:text="${pac.correo}"></td>
+                <td>
+                    <button class="btn-editar" 
+                            th:attr="data-id=${pac.id}, data-nombre=${pac.nombre}, data-documento=${pac.documento}, data-telefono=${pac.telefono}, data-correo=${pac.correo}"
+                            onclick="editarPacienteData(this)">
+                        Editar
+                    </button>
+                    <form th:action="@{/eliminarPaciente}" method="post" style="display:inline;" 
+                          onsubmit="return confirm('¿Está seguro de eliminar este paciente?');">
+                        <input type="hidden" name="id" th:value="${pac.id}">
+                        <button type="submit" class="btn-eliminar">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="modalEditar">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2>Editar Paciente</h2>
+            <form action="/actualizarPaciente" method="post">
+                <input type="hidden" id="editId" name="id">
+                
+                <label>NOMBRE:</label>
+                <input type="text" id="editNombre" name="nombre" required><br><br>
+                
+                <label>DOCUMENTO:</label>
+                <input type="text" id="editDocumento" name="documento" required><br><br>
+                
+                <label>TELÉFONO:</label>
+                <input type="number" id="editTelefono" name="telefono" required><br><br>
+                
+                <label>CORREO:</label>
+                <input type="email" id="editCorreo" name="correo"><br><br>
+                
+                <button type="submit">Actualizar</button>
+                <button type="button" onclick="cerrarModal()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function editarPacienteData(button) {
+            document.getElementById('editId').value = button.getAttribute('data-id');
+            document.getElementById('editNombre').value = button.getAttribute('data-nombre');
+            document.getElementById('editDocumento').value = button.getAttribute('data-documento');
+            document.getElementById('editTelefono').value = button.getAttribute('data-telefono');
+            document.getElementById('editCorreo').value = button.getAttribute('data-correo');
+            document.getElementById('modalEditar').style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalEditar').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalEditar');
+            if (event.target == modal) {
+                cerrarModal();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+     <link rel="stylesheet" href="/estilosAdministrativos.css">
+    <meta charset="UTF-8">
+    <title>Dictamen Médico</title>
+</head>
+<body>
+    <nav>
+    <p class="logo">Médico Independiente</p>
+    <div class="nav_bar">
+        <a href="/paciente">Pacientes</a>
+        <a href="/gestionCitas">Gestión de Citas</a>
+        <a href="/dictamen">Dictámenes</a>
+        <a href="/horario">Horarios</a>
+        <a href="/PerfilMedicoAjustes">Perfil Médico</a>
+    </div>
+</nav>
+
+    <h1>Dictamen Médico</h1>
+
+    <h2>Registrar Dictamen</h2>
+    <form>
+        <label>ID Cita:</label>
+        <input type="text" name="id_cita" placeholder="Ej: CITA-001"><br><br>
+
+        <label>Resultado:</label><br>
+        <textarea name="resultado" rows="5" cols="40" placeholder="Descripción del diagnóstico o tratamiento..."></textarea><br><br>
+
+        <button type="submit">Guardar Dictamen</button>
+    </form>
+
+    <h2>Historial de Dictámenes</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID Cita</th>
+                <th>Paciente</th>
+                <th>Resultado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CITA-001</td>
+                <td>María López</td>
+                <td>Gripe común, tratamiento con reposo e hidratación.</td>
+                <td><button>Ver</button></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,164 @@
+*{
+    margin: 0;
+}
+
+
+nav {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;           
+  padding: 15px 30px;
+  background: linear-gradient(to right, #222, #444); 
+  box-shadow: 0 4px 10px rgba(22, 121, 164, 0.5);         
+}
+
+
+nav p {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.nav_bar {
+  display: flex;
+  gap: 20px;
+}
+
+.nav_bar a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 12px;
+  transition: 0.3s;
+  border-radius: 5px;
+}
+
+.nav_bar a:hover {
+  background: rgba(255,255,255,0.2); 
+}
+.inicio{
+    display: flex;
+  justify-content: center;  
+  align-items: center;      
+  height: 100%;            
+  background: linear-gradient( rgba(0,0,0,0.6), rgba(0,0,0,0.1) ), url("https://imagenes2.eltiempo.com/files/image_1200_535/uploads/2025/03/04/67c70a66bf600.jpeg");
+  background-size: cover;  
+  background-position: center;
+  
+}
+
+.inicio a {
+    color: white;           
+  text-decoration: none;    
+  font-size: 30px;
+  font-weight: bold;
+  padding: 50px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 8px;   
+}
+
+
+h1 {
+  text-align: center;
+  font-size: 32px;
+  margin-top: 40px;
+}
+
+p {
+  text-align: center;
+  
+  max-width: 800px;
+  margin: 10px auto 40px;
+  line-height: 1.6;
+}
+
+.cont_tarjetas {
+  display: flex;
+  justify-content: center;
+  gap: 20px;             
+  flex-wrap: wrap;        
+  padding: 20px;
+}
+
+.tarjetas {
+  background: rgba(255,255,255,0.05);  
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.tarjetas:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+}
+
+.tarjetas img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;        
+  margin-bottom: 15px;
+  border: 2px solid white;
+}
+
+.tarjetas p {
+  color: #171616;
+  font-size: 14px;
+}
+
+footer {
+  background: linear-gradient(to right, #222, #444);
+  color: #ddd;
+  padding: 40px 20px 20px;
+  margin-top: 50px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.footer-col {
+  flex: 1 1 300px;
+}
+
+.footer-col h3 {
+  color: white;
+  margin-bottom: 15px;
+}
+
+.footer-col p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.socials a {
+  margin-right: 10px;
+  font-size: 22px;
+  text-decoration: none;
+  color: white;
+  transition: 0.3s;
+}
+
+.socials a:hover {
+  color: #1da1f2;
+}
+
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  margin-top: 20px;
+  padding-top: 15px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+
