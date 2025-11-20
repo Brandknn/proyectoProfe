@@ -29,6 +29,7 @@ import jakarta.servlet.http.HttpSession;
 public class CitaController {
     // Controlador para la gestión de citas médicas
     //maricamaricamarica
+    //esteban es caga le gusta la polla de caballo y la del edwin le encanta, es marinero de agua dulce
     private final CitaRepository citaRepository;
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
