@@ -28,7 +28,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class CitaController {
     // Controlador para la gestión de citas médicas
-    
+    //maricamaricamarica
     private final CitaRepository citaRepository;
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
