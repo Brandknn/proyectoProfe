@@ -150,4 +150,12 @@ public class CitaController {
 
         return "redirect:/gestionCitas";
     }
+
+    @GetMapping("/limpiar-bd")
+    public String limpiarBD() {
+        citaRepository.deleteAll();
+        pacienteRepository.deleteAll();
+        medicoRepository.deleteAll();
+        return "redirect:/";
+    }
 }
