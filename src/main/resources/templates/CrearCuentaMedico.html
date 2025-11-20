@@ -14,12 +14,17 @@
         <form th:action="@{/agregarMedico}" th:object="${medico}" method="post">
             <div class="form-group">
                 <label for="nombre">Nombre Completo</label>
-                <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Dr. Juan García" required>
+                <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Dr. Juan García" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre solo puede contener letras" required>
             </div>
             
             <div class="form-group">
                 <label for="cedula">Cédula Profesional</label>
-                <input type="text" id="cedula" th:field="*{cedula}" placeholder="Ej: 12345678" required>
+                <input type="text" id="cedula" th:field="*{cedula}" placeholder="Ej: 12345678" pattern="[0-9]+" title="La cédula solo puede contener números" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="number" id="telefono" th:field="*{telefono}" placeholder="Ej: 3001234567" min="0" title="El teléfono solo puede contener números" required>
             </div>
             
             <div class="form-group">

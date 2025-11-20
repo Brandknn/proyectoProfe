@@ -25,6 +25,30 @@ public class MedicoController {
 
     @PostMapping("/agregarMedico")
     public String agregarMedico(@ModelAttribute Medico medico, Model model, RedirectAttributes redirectAttributes) {
+        // Validar que el nombre no contenga números
+        if (medico.getNombre() != null && medico.getNombre().matches(".*\\d.*")) {
+            model.addAttribute("error", "El nombre no puede contener números.");
+            model.addAttribute("medico", new Medico());
+            model.addAttribute("medicos", medicoRepository.findAll());
+            return "CrearCuentaMedico";
+        }
+        
+        // Validar que la cédula solo contenga números
+        if (medico.getCedula() != null && !medico.getCedula().matches("[0-9]+")) {
+            model.addAttribute("error", "La cédula solo puede contener números.");
+            model.addAttribute("medico", new Medico());
+            model.addAttribute("medicos", medicoRepository.findAll());
+            return "CrearCuentaMedico";
+        }
+        
+        // Validar que el teléfono solo contenga números
+        if (medico.getTelefono() != null && !medico.getTelefono().matches("[0-9]+")) {
+            model.addAttribute("error", "El teléfono solo puede contener números.");
+            model.addAttribute("medico", new Medico());
+            model.addAttribute("medicos", medicoRepository.findAll());
+            return "CrearCuentaMedico";
+        }
+        
         // Validar que el email no esté duplicado
         if (medicoRepository.findByEmail(medico.getEmail()).isPresent()) {
             model.addAttribute("error", "El email ya está registrado en el sistema.");

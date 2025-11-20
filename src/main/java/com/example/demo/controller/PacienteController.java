@@ -47,10 +47,47 @@ public class PacienteController {
             return "redirect:/login";
         }
         
+        // Validar que el nombre no contenga números
+        if (paciente.getNombre() != null && paciente.getNombre().matches(".*\\d.*")) {
+            model.addAttribute("error", "El nombre no puede contener números.");
+            model.addAttribute("paciente", new Paciente());
+            List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
+            model.addAttribute("pacientes", pacientes);
+            return "paciente";
+        }
+        
+        // Validar que el documento solo contenga números
+        if (paciente.getDocumento() != null && !paciente.getDocumento().matches("[0-9]+")) {
+            model.addAttribute("error", "El documento solo puede contener números.");
+            model.addAttribute("paciente", new Paciente());
+            List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
+            model.addAttribute("pacientes", pacientes);
+            return "paciente";
+        }
+        
+        // Validar que el teléfono sea válido (solo números y positivo)
+        if (paciente.getTelefono() <= 0) {
+            model.addAttribute("error", "El teléfono debe ser un número positivo.");
+            model.addAttribute("paciente", new Paciente());
+            List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
+            model.addAttribute("pacientes", pacientes);
+            return "paciente";
+        }
+        
         // Validar que el documento no esté duplicado
         Paciente pacienteExistente = pacienteRepository.findByDocumento(paciente.getDocumento());
         if (pacienteExistente != null) {
             model.addAttribute("error", "El documento ya está registrado en el sistema.");
+            model.addAttribute("paciente", new Paciente());
+            List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
+            model.addAttribute("pacientes", pacientes);
+            return "paciente";
+        }
+        
+        // Validar que el teléfono no esté duplicado
+        Paciente pacienteTelefonoDuplicado = pacienteRepository.findByTelefono(paciente.getTelefono());
+        if (pacienteTelefonoDuplicado != null) {
+            model.addAttribute("error", "El teléfono ya está registrado en el sistema.");
             model.addAttribute("paciente", new Paciente());
             List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
             model.addAttribute("pacientes", pacientes);
