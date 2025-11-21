@@ -27,10 +27,10 @@
     <h2>Registrar Paciente</h2>
     <form action="/agregarPaciente" th:object="${paciente}" method="post" class="formulario-paciente">
        
-       NOMBRE: <input type="text" th:field="*{nombre}" name="nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre solo puede contener letras" required><br><br>
-       DOCUMENTO: <input type="text" th:field="*{documento}" name="documento" pattern="[0-9]+" title="El documento solo puede contener números" required><br><br>
-       TELÉFONO: <input type="text" th:field="*{telefono}" name="telefono" pattern="[0-9]+" title="El teléfono solo puede contener números" required><br><br>
-       CORREO: <input type="email" th:field="*{correo}" name="correo"><br><br>
+       <label><strong>NOMBRE:</strong></label> <input type="text" th:field="*{nombre}" name="nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre solo puede contener letras" required><br><br>
+       <label><strong>DOCUMENTO:</strong></label> <input type="text" th:field="*{documento}" name="documento" pattern="[0-9]+" title="El documento solo puede contener números" required><br><br>
+       <label><strong>TELÉFONO:</strong></label> <input type="text" th:field="*{telefono}" name="telefono" pattern="[0-9]+" title="El teléfono solo puede contener números" required><br><br>
+       <label><strong>CORREO:</strong></label> <input type="email" th:field="*{correo}" name="correo"><br><br>
        
         <button type="submit">Guardar Paciente</button>
     </form>
