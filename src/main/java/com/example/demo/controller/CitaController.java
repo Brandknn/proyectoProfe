@@ -88,7 +88,7 @@ public class CitaController {
             }
 
             cita.setMedicoId(medicoId);
-            Cita citaGuardada = citaRepository.save(cita); // CAMBIO: Guardar en variable
+            Cita citaGuardada = citaRepository.save(cita);
 
             Optional<Paciente> pacienteOpt = pacienteRepository.findById(cita.getPacienteId());
             Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
@@ -125,10 +125,9 @@ public class CitaController {
                 }
             }
 
-            // NUEVO: Redirigir directamente al dictamen después de crear la cita
-            redirectAttributes.addFlashAttribute("mensaje",
-                    "Cita creada exitosamente. Ahora puede agregar el dictamen.");
-            return "redirect:/cita/" + citaGuardada.getId() + "/dictamen";
+            // Volver a gestión de citas
+            redirectAttributes.addFlashAttribute("mensaje", "Cita creada exitosamente");
+            return "redirect:/gestionCitas";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al crear la cita: " + e.getMessage());
