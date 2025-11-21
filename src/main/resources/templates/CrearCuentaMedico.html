@@ -37,34 +37,14 @@
                 <input type="password" id="password" th:field="*{password}" placeholder="Ingrese una contraseña segura" required>
             </div>
             
-            <button type="submit" class="btn-crear">Registrar Médico</button>
+            <button type="submit" class="btn-crear">Registrarse</button>
         </form>
         
         <div class="footer-links">
             <p>¿Ya tienes cuenta? <a href="/login"><b>Iniciar Sesión</b></a></p>
         </div>
         
-        <div th:if="${medicos != null && !medicos.empty}">
-            <h3>Médicos Registrados</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Cédula</th>
-                        <th>Email</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="med : ${medicos}">
-                        <td th:text="${med.nombre}"></td>
-                        <td th:text="${med.cedula}"></td>
-                        <td th:text="${med.email}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
+     
     <script>
         // Auto-ocultar toast después de 5 segundos
         const toast = document.querySelector('.toast');

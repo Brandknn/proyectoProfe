@@ -75,59 +75,68 @@ public class CitaController {
             return "redirect:/login";
         }
 
-        cita.setMedicoId(medicoId);
-        citaRepository.save(cita);
-        
-        
-        Optional<Paciente> pacienteOpt = pacienteRepository.findById(cita.getPacienteId());
-        Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
-        
-        if (pacienteOpt.isPresent() && medicoOpt.isPresent()) {
-            Paciente paciente = pacienteOpt.get();
-            Medico medico = medicoOpt.get();
-            
-            if (paciente.getCorreo() != null && !paciente.getCorreo().isEmpty()) {
-               
-                DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm a");
-                
-                String fechaFormateada = cita.getFecha().format(formatoFecha);
-                String horaFormateada = cita.getHora().format(formatoHora);
-                
-                String asunto = "Confirmación de Cita Médica";
-                String mensaje = String.format(
-                    "Estimado(a) %s,\n\n" +
-                    "Se le ha asignado una cita médica con los siguientes detalles:\n\n" +
-                    "Médico: %s\n" +
-                    "Fecha: %s\n" +
-                    "Hora: %s\n" +
-                    "Motivo: %s\n\n" +
-                    "Por favor, asegúrese de asistir puntualmente.\n\n" +
-                    "Saludos cordiales,\n" +
-                    "Consultorio Médico",
-                    paciente.getNombre(),
-                    medico.getNombre(),
-                    fechaFormateada,
-                    horaFormateada,
-                    cita.getMotivo()
-                );
-                
-                
-                emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
+        try {
+            // Validar que el pacienteId no sea nulo
+            if (cita.getPacienteId() == null) {
+                return "redirect:/gestionCitas?error=Paciente no seleccionado";
             }
+            // Validar que la fecha y hora no sean nulas
+            if (cita.getFecha() == null || cita.getHora() == null) {
+                return "redirect:/gestionCitas?error=Fecha y hora requeridas";
+            }
+
+            cita.setMedicoId(medicoId);
+            citaRepository.save(cita);
+
+            Optional<Paciente> pacienteOpt = pacienteRepository.findById(cita.getPacienteId());
+            Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
+
+            if (pacienteOpt.isPresent() && medicoOpt.isPresent()) {
+                Paciente paciente = pacienteOpt.get();
+                Medico medico = medicoOpt.get();
+
+                if (paciente.getCorreo() != null && !paciente.getCorreo().isEmpty() && medico.getEmail() != null) {
+                    DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm a");
+
+                    String fechaFormateada = cita.getFecha().format(formatoFecha);
+                    String horaFormateada = cita.getHora().format(formatoHora);
+
+                    String asunto = "Confirmación de Cita Médica";
+                    String mensaje = String.format(
+                        "Estimado(a) %s,\n\n" +
+                        "Se le ha asignado una cita médica con los siguientes detalles:\n\n" +
+                        "Médico: %s\n" +
+                        "Fecha: %s\n" +
+                        "Hora: %s\n" +
+                        "Motivo: %s\n\n" +
+                        "Por favor, asegúrese de asistir puntualmente.\n\n" +
+                        "Saludos cordiales,\n" +
+                        "Consultorio Médico",
+                        paciente.getNombre(),
+                        medico.getNombre(),
+                        fechaFormateada,
+                        horaFormateada,
+                        cita.getMotivo()
+                    );
+
+                    emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
+                }
+            }
+        } catch (Exception e) {
+            return "redirect:/gestionCitas?error=" + e.getMessage();
         }
-        
         return "redirect:/gestionCitas";
     }
 
     @PostMapping("/eliminarCita")
     public String eliminarCita(@RequestParam Long id, HttpSession session) {
         Long medicoId = (Long) session.getAttribute("medicoId");
-        if (medicoId == null) {
+        if (medicoId == null || id == null) {
             return "redirect:/login";
         }
 
-        Optional<Cita> citaOpt = citaRepository.findById(id);
+        Optional<Cita> citaOpt = id != null ? citaRepository.findById(id) : Optional.empty();
         if (citaOpt.isPresent() && citaOpt.get().getMedicoId().equals(medicoId)) {
             citaRepository.deleteById(id);
         }
@@ -138,11 +147,11 @@ public class CitaController {
     @PostMapping("/actualizarCita")
     public String actualizarCita(@ModelAttribute Cita cita, HttpSession session) {
         Long medicoId = (Long) session.getAttribute("medicoId");
-        if (medicoId == null) {
+        if (medicoId == null || cita == null || cita.getId() == null) {
             return "redirect:/login";
         }
 
-        Optional<Cita> citaExistente = citaRepository.findById(cita.getId());
+        Optional<Cita> citaExistente = cita.getId() != null ? citaRepository.findById(cita.getId()) : Optional.empty();
         if (citaExistente.isPresent() && citaExistente.get().getMedicoId().equals(medicoId)) {
             cita.setMedicoId(medicoId);
             citaRepository.save(cita);

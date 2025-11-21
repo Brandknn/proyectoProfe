@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Error del sistema</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; color: #333; }
+        .container { max-width: 600px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { color: #c00; }
+        .details { margin-top: 20px; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¡Ups! Ocurrió un error</h1>
+        <p>Ha ocurrido un error inesperado en el sistema. Por favor, intenta nuevamente o contacta al administrador.</p>
+        <div class="details">
+            <strong>Detalles técnicos:</strong>
+            <span th:text="${error}" style="color: #c00;"></span>
+        </div>
+        <a href="/" style="margin-top: 30px; display: inline-block;">Volver al inicio</a>
+    </div>
+</body>
+</html>
