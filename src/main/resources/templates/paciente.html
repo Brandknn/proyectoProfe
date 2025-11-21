@@ -29,7 +29,7 @@
        
        NOMBRE: <input type="text" th:field="*{nombre}" name="nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre solo puede contener letras" required><br><br>
        DOCUMENTO: <input type="text" th:field="*{documento}" name="documento" pattern="[0-9]+" title="El documento solo puede contener números" required><br><br>
-       TELÉFONO: <input type="text" th:field="*{telefono}" name="telefono" title="El teléfono solo puede contener números"><br><br>
+       TELÉFONO: <input type="text" th:field="*{telefono}" name="telefono"  title="El teléfono solo puede contener números" required><br><br>
        CORREO: <input type="email" th:field="*{correo}" name="correo"><br><br>
        
         <button type="submit">Guardar Paciente</button>
