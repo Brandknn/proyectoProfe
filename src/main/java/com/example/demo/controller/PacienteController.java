@@ -1,4 +1,5 @@
 package com.example.demo.controller;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.Paciente;
@@ -24,7 +26,8 @@ public class PacienteController {
     private final CitaRepository citaRepository;
     private final EmailService emailService;
 
-    public PacienteController(PacienteRepository pacienteRepository, CitaRepository citaRepository, EmailService emailService) {
+    public PacienteController(PacienteRepository pacienteRepository, CitaRepository citaRepository,
+            EmailService emailService) {
         this.pacienteRepository = pacienteRepository;
         this.citaRepository = citaRepository;
         this.emailService = emailService;
@@ -36,7 +39,7 @@ public class PacienteController {
         if (medicoId == null) {
             return "redirect:/login";
         }
-        
+
         model.addAttribute("paciente", new Paciente());
         List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
         model.addAttribute("pacientes", pacientes);
@@ -163,12 +166,58 @@ public class PacienteController {
             return "redirect:/login";
         }
 
-        Optional<Paciente> pacienteExistente = paciente.getId() != null ? pacienteRepository.findById(paciente.getId()) : Optional.empty();
+        Optional<Paciente> pacienteExistente = paciente.getId() != null ? pacienteRepository.findById(paciente.getId())
+                : Optional.empty();
         if (pacienteExistente.isPresent() && pacienteExistente.get().getMedicoId().equals(medicoId)) {
             paciente.setMedicoId(medicoId);
             pacienteRepository.save(paciente);
         }
 
         return "redirect:/paciente";
+    }
+
+    @GetMapping("/api/verificar-documento")
+    @ResponseBody
+    public String verificarDocumento(@RequestParam String documento, HttpSession session) {
+        Long medicoId = (Long) session.getAttribute("medicoId");
+        if (medicoId == null) {
+            return "error";
+        }
+
+        Paciente paciente = pacienteRepository.findByDocumento(documento);
+        if (paciente != null && paciente.getMedicoId().equals(medicoId)) {
+            return "duplicado";
+        }
+        return "disponible";
+    }
+
+    @GetMapping("/api/verificar-correo")
+    @ResponseBody
+    public String verificarCorreo(@RequestParam String correo, HttpSession session) {
+        Long medicoId = (Long) session.getAttribute("medicoId");
+        if (medicoId == null || correo.isEmpty()) {
+            return "disponible";
+        }
+
+        Paciente paciente = pacienteRepository.findByCorreo(correo);
+        if (paciente != null && paciente.getMedicoId().equals(medicoId)) {
+            return "duplicado";
+        }
+        return "disponible";
+    }
+
+    @GetMapping("/api/verificar-telefono")
+    @ResponseBody
+    public String verificarTelefono(@RequestParam Long telefono, HttpSession session) {
+        Long medicoId = (Long) session.getAttribute("medicoId");
+        if (medicoId == null || telefono == null) {
+            return "disponible";
+        }
+
+        Paciente paciente = pacienteRepository.findByTelefono(telefono);
+        if (paciente != null && paciente.getMedicoId().equals(medicoId)) {
+            return "duplicado";
+        }
+        return "disponible";
     }
 }

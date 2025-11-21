@@ -34,7 +34,7 @@ public class CitaController {
     private final EmailService emailService;
 
     public CitaController(CitaRepository citaRepository, PacienteRepository pacienteRepository,
-                         MedicoRepository medicoRepository, EmailService emailService) {
+            MedicoRepository medicoRepository, EmailService emailService) {
         this.citaRepository = citaRepository;
         this.pacienteRepository = pacienteRepository;
         this.medicoRepository = medicoRepository;
@@ -51,12 +51,12 @@ public class CitaController {
         model.addAttribute("cita", new Cita());
         List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
         model.addAttribute("pacientes", pacientes);
-        
+
         Map<Long, String> pacienteNombres = new HashMap<>();
         for (Paciente p : pacientes) {
             pacienteNombres.put(p.getId(), p.getNombre());
         }
-        
+
         List<Cita> citas = citaRepository.findByMedicoIdOrderByFechaAscHoraAsc(medicoId);
         List<CitaConPaciente> citasConPaciente = new ArrayList<>();
         for (Cita cita : citas) {
@@ -106,30 +106,30 @@ public class CitaController {
 
                     String asunto = "Confirmación de Cita Médica";
                     String mensaje = String.format(
-                        "Estimado(a) %s,\n\n" +
-                        "Se le ha asignado una cita médica con los siguientes detalles:\n\n" +
-                        "Médico: %s\n" +
-                        "Fecha: %s\n" +
-                        "Hora: %s\n" +
-                        "Motivo: %s\n\n" +
-                        "Por favor, asegúrese de asistir puntualmente.\n\n" +
-                        "Saludos cordiales,\n" +
-                        "Consultorio Médico",
-                        paciente.getNombre(),
-                        medico.getNombre(),
-                        fechaFormateada,
-                        horaFormateada,
-                        cita.getMotivo()
-                    );
+                            "Estimado(a) %s,\n\n" +
+                                    "Se le ha asignado una cita médica con los siguientes detalles:\n\n" +
+                                    "Médico: %s\n" +
+                                    "Fecha: %s\n" +
+                                    "Hora: %s\n" +
+                                    "Motivo: %s\n\n" +
+                                    "Por favor, asegúrese de asistir puntualmente.\n\n" +
+                                    "Saludos cordiales,\n" +
+                                    "Consultorio Médico",
+                            paciente.getNombre(),
+                            medico.getNombre(),
+                            fechaFormateada,
+                            horaFormateada,
+                            cita.getMotivo());
 
                     emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
                 }
             }
 
             // NUEVO: Redirigir directamente al dictamen después de crear la cita
-            redirectAttributes.addFlashAttribute("mensaje", "Cita creada exitosamente. Ahora puede agregar el dictamen.");
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Cita creada exitosamente. Ahora puede agregar el dictamen.");
             return "redirect:/cita/" + citaGuardada.getId() + "/dictamen";
-            
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al crear la cita: " + e.getMessage());
             return "redirect:/gestionCitas";

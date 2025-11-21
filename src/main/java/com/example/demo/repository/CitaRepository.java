@@ -12,8 +12,9 @@ import com.example.demo.model.Cita;
 @Repository
 public interface CitaRepository extends JpaRepository<Cita, Long> {
     List<Cita> findByMedicoId(Long medicoId);
+
     List<Cita> findByMedicoIdOrderByFechaAscHoraAsc(Long medicoId);
-    
+
     @Modifying
     @Transactional
     void deleteByPacienteId(Long pacienteId);

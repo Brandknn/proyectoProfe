@@ -1,164 +1,204 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <link rel="stylesheet" href="/estilosAdministrativos.css">
-    <link rel="stylesheet" href="/gestionCitas.css">
-    <meta charset="UTF-8">
+  <head>
+    <link rel="stylesheet" href="/estilosAdministrativos.css" />
+    <link rel="stylesheet" href="/gestionCitas.css" />
+    <meta charset="UTF-8" />
     <title>Gestión de Citas</title>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-    <p class="logo">Médico Independiente</p>
-    <div class="nav_bar">
+      <p class="logo">Médico Independiente</p>
+      <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>
         <a href="/dictamen">Dictámenes</a>
         <a href="/horario">Horarios</a>
         <a href="/PerfilMedicoAjustes">Perfil Médico</a>
-    </div>
-</nav>
+      </div>
+    </nav>
 
     <h1>Gestión de Citas</h1>
 
     <h2>Registrar Nueva Cita</h2>
-    <form action="/agregarCita" th:object="${cita}" method="post" class="formulario-cita">
-        <label>Paciente:</label>
-        <select name="pacienteId" required>
-            <option value="">-- Seleccionar Paciente --</option>
-            <option th:each="pac : ${pacientes}" th:value="${pac.id}" th:text="${pac.nombre}"></option>
-        </select><br><br>
+    <form
+      action="/agregarCita"
+      th:object="${cita}"
+      method="post"
+      class="formulario-cita"
+    >
+      <label>Paciente:</label>
+      <select name="pacienteId" required>
+        <option value="">-- Seleccionar Paciente --</option>
+        <option
+          th:each="pac : ${pacientes}"
+          th:value="${pac.id}"
+          th:text="${pac.nombre}"
+        ></option></select
+      ><br /><br />
 
-        <label>Fecha:</label>
-        <input type="date" th:field="*{fecha}" name="fecha" required><br><br>
+      <label>Fecha:</label>
+      <input
+        type="date"
+        th:field="*{fecha}"
+        name="fecha"
+        required
+      /><br /><br />
 
-        <label>Hora:</label>
-        <input type="time" th:field="*{hora}" name="hora" required><br><br>
+      <label>Hora:</label>
+      <input type="time" th:field="*{hora}" name="hora" required /><br /><br />
 
-        <label>Motivo:</label>
-        <input type="text" th:field="*{motivo}" name="motivo" required><br><br>
+      <label>Motivo:</label>
+      <input
+        type="text"
+        th:field="*{motivo}"
+        name="motivo"
+        required
+      /><br /><br />
 
-        <label>Estado:</label>
-        <select th:field="*{estado}" name="estado" required>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Completada">Completada</option>
-            <option value="Cancelada">Cancelada</option>
-        </select><br><br>
+      <label>Estado:</label>
+      <select th:field="*{estado}" name="estado" required>
+        <option value="Pendiente">Pendiente</option>
+        <option value="Completada">Completada</option>
+        <option value="Cancelada">Cancelada</option></select
+      ><br /><br />
 
-        <button type="submit">Guardar Cita</button>
+      <button type="submit">Guardar Cita</button>
     </form>
 
     <h2>Listado de Citas</h2>
     <table border="1">
-        <thead>
-            <tr>
-                <th>Paciente</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Motivo</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="cita : ${citas}">
-                <td th:text="${cita.pacienteNombre}"></td>
-                <td th:text="${cita.fecha}"></td>
-                <td class="hora-cell" th:text="${cita.hora}"></td>
-                <td th:text="${cita.motivo}"></td>
-                <td th:text="${cita.estado}"></td>
-                <td>
-                    <button class="btn-editar" 
-                            th:attr="data-id=${cita.id}, data-paciente=${cita.pacienteId}, data-fecha=${cita.fecha}, data-hora=${cita.hora}, data-motivo=${cita.motivo}, data-estado=${cita.estado}"
-                            onclick="editarCitaData(this)">
-                        Editar
-                    </button>
-                        <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
-        <button type="button" class="btn-dictamen">Dictamen</button>
-    </a>
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Motivo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="cita : ${citas}">
+          <td th:text="${cita.pacienteNombre}"></td>
+          <td th:text="${cita.fecha}"></td>
+          <td class="hora-cell" th:text="${cita.hora}"></td>
+          <td th:text="${cita.motivo}"></td>
+          <td th:text="${cita.estado}"></td>
+          <td>
+            <button
+              class="btn-editar"
+              th:attr="data-id=${cita.id}, data-paciente=${cita.pacienteId}, data-fecha=${cita.fecha}, data-hora=${cita.hora}, data-motivo=${cita.motivo}, data-estado=${cita.estado}"
+              onclick="editarCitaData(this)"
+            >
+              Editar
+            </button>
+            <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
+              <button type="button" class="btn-dictamen">Dictamen</button>
+            </a>
 
-                    <form th:action="@{/eliminarCita}" method="post" style="display:inline;" 
-                          onsubmit="return confirm('¿Está seguro de eliminar esta cita?');">
-                        <input type="hidden" name="id" th:value="${cita.id}">
-                        <button type="submit" class="btn-eliminar">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
+            <form
+              th:action="@{/eliminarCita}"
+              method="post"
+              style="display: inline"
+              onsubmit="return confirm('¿Está seguro de eliminar esta cita?');"
+            >
+              <input type="hidden" name="id" th:value="${cita.id}" />
+              <button type="submit" class="btn-eliminar">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
     </table>
 
     <div id="modalEditar">
-        <div class="modal-content">
-            <span class="close" onclick="cerrarModal()">&times;</span>
-            <h2>Editar Cita</h2>
-            <form action="/actualizarCita" method="post">
-                <input type="hidden" id="editId" name="id">
-                
-                <label>Paciente:</label>
-                <select id="editPaciente" name="pacienteId" required>
-                    <option th:each="pac : ${pacientes}" th:value="${pac.id}" th:text="${pac.nombre}"></option>
-                </select><br><br>
-                
-                <label>Fecha:</label>
-                <input type="date" id="editFecha" name="fecha" required><br><br>
-                
-                <label>Hora:</label>
-                <input type="time" id="editHora" name="hora" required><br><br>
-                
-                <label>Motivo:</label>
-                <input type="text" id="editMotivo" name="motivo" required><br><br>
-                
-                <label>Estado:</label>
-                <select id="editEstado" name="estado" required>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Completada">Completada</option>
-                    <option value="Cancelada">Cancelada</option>
-                </select><br><br>
-                
-                <button type="submit">Actualizar</button>
-                <button type="button" onclick="cerrarModal()">Cancelar</button>
-            </form>
-        </div>
+      <div class="modal-content">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h2>Editar Cita</h2>
+        <form action="/actualizarCita" method="post">
+          <input type="hidden" id="editId" name="id" />
+
+          <label>Paciente:</label>
+          <select id="editPaciente" name="pacienteId" required>
+            <option
+              th:each="pac : ${pacientes}"
+              th:value="${pac.id}"
+              th:text="${pac.nombre}"
+            ></option></select
+          ><br /><br />
+
+          <label>Fecha:</label>
+          <input type="date" id="editFecha" name="fecha" required /><br /><br />
+
+          <label>Hora:</label>
+          <input type="time" id="editHora" name="hora" required /><br /><br />
+
+          <label>Motivo:</label>
+          <input
+            type="text"
+            id="editMotivo"
+            name="motivo"
+            required
+          /><br /><br />
+
+          <label>Estado:</label>
+          <select id="editEstado" name="estado" required>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Completada">Completada</option>
+            <option value="Cancelada">Cancelada</option></select
+          ><br /><br />
+
+          <button type="submit">Actualizar</button>
+          <button type="button" onclick="cerrarModal()">Cancelar</button>
+        </form>
+      </div>
     </div>
 
     <script>
-        // Convertir horas de formato 24h a 12h con AM/PM
-        function convertirHora24a12(hora24) {
-            const [horas, minutos] = hora24.split(':');
-            let hora = parseInt(horas);
-            const ampm = hora >= 12 ? 'PM' : 'AM';
-            hora = hora % 12 || 12;
-            return `${hora}:${minutos} ${ampm}`;
-        }
+      // Convertir horas de formato 24h a 12h con AM/PM
+      function convertirHora24a12(hora24) {
+        const [horas, minutos] = hora24.split(":");
+        let hora = parseInt(horas);
+        const ampm = hora >= 12 ? "PM" : "AM";
+        hora = hora % 12 || 12;
+        return `${hora}:${minutos} ${ampm}`;
+      }
 
-        // Aplicar conversión a todas las celdas de hora
-        document.addEventListener('DOMContentLoaded', function() {
-            const horasCells = document.querySelectorAll('.hora-cell');
-            horasCells.forEach(cell => {
-                const hora24 = cell.textContent.trim();
-                cell.textContent = convertirHora24a12(hora24);
-            });
+      // Aplicar conversión a todas las celdas de hora
+      document.addEventListener("DOMContentLoaded", function () {
+        const horasCells = document.querySelectorAll(".hora-cell");
+        horasCells.forEach((cell) => {
+          const hora24 = cell.textContent.trim();
+          cell.textContent = convertirHora24a12(hora24);
         });
+      });
 
-        function editarCitaData(button) {
-            document.getElementById('editId').value = button.getAttribute('data-id');
-            document.getElementById('editPaciente').value = button.getAttribute('data-paciente');
-            document.getElementById('editFecha').value = button.getAttribute('data-fecha');
-            document.getElementById('editHora').value = button.getAttribute('data-hora');
-            document.getElementById('editMotivo').value = button.getAttribute('data-motivo');
-            document.getElementById('editEstado').value = button.getAttribute('data-estado');
-            document.getElementById('modalEditar').style.display = 'block';
-        }
+      function editarCitaData(button) {
+        document.getElementById("editId").value =
+          button.getAttribute("data-id");
+        document.getElementById("editPaciente").value =
+          button.getAttribute("data-paciente");
+        document.getElementById("editFecha").value =
+          button.getAttribute("data-fecha");
+        document.getElementById("editHora").value =
+          button.getAttribute("data-hora");
+        document.getElementById("editMotivo").value =
+          button.getAttribute("data-motivo");
+        document.getElementById("editEstado").value =
+          button.getAttribute("data-estado");
+        document.getElementById("modalEditar").style.display = "block";
+      }
 
-        function cerrarModal() {
-            document.getElementById('modalEditar').style.display = 'none';
-        }
+      function cerrarModal() {
+        document.getElementById("modalEditar").style.display = "none";
+      }
 
-        window.onclick = function(event) {
-            const modal = document.getElementById('modalEditar');
-            if (event.target == modal) {
-                cerrarModal();
-            }
+      window.onclick = function (event) {
+        const modal = document.getElementById("modalEditar");
+        if (event.target == modal) {
+          cerrarModal();
         }
+      };
     </script>
-</body>
+  </body>
 </html>

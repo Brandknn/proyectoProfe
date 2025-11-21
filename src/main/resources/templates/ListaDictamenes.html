@@ -1,243 +1,290 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Gestión de Dictámenes</title>
-    <link rel="stylesheet" href="/estilosAdministrativos.css">
+    <link rel="stylesheet" href="/estilosAdministrativos.css" />
     <style>
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        
-        .tabla-dictamenes {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .tabla-dictamenes thead {
-            background-color: #1976d2;
-            color: white;
-        }
-        
-        .tabla-dictamenes th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-        }
-        
-        .tabla-dictamenes td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .tabla-dictamenes tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        .badge-success {
-            background-color: #4caf50;
-            color: white;
-        }
-        
-        .badge-warning {
-            background-color: #ff9800;
-            color: white;
-        }
-        
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-            font-weight: 500;
-            margin: 2px;
-        }
-        
-        .btn-primary {
-            background-color: #1976d2;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #1565c0;
-            transform: translateY(-1px);
-        }
-        
-        .btn-success {
-            background-color: #4caf50;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #388e3c;
-            transform: translateY(-1px);
-        }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
 
-        .btn-danger {
-            background-color: #f44336;
-            color: white;
-        }
+      .tabla-dictamenes {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
 
-        .btn-danger:hover {
-            background-color: #d32f2f;
-            transform: translateY(-1px);
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-            background-color: white;
-            border-radius: 8px;
-            margin-top: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-        
-        .contenido-preview {
-            max-width: 350px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: #555;
-        }
+      .tabla-dictamenes thead {
+        background-color: #1976d2;
+        color: white;
+      }
 
-        .acciones-group {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-        }
+      .tabla-dictamenes th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+      }
+
+      .tabla-dictamenes td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .tabla-dictamenes tbody tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .badge-success {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .badge-warning {
+        background-color: #ff9800;
+        color: white;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        font-weight: 500;
+        margin: 2px;
+      }
+
+      .btn-primary {
+        background-color: #1976d2;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #1565c0;
+        transform: translateY(-1px);
+      }
+
+      .btn-success {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #388e3c;
+        transform: translateY(-1px);
+      }
+
+      .btn-danger {
+        background-color: #f44336;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background-color: #d32f2f;
+        transform: translateY(-1px);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+        background-color: white;
+        border-radius: 8px;
+        margin-top: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .empty-state-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+
+      .contenido-preview {
+        max-width: 350px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #555;
+      }
+
+      .acciones-group {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+      }
     </style>
-</head>
-<body>
-
-<nav>
-    <p class="logo">Médico Independiente</p>
-    <div class="nav_bar">
+  </head>
+  <body>
+    <nav>
+      <p class="logo">Médico Independiente</p>
+      <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>
         <a href="/dictamen">Dictámenes</a>
         <a href="/horario">Horarios</a>
         <a href="/PerfilMedicoAjustes">Perfil Médico</a>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<div class="container">
-    <h1>Gestión de Dictámenes Médicos</h1>
-    
-    <!-- MENSAJE DE ERROR -->
-    <div th:if="${error}" style="background-color: #ffebee; color: #c62828; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #c62828;">
+    <div class="container">
+      <h1>Gestión de Dictámenes Médicos</h1>
+
+      <!-- MENSAJE DE ERROR -->
+      <div
+        th:if="${error}"
+        style="
+          background-color: #ffebee;
+          color: #c62828;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 20px 0;
+          border-left: 4px solid #c62828;
+        "
+      >
         <strong>Error:</strong>
-        <p th:text="${error}" style="margin: 5px 0 0 0;"></p>
-    </div>
+        <p th:text="${error}" style="margin: 5px 0 0 0"></p>
+      </div>
 
-    <!-- MENSAJE DE ÉXITO -->
-    <div th:if="${mensaje}" style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2e7d32;">
+      <!-- MENSAJE DE ÉXITO -->
+      <div
+        th:if="${mensaje}"
+        style="
+          background-color: #e8f5e9;
+          color: #2e7d32;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 20px 0;
+          border-left: 4px solid #2e7d32;
+        "
+      >
         <strong>Éxito:</strong>
-        <p th:text="${mensaje}" style="margin: 5px 0 0 0;"></p>
-    </div>
+        <p th:text="${mensaje}" style="margin: 5px 0 0 0"></p>
+      </div>
 
-    <!-- Tabla de dictámenes -->
-    <div th:if="${citasConDictamen != null and !citasConDictamen.isEmpty()}">
+      <!-- Tabla de dictámenes -->
+      <div th:if="${citasConDictamen != null and !citasConDictamen.isEmpty()}">
         <table class="tabla-dictamenes">
-            <thead>
-                <tr>
-                    <th style="width: 70px;">ID</th>
-                    <th style="width: 120px;">Fecha</th>
-                    <th style="width: 100px;">Hora</th>
-                    <th>Motivo</th>
-                    <th style="width: 120px; text-align: center;">Estado</th>
-                    <th style="width: 350px;">Contenido</th>
-                    <th style="width: 180px; text-align: center;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="entry : ${citasConDictamen}">
-                    <td th:text="${entry.key.id}" style="font-weight: 600; color: #1976d2;"></td>
-                    <td th:text="${entry.key.fecha}"></td>
-                    <td th:text="${entry.key.hora}"></td>
-                    <td th:text="${entry.key.motivo}" style="font-weight: 500;"></td>
-                    <td style="text-align: center;">
-                        <span th:if="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}" 
-                              class="badge badge-success">
-                            Completo
-                        </span>
-                        <span th:unless="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}" 
-                              class="badge badge-warning">
-                            Pendiente
-                        </span>
-                    </td>
-                    <td>
-                        <div th:if="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}" 
-                             class="contenido-preview"
-                             th:text="${entry.value.contenido}">
-                        </div>
-                        <span th:unless="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}"
-                              style="color: #999; font-style: italic;">
-                            Sin dictamen registrado
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <div class="acciones-group">
-                            <!-- Botón Ver/Editar o Crear -->
-                            <a th:href="@{'/cita/' + ${entry.key.id} + '/dictamen'}" 
-                               th:class="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''} ? 'btn btn-primary' : 'btn btn-success'">
-                                <span th:if="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}">
-                                    Ver/Editar
-                                </span>
-                                <span th:unless="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}">
-                                    Crear
-                                </span>
-                            </a>
+          <thead>
+            <tr>
+              <th style="width: 70px">ID</th>
+              <th style="width: 120px">Fecha</th>
+              <th style="width: 100px">Hora</th>
+              <th>Motivo</th>
+              <th style="width: 120px; text-align: center">Estado</th>
+              <th style="width: 350px">Contenido</th>
+              <th style="width: 180px; text-align: center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="entry : ${citasConDictamen}">
+              <td
+                th:text="${entry.key.id}"
+                style="font-weight: 600; color: #1976d2"
+              ></td>
+              <td th:text="${entry.key.fecha}"></td>
+              <td th:text="${entry.key.hora}"></td>
+              <td th:text="${entry.key.motivo}" style="font-weight: 500"></td>
+              <td style="text-align: center">
+                <span
+                  th:if="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}"
+                  class="badge badge-success"
+                >
+                  Completo
+                </span>
+                <span
+                  th:unless="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}"
+                  class="badge badge-warning"
+                >
+                  Pendiente
+                </span>
+              </td>
+              <td>
+                <div
+                  th:if="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}"
+                  class="contenido-preview"
+                  th:text="${entry.value.contenido}"
+                ></div>
+                <span
+                  th:unless="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}"
+                  style="color: #999; font-style: italic"
+                >
+                  Sin dictamen registrado
+                </span>
+              </td>
+              <td style="text-align: center">
+                <div class="acciones-group">
+                  <!-- Botón Ver/Editar o Crear -->
+                  <a
+                    th:href="@{'/cita/' + ${entry.key.id} + '/dictamen'}"
+                    th:class="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''} ? 'btn btn-primary' : 'btn btn-success'"
+                  >
+                    <span
+                      th:if="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}"
+                    >
+                      Ver/Editar
+                    </span>
+                    <span
+                      th:unless="${entry.value != null and entry.value.contenido != null and entry.value.contenido != ''}"
+                    >
+                      Crear
+                    </span>
+                  </a>
 
-                            <!-- Botón Eliminar (solo si existe dictamen) -->
-                            <form th:if="${entry.value != null and entry.value.id != null}" 
-                                  th:action="@{'/dictamen/eliminar/' + ${entry.value.id}}" 
-                                  method="post" 
-                                  style="display: inline;"
-                                  onsubmit="return confirm('¿Está seguro de eliminar este dictamen?');">
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
+                  <!-- Botón Eliminar (solo si existe dictamen) -->
+                  <form
+                    th:if="${entry.value != null and entry.value.id != null}"
+                    th:action="@{'/dictamen/eliminar/' + ${entry.value.id}}"
+                    method="post"
+                    style="display: inline"
+                    onsubmit="return confirm('¿Está seguro de eliminar este dictamen?');"
+                  >
+                    <button type="submit" class="btn btn-danger">
+                      Eliminar
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </tbody>
         </table>
-    </div>
+      </div>
 
-    <!-- Estado vacío -->
-    <div th:if="${citasConDictamen == null or citasConDictamen.isEmpty()}" class="empty-state">
+      <!-- Estado vacío -->
+      <div
+        th:if="${citasConDictamen == null or citasConDictamen.isEmpty()}"
+        class="empty-state"
+      >
         <div class="empty-state-icon">📋</div>
-        <h2 style="color: #666;">No hay citas registradas</h2>
-        <p style="font-size: 16px; margin: 20px 0;">Crea una cita primero para poder gestionar dictámenes médicos.</p>
-        <a href="/gestionCitas" class="btn btn-primary" style="margin-top: 20px; font-size: 16px; padding: 12px 24px;">
-            Ir a Gestión de Citas
+        <h2 style="color: #666">No hay citas registradas</h2>
+        <p style="font-size: 16px; margin: 20px 0">
+          Crea una cita primero para poder gestionar dictámenes médicos.
+        </p>
+        <a
+          href="/gestionCitas"
+          class="btn btn-primary"
+          style="margin-top: 20px; font-size: 16px; padding: 12px 24px"
+        >
+          Ir a Gestión de Citas
         </a>
+      </div>
     </div>
-</div>
-
-</body>
+  </body>
 </html>

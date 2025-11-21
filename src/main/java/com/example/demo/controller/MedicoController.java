@@ -32,7 +32,7 @@ public class MedicoController {
             model.addAttribute("medicos", medicoRepository.findAll());
             return "CrearCuentaMedico";
         }
-        
+
         // Validar que la cédula solo contenga números
         if (medico.getCedula() != null && !medico.getCedula().matches("[0-9]+")) {
             model.addAttribute("error", "La cédula solo puede contener números.");
@@ -40,7 +40,7 @@ public class MedicoController {
             model.addAttribute("medicos", medicoRepository.findAll());
             return "CrearCuentaMedico";
         }
-        
+
         // Validar que el teléfono solo contenga números
         if (medico.getTelefono() != null && !medico.getTelefono().matches("[0-9]+")) {
             model.addAttribute("error", "El teléfono solo puede contener números.");
@@ -48,7 +48,7 @@ public class MedicoController {
             model.addAttribute("medicos", medicoRepository.findAll());
             return "CrearCuentaMedico";
         }
-        
+
         // Validar que el email no esté duplicado
         if (medicoRepository.findByEmail(medico.getEmail()).isPresent()) {
             model.addAttribute("error", "El email ya está registrado en el sistema.");
@@ -56,7 +56,7 @@ public class MedicoController {
             model.addAttribute("medicos", medicoRepository.findAll());
             return "CrearCuentaMedico";
         }
-        
+
         // Validar que la cédula no esté duplicada
         if (medicoRepository.findByCedula(medico.getCedula()).isPresent()) {
             model.addAttribute("error", "La cédula ya está registrada en el sistema.");
@@ -64,7 +64,7 @@ public class MedicoController {
             model.addAttribute("medicos", medicoRepository.findAll());
             return "CrearCuentaMedico";
         }
-        
+
         medico.setPerfilCompleto(true);
         medicoRepository.save(medico);
         redirectAttributes.addFlashAttribute("successMessage", "¡Cuenta creada exitosamente! Ya puedes iniciar sesión");

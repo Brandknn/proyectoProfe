@@ -18,12 +18,12 @@ public class HomeController {
     private MedicoRepository medicoRepository;
 
     @GetMapping("/")
-    public String index(){
+    public String index() {
         return "index";
     }
 
     @GetMapping("/login")
-    public String usuario(){
+    public String usuario() {
         return "login";
     }
 
@@ -35,7 +35,8 @@ public class HomeController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, Model model, jakarta.servlet.http.HttpSession session) {
+    public String login(@RequestParam String email, @RequestParam String password, Model model,
+            jakarta.servlet.http.HttpSession session) {
         Optional<Medico> medicoOpt = medicoRepository.findByEmailAndPassword(email, password);
         if (medicoOpt.isPresent()) {
             Medico medico = medicoOpt.get();
