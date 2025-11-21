@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.Paciente;
+import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.PacienteRepository;
 import com.example.demo.service.EmailService;
 
@@ -20,10 +21,12 @@ import jakarta.servlet.http.HttpSession;
 public class PacienteController {
 
     private final PacienteRepository pacienteRepository;
+    private final CitaRepository citaRepository;
     private final EmailService emailService;
 
-    public PacienteController(PacienteRepository pacienteRepository, EmailService emailService) {
+    public PacienteController(PacienteRepository pacienteRepository, CitaRepository citaRepository, EmailService emailService) {
         this.pacienteRepository = pacienteRepository;
+        this.citaRepository = citaRepository;
         this.emailService = emailService;
     }
 
@@ -67,7 +70,7 @@ public class PacienteController {
             }
 
             // Validar que el teléfono sea válido (solo números y positivo)
-            if (paciente.getTelefono() <= 0) {
+            if (paciente.getTelefono() <= 0 && !String.valueOf(paciente.getTelefono()).matches("[0-9]+")) {
                 model.addAttribute("error", "El teléfono debe ser un número positivo.");
                 model.addAttribute("paciente", new Paciente());
                 List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
@@ -139,6 +142,10 @@ public class PacienteController {
 
         if (pacienteOpt.isPresent() && pacienteOpt.get().getMedicoId().equals(medicoId)) {
             System.out.println("[DELETE] Deleting paciente with id: " + id);
+            // Primero eliminar todas las citas del paciente
+            citaRepository.deleteByPacienteId(id);
+            System.out.println("[DELETE] Deleted all citas for paciente: " + id);
+            // Luego eliminar el paciente
             pacienteRepository.deleteById(id);
             redirectAttributes.addFlashAttribute("success", "Paciente eliminado exitosamente.");
             System.out.println("[DELETE] Successfully deleted, redirecting to /paciente");

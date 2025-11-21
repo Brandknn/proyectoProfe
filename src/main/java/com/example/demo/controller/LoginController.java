@@ -38,10 +38,10 @@ public class LoginController {
 
         Medico existente = medicoRepository.findByEmail(email).orElse(null);
         if (existente != null && Boolean.TRUE.equals(existente.getPerfilCompleto())) {
-            System.out.println("[OAuth2] Usuario con email " + email + " ya tiene perfil completo. Redirigiendo a gestionCitas");
+            System.out.println("[OAuth2] Usuario con email " + email + " ya tiene perfil completo. Redirigiendo a paciente");
             session.setAttribute("medicoId", existente.getId());
             session.setAttribute("medicoEmail", existente.getEmail());
-            return "redirect:/gestionCitas"; // ya estaba registrado totalmente por otra vía
+            return "redirect:/paciente"; // ya estaba registrado totalmente por otra vía
         }
 
         // Solo guardar datos en sesión; la creación ocurrirá tras enviar el formulario
@@ -98,7 +98,7 @@ public class LoginController {
         if (existente != null && Boolean.TRUE.equals(existente.getPerfilCompleto())) {
             session.setAttribute("medicoId", existente.getId());
             session.setAttribute("medicoEmail", existente.getEmail());
-            return "redirect:/gestionCitas";
+            return "redirect:/paciente";
         }
 
         // Crear nuevo solamente ahora (registro alternativo)
@@ -124,6 +124,6 @@ public class LoginController {
         session.removeAttribute("oauthName");
         
         redirectAttributes.addFlashAttribute("success", "¡Registro completado exitosamente!");
-        return "redirect:/gestionCitas";
+        return "redirect:/paciente";
     }
 }

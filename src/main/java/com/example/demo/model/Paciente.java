@@ -23,14 +23,14 @@ public class Paciente {
 
     private String correo;
 
-    private int telefono;
+    private Long telefono;
 
     @Column(name = "medico_id")
     private Long medicoId;
 
     public Paciente() {}
 
-    public Paciente(String nombre, String documento, String correo, int telefono) {
+    public Paciente(String nombre, String documento, String correo, Long telefono) {
         this.nombre = nombre;
         this.documento = documento;
         this.correo = correo;
@@ -69,11 +69,11 @@ public class Paciente {
         this.correo = correo;
     }
 
-    public int getTelefono() {
+    public Long getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(Long telefono) {
         this.telefono = telefono;
     }
 
