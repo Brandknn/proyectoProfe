@@ -29,7 +29,7 @@
        
        NOMBRE: <input type="text" th:field="*{nombre}" name="nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre solo puede contener letras" required><br><br>
        DOCUMENTO: <input type="text" th:field="*{documento}" name="documento" pattern="[0-9]+" title="El documento solo puede contener números" required><br><br>
-       TELÉFONO: <input type="number" th:field="*{telefono}" name="telefono" min="1" title="El teléfono solo puede contener números" required><br><br>
+       TELÉFONO: <input type="text" th:field="*{telefono}" name="telefono" pattern="[0-9]+" title="El teléfono solo puede contener números" placeholder="Ingrese solo números" required><br><br>
        CORREO: <input type="email" th:field="*{correo}" name="correo"><br><br>
        
         <button type="submit">Guardar Paciente</button>
@@ -82,7 +82,7 @@
                 <input type="text" id="editDocumento" name="documento" required><br><br>
                 
                 <label>TELÉFONO:</label>
-                <input type="number" id="editTelefono" name="telefono" min="1" required><br><br>
+                <input type="text" id="editTelefono" name="telefono" pattern="[0-9]+" placeholder="Ingrese solo números" required><br><br>
                 
                 <label>CORREO:</label>
                 <input type="email" id="editCorreo" name="correo" required><br><br>
