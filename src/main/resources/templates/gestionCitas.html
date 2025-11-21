@@ -72,6 +72,10 @@
                             onclick="editarCitaData(this)">
                         Editar
                     </button>
+                        <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
+        <button type="button" class="btn-dictamen">Dictamen</button>
+    </a>
+
                     <form th:action="@{/eliminarCita}" method="post" style="display:inline;" 
                           onsubmit="return confirm('¿Está seguro de eliminar esta cita?');">
                         <input type="hidden" name="id" th:value="${cita.id}">

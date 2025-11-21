@@ -27,10 +27,7 @@ public class HomeController {
         return "login";
     }
 
-    @GetMapping("/dictamen")
-    public String dictamen() {
-        return "dictamen";
-    }
+    // ELIMINADO: @GetMapping("/dictamen") - Ahora está en DictamenController
 
     @GetMapping("/horario")
     public String horario() {

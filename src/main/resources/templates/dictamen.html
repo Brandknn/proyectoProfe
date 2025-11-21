@@ -1,53 +1,308 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-     <link rel="stylesheet" href="/estilosAdministrativos.css">
-    <meta charset="UTF-8">
-    <title>Dictamen Médico</title>
-</head>
-<body>
+    <!DOCTYPE html>
+    <html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Dictamen Médico</title>
+        <link rel="stylesheet" href="/estilosAdministrativos.css">
+        <style>
+            .container-dictamen {
+                max-width: 1000px;
+                margin: 20px auto;
+                padding: 0 20px;
+            }
+            
+            .info-cita {
+                background-color: #f5f5f5;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 30px;
+                border-left: 4px solid #1976d2;
+            }
+            
+            .info-cita p {
+                margin: 8px 0;
+                font-size: 16px;
+            }
+            
+            .form-dictamen {
+                background-color: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                margin-bottom: 30px;
+            }
+            
+            .form-dictamen label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 10px;
+                color: #333;
+                font-size: 16px;
+            }
+            
+            .form-dictamen textarea {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e0e0e0;
+                border-radius: 6px;
+                font-size: 15px;
+                font-family: inherit;
+                resize: vertical;
+                transition: border-color 0.3s;
+            }
+            
+            .form-dictamen textarea:focus {
+                outline: none;
+                border-color: #1976d2;
+            }
+            
+            .btn-guardar {
+                background-color: #4caf50;
+                color: white;
+                padding: 12px 30px;
+                border: none;
+                border-radius: 6px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+                margin-top: 15px;
+            }
+            
+            .btn-guardar:hover {
+                background-color: #388e3c;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+            }
+            
+            .btn-volver {
+                background-color: #757575;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                margin-left: 10px;
+                transition: all 0.3s;
+            }
+            
+            .btn-volver:hover {
+                background-color: #616161;
+            }
+            
+            .historial-section {
+                background-color: white;
+                padding: 25px;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            
+            .historial-section h2 {
+                margin-top: 0;
+                color: #1976d2;
+                border-bottom: 2px solid #e0e0e0;
+                padding-bottom: 10px;
+            }
+            
+            .tabla-historial {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            
+            .tabla-historial th {
+                background-color: #1976d2;
+                color: white;
+                padding: 12px;
+                text-align: left;
+            }
+            
+            .tabla-historial td {
+                padding: 12px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .tabla-historial tr:hover {
+                background-color: #f5f5f5;
+            }
+            
+            .contenido-completo {
+                white-space: pre-wrap;
+                line-height: 1.6;
+            }
+            
+            .char-counter {
+                text-align: right;
+                color: #757575;
+                font-size: 14px;
+                margin-top: 5px;
+            }
+        </style>
+    </head>
+    <body>
+
     <nav>
-    <p class="logo">Médico Independiente</p>
-    <div class="nav_bar">
-        <a href="/paciente">Pacientes</a>
-        <a href="/gestionCitas">Gestión de Citas</a>
-        <a href="/dictamen">Dictámenes</a>
-        <a href="/horario">Horarios</a>
-        <a href="/PerfilMedicoAjustes">Perfil Médico</a>
+        <p class="logo">Médico Independiente</p>
+        <div class="nav_bar">
+            <a href="/paciente">Pacientes</a>
+            <a href="/gestionCitas">Gestión de Citas</a>
+            <a href="/dictamen">Dictámenes</a>
+            <a href="/horario">Horarios</a>
+            <a href="/PerfilMedicoAjustes">Perfil Médico</a>
+        </div>
+    </nav>
+
+    <div class="container-dictamen">
+        <h1>📋 Dictamen Médico</h1>
+
+        <!-- MENSAJE DE ERROR -->
+        <div th:if="${error}" style="background-color: #ffebee; color: #c62828; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #c62828;">
+            <strong>⚠️ Error:</strong>
+            <p th:text="${error}" style="margin: 5px 0 0 0;"></p>
+        </div>
+
+        <!-- MENSAJE DE ÉXITO -->
+        <div th:if="${mensaje}" style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2e7d32;">
+            <strong>✓ Éxito:</strong>
+            <p th:text="${mensaje}" style="margin: 5px 0 0 0;"></p>
+        </div>
+
+        <!-- Verificar que cita no sea null -->
+        <div th:if="${cita != null}">
+            
+            <!-- Información de la cita -->
+            <div class="info-cita">
+                <h3 style="margin-top: 0; color: #1976d2;">📅 Información de la Cita</h3>
+                <p><strong>ID Cita:</strong> <span th:text="${cita.id}"></span></p>
+                <p><strong>Motivo:</strong> <span th:text="${cita.motivo}"></span></p>
+                <p><strong>Fecha:</strong> <span th:text="${cita.fecha}"></span></p>
+                <p><strong>Hora:</strong> <span th:text="${cita.hora}"></span></p>
+                <p><strong>Estado:</strong> 
+                    <span th:text="${cita.estado}" 
+                        style="padding: 4px 12px; border-radius: 12px; font-size: 14px; font-weight: 600;"
+                        th:style="${cita.estado == 'Completada'} ? 'background-color: #4caf50; color: white;' : 'background-color: #ff9800; color: white;'">
+                    </span>
+                </p>
+            </div>
+
+            <!-- FORMULARIO PARA GUARDAR -->
+            <div class="form-dictamen">
+                <h2 style="margin-top: 0; color: #333;">
+                    <span th:if="${dictamen == null or dictamen.contenido == null or dictamen.contenido == ''}">
+                        ➕ Registrar Nuevo Dictamen
+                    </span>
+                    <span th:unless="${dictamen == null or dictamen.contenido == null or dictamen.contenido == ''}">
+                        ✏️ Editar Dictamen
+                    </span>
+                </h2>
+
+                <form th:action="@{'/cita/' + ${cita.id} + '/dictamen'}" method="post" onsubmit="return validarFormulario()">
+
+                    <label for="contenido">Resultado / Diagnóstico:</label>
+                    <textarea 
+                        id="contenido"
+                        name="contenido" 
+                        rows="10"
+                        placeholder="Ingrese el diagnóstico, tratamiento recomendado, observaciones y recomendaciones para el paciente..."
+                        th:text="${dictamen != null ? dictamen.contenido : ''}"
+                        maxlength="2000"
+                        oninput="actualizarContador()"
+                        required></textarea>
+                    
+                    <div id="charCounter" class="char-counter">0 / 2000 caracteres</div>
+
+                    <button type="submit" class="btn-guardar">
+                        💾 Guardar Dictamen
+                    </button>
+                    
+                    <a href="/dictamen" class="btn-volver">
+                        ← Volver a Lista
+                    </a>
+                </form>
+            </div>
+
+            <!-- Historial de Dictámenes -->
+            <div class="historial-section" th:if="${dictamen != null and dictamen.contenido != null and dictamen.contenido != ''}">
+                <h2>📚 Dictamen Actual</h2>
+
+                <table class="tabla-historial">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">ID Cita</th>
+                            <th>Contenido del Dictamen</th>
+                            <th style="width: 150px;">Última Modificación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td th:text="${cita.id}"></td>
+                            <td>
+                                <div class="contenido-completo" th:text="${dictamen.contenido}"></div>
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="color: #4caf50; font-weight: 600;">✓ Guardado</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mensaje si no hay dictamen -->
+            <div class="historial-section" th:if="${dictamen == null or dictamen.contenido == null or dictamen.contenido == ''}">
+                <h2>📚 Historial de Dictámenes</h2>
+                <p style="text-align: center; color: #999; padding: 40px 0; font-style: italic;">
+                    📝 No hay dictamen registrado para esta cita. Complete el formulario arriba para crear uno.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mostrar si cita es null -->
+        <div th:if="${cita == null}" style="background-color: #fff3cd; color: #856404; padding: 30px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #856404; text-align: center;">
+            <h2 style="margin-top: 0;">⚠️ Cita no encontrada</h2>
+            <p style="font-size: 16px;">No se pudo cargar la información de la cita solicitada.</p>
+            <a href="/gestionCitas" style="text-decoration: none;">
+                <button class="btn-guardar" style="margin-top: 20px;">
+                    ← Volver a Gestión de Citas
+                </button>
+            </a>
+        </div>
     </div>
-</nav>
 
-    <h1>Dictamen Médico</h1>
+    <script>
+        // Contador de caracteres
+        function actualizarContador() {
+            const textarea = document.getElementById('contenido');
+            const contador = document.getElementById('charCounter');
+            const longitud = textarea.value.length;
+            contador.textContent = longitud + ' / 2000 caracteres';
+            
+            if (longitud > 1900) {
+                contador.style.color = '#f44336';
+            } else if (longitud > 1500) {
+                contador.style.color = '#ff9800';
+            } else {
+                contador.style.color = '#757575';
+            }
+        }
+        
+        // Validar formulario
+        function validarFormulario() {
+            const contenido = document.getElementById('contenido').value.trim();
+            if (contenido.length < 10) {
+                alert('⚠️ El dictamen debe tener al menos 10 caracteres.');
+                return false;
+            }
+            return true;
+        }
+        
+        // Inicializar contador al cargar la página
+        window.onload = function() {
+            actualizarContador();
+        };
+    </script>
 
-    <h2>Registrar Dictamen</h2>
-    <form>
-        <label>ID Cita:</label>
-        <input type="text" name="id_cita" placeholder="Ej: CITA-001"><br><br>
-
-        <label>Resultado:</label><br>
-        <textarea name="resultado" rows="5" cols="40" placeholder="Descripción del diagnóstico o tratamiento..."></textarea><br><br>
-
-        <button type="submit">Guardar Dictamen</button>
-    </form>
-
-    <h2>Historial de Dictámenes</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID Cita</th>
-                <th>Paciente</th>
-                <th>Resultado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>CITA-001</td>
-                <td>María López</td>
-                <td>Gripe común, tratamiento con reposo e hidratación.</td>
-                <td><button>Ver</button></td>
-            </tr>
-        </tbody>
-    </table>
-</body>
-</html>
+    </body>
+    </html>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.Cita;
 import com.example.demo.model.CitaConPaciente;
@@ -27,7 +28,6 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class CitaController {
-    // Controlador para la gestión de citas médicas
     private final CitaRepository citaRepository;
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
@@ -69,7 +69,7 @@ public class CitaController {
     }
 
     @PostMapping("/agregarCita")
-    public String agregarCita(@ModelAttribute Cita cita, HttpSession session) {
+    public String agregarCita(@ModelAttribute Cita cita, HttpSession session, RedirectAttributes redirectAttributes) {
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null) {
             return "redirect:/login";
@@ -78,15 +78,17 @@ public class CitaController {
         try {
             // Validar que el pacienteId no sea nulo
             if (cita.getPacienteId() == null) {
-                return "redirect:/gestionCitas?error=Paciente no seleccionado";
+                redirectAttributes.addFlashAttribute("error", "Paciente no seleccionado");
+                return "redirect:/gestionCitas";
             }
             // Validar que la fecha y hora no sean nulas
             if (cita.getFecha() == null || cita.getHora() == null) {
-                return "redirect:/gestionCitas?error=Fecha y hora requeridas";
+                redirectAttributes.addFlashAttribute("error", "Fecha y hora requeridas");
+                return "redirect:/gestionCitas";
             }
 
             cita.setMedicoId(medicoId);
-            citaRepository.save(cita);
+            Cita citaGuardada = citaRepository.save(cita); // CAMBIO: Guardar en variable
 
             Optional<Paciente> pacienteOpt = pacienteRepository.findById(cita.getPacienteId());
             Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
@@ -123,10 +125,15 @@ public class CitaController {
                     emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
                 }
             }
+
+            // NUEVO: Redirigir directamente al dictamen después de crear la cita
+            redirectAttributes.addFlashAttribute("mensaje", "Cita creada exitosamente. Ahora puede agregar el dictamen.");
+            return "redirect:/cita/" + citaGuardada.getId() + "/dictamen";
+            
         } catch (Exception e) {
-            return "redirect:/gestionCitas?error=" + e.getMessage();
+            redirectAttributes.addFlashAttribute("error", "Error al crear la cita: " + e.getMessage());
+            return "redirect:/gestionCitas";
         }
-        return "redirect:/gestionCitas";
     }
 
     @PostMapping("/eliminarCita")
@@ -160,6 +167,8 @@ public class CitaController {
         return "redirect:/gestionCitas";
     }
 
+    // ELIMINADO EL MÉTODO DUPLICADO @PostMapping("/gestionCitas")
+
     @GetMapping("/limpiar-bd")
     public String limpiarBD() {
         citaRepository.deleteAll();
@@ -167,7 +176,4 @@ public class CitaController {
         medicoRepository.deleteAll();
         return "redirect:/";
     }
-
-
-    //yoyoyooyyoo
 }
