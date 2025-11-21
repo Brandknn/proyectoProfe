@@ -126,7 +126,8 @@ public class PacienteController {
             pacienteRepository.save(paciente);
             if (paciente.getCorreo() != null && !paciente.getCorreo().isEmpty()) {
                 String asunto = "Bienvenido a la clínica";
-                String mensaje = "Hola " + paciente.getNombre() + " " + paciente.getApellido() + ", tu registro fue exitoso.";
+                String mensaje = "Hola " + paciente.getNombre() + " " + paciente.getApellido()
+                        + ", tu registro fue exitoso.";
                 emailService.enviarCorreo(paciente.getCorreo(), asunto, mensaje);
             }
         } catch (Exception e) {

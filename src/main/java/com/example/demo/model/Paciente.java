@@ -31,7 +31,8 @@ public class Paciente {
     @Column(name = "medico_id")
     private Long medicoId;
 
-    public Paciente() {}
+    public Paciente() {
+    }
 
     public Paciente(String nombre, String apellido, String documento, String correo, Long telefono) {
         this.nombre = nombre;
