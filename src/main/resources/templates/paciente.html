@@ -85,6 +85,18 @@
       <div class="field-error-message" id="errorNombre"></div>
       <br />
 
+      <label>Apellido:</label>
+      <input
+        type="text"
+        th:field="*{apellido}"
+        id="apellido"
+        name="apellido"
+        pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+        required
+      /><br />
+      <div class="field-error-message" id="errorApellido"></div>
+      <br />
+
       <label>Documento:</label>
       <input
         type="text"
@@ -129,6 +141,7 @@
       <thead>
         <tr>
           <th>Nombre</th>
+          <th>Apellido</th>
           <th>Documento</th>
           <th>Teléfono</th>
           <th>Correo</th>
@@ -138,13 +151,14 @@
       <tbody>
         <tr th:each="pac : ${pacientes}">
           <td th:text="${pac.nombre}"></td>
+          <td th:text="${pac.apellido}"></td>
           <td th:text="${pac.documento}"></td>
           <td th:text="${pac.telefono}"></td>
           <td th:text="${pac.correo}"></td>
           <td>
             <button
               class="btn-editar"
-              th:attr="data-id=${pac.id}, data-nombre=${pac.nombre}, data-documento=${pac.documento}, data-telefono=${pac.telefono}, data-correo=${pac.correo}"
+              th:attr="data-id=${pac.id}, data-nombre=${pac.nombre}, data-apellido=${pac.apellido}, data-documento=${pac.documento}, data-telefono=${pac.telefono}, data-correo=${pac.correo}"
               onclick="editarPacienteData(this)"
             >
               Editar
@@ -175,6 +189,14 @@
             type="text"
             id="editNombre"
             name="nombre"
+            required
+          /><br /><br />
+
+          <label>APELLIDO:</label>
+          <input
+            type="text"
+            id="editApellido"
+            name="apellido"
             required
           /><br /><br />
 
@@ -215,12 +237,14 @@
       // Validación en tiempo real para el formulario de registro
       const form = document.getElementById("formPaciente");
       const inputNombre = document.getElementById("nombre");
+      const inputApellido = document.getElementById("apellido");
       const inputDocumento = document.getElementById("documento");
       const inputTelefono = document.getElementById("telefono");
       const inputCorreo = document.getElementById("correo");
 
       // Variables para rastrear si el usuario ha tocado cada campo
       let nombreTocado = false;
+      let apellidoTocado = false;
       let documentoTocado = false;
       let telefonoTocado = false;
       let correoTocado = false;
@@ -244,6 +268,31 @@
             inputNombre.classList.add("input-valid");
           } else {
             inputNombre.classList.remove("input-valid");
+          }
+          errorDiv.textContent = "";
+          errorDiv.classList.remove("show");
+        }
+      }
+
+      function validarApellido() {
+        if (!apellidoTocado) return; // No validar si no ha sido tocado
+
+        const valor = inputApellido.value.trim();
+        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+        const esValido = valor === "" || regex.test(valor);
+        const errorDiv = document.getElementById("errorApellido");
+
+        if (valor && !esValido) {
+          inputApellido.classList.add("input-error");
+          inputApellido.classList.remove("input-valid");
+          errorDiv.textContent = "El apellido solo puede contener letras";
+          errorDiv.classList.add("show");
+        } else {
+          inputApellido.classList.remove("input-error");
+          if (valor && esValido) {
+            inputApellido.classList.add("input-valid");
+          } else {
+            inputApellido.classList.remove("input-valid");
           }
           errorDiv.textContent = "";
           errorDiv.classList.remove("show");
@@ -388,6 +437,12 @@
       });
       inputNombre.addEventListener("input", validarNombre);
 
+      inputApellido.addEventListener("focus", () => {
+        apellidoTocado = true;
+        validarApellido();
+      });
+      inputApellido.addEventListener("input", validarApellido);
+
       inputDocumento.addEventListener("focus", () => {
         documentoTocado = true;
         validarDocumento();
@@ -409,17 +464,20 @@
       // Validar antes de enviar el formulario
       form.addEventListener("submit", function (e) {
         nombreTocado = true;
+        apellidoTocado = true;
         documentoTocado = true;
         telefonoTocado = true;
         correoTocado = true;
 
         validarNombre();
+        validarApellido();
         validarDocumento();
         validarTelefono();
         validarCorreo();
 
         const hayErrores =
           inputNombre.classList.contains("input-error") ||
+          inputApellido.classList.contains("input-error") ||
           inputDocumento.classList.contains("input-error") ||
           inputTelefono.classList.contains("input-error") ||
           inputCorreo.classList.contains("input-error");
@@ -434,6 +492,8 @@
           button.getAttribute("data-id");
         document.getElementById("editNombre").value =
           button.getAttribute("data-nombre");
+        document.getElementById("editApellido").value =
+          button.getAttribute("data-apellido");
         document.getElementById("editDocumento").value =
           button.getAttribute("data-documento");
         document.getElementById("editTelefono").value =

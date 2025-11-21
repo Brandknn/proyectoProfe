@@ -54,7 +54,7 @@ public class CitaController {
 
         Map<Long, String> pacienteNombres = new HashMap<>();
         for (Paciente p : pacientes) {
-            pacienteNombres.put(p.getId(), p.getNombre());
+            pacienteNombres.put(p.getId(), p.getNombre() + " " + p.getApellido());
         }
 
         List<Cita> citas = citaRepository.findByMedicoIdOrderByFechaAscHoraAsc(medicoId);
@@ -115,7 +115,7 @@ public class CitaController {
                                     "Por favor, asegúrese de asistir puntualmente.\n\n" +
                                     "Saludos cordiales,\n" +
                                     "Consultorio Médico",
-                            paciente.getNombre(),
+                            paciente.getNombre() + " " + paciente.getApellido(),
                             medico.getNombre(),
                             fechaFormateada,
                             horaFormateada,

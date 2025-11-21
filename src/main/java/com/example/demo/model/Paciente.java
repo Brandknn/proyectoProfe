@@ -18,6 +18,9 @@ public class Paciente {
     @Column(nullable = false)
     private String nombre;
 
+    @Column(nullable = false)
+    private String apellido;
+
     @Column(nullable = false, unique = true)
     private String documento;
 
@@ -30,8 +33,9 @@ public class Paciente {
 
     public Paciente() {}
 
-    public Paciente(String nombre, String documento, String correo, Long telefono) {
+    public Paciente(String nombre, String apellido, String documento, String correo, Long telefono) {
         this.nombre = nombre;
+        this.apellido = apellido;
         this.documento = documento;
         this.correo = correo;
         this.telefono = telefono;
@@ -51,6 +55,14 @@ public class Paciente {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public String getDocumento() {
