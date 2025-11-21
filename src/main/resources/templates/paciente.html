@@ -6,6 +6,28 @@
     <link rel="stylesheet" href="/mensajes-comunes.css">
     <meta charset="UTF-8">
     <title>Gestión de Pacientes</title>
+    <style>
+        input.input-error {
+            border: 2px solid #dc3545 !important;
+            background-color: #ffe6e6 !important;
+        }
+        
+        input.input-valid {
+            border: 2px solid #28a745 !important;
+        }
+        
+        .field-error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: -5px;
+            margin-bottom: 5px;
+            display: none;
+        }
+        
+        .field-error-message.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -25,15 +47,22 @@
     <div th:if="${success}" class="toast success" th:text="${success}"></div>
 
     <h2>Registrar Paciente</h2>
-    <form action="/agregarPaciente" th:object="${paciente}" method="post" class="formulario-paciente">
+    <form action="/agregarPaciente" th:object="${paciente}" method="post" class="formulario-paciente" id="formPaciente">
         <label>Nombre:</label>
-        <input type="text" th:field="*{nombre}" name="nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre solo puede contener letras" required><br><br>
+        <input type="text" th:field="*{nombre}" id="nombre" name="nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre solo puede contener letras" required><br>
+        <div class="field-error-message" id="errorNombre"></div><br>
+        
         <label>Documento:</label>
-        <input type="text" th:field="*{documento}" name="documento" pattern="[0-9]+" title="El documento solo puede contener números" required><br><br>
+        <input type="text" th:field="*{documento}" id="documento" name="documento" pattern="[0-9]+" title="El documento solo puede contener números" required><br>
+        <div class="field-error-message" id="errorDocumento"></div><br>
+        
         <label>Teléfono:</label>
-        <input type="text" th:field="*{telefono}" name="telefono" pattern="[0-9]+" title="El teléfono solo puede contener números" required><br><br>
+        <input type="text" th:field="*{telefono}" id="telefono" name="telefono" pattern="[0-9]+" title="El teléfono solo puede contener números" required><br>
+        <div class="field-error-message" id="errorTelefono"></div><br>
+        
         <label>Correo:</label>
-        <input type="email" th:field="*{correo}" name="correo"><br><br>
+        <input type="email" th:field="*{correo}" id="correo" name="correo"><br>
+        <div class="field-error-message" id="errorCorreo"></div><br>
        
         <button type="submit">Guardar Paciente</button>
     </form>
@@ -97,6 +126,142 @@
     </div>
 
     <script>
+        // Validación en tiempo real para el formulario de registro
+        const form = document.getElementById('formPaciente');
+        const inputNombre = document.getElementById('nombre');
+        const inputDocumento = document.getElementById('documento');
+        const inputTelefono = document.getElementById('telefono');
+        const inputCorreo = document.getElementById('correo');
+
+        // Variables para rastrear si el usuario ha tocado cada campo
+        let nombreTocado = false;
+        let documentoTocado = false;
+        let telefonoTocado = false;
+        let correoTocado = false;
+
+        function validarNombre() {
+            if (!nombreTocado) return; // No validar si no ha sido tocado
+            
+            const valor = inputNombre.value.trim();
+            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            const esValido = valor === '' || regex.test(valor);
+            const errorDiv = document.getElementById('errorNombre');
+            
+            if (valor && !esValido) {
+                inputNombre.classList.add('input-error');
+                inputNombre.classList.remove('input-valid');
+                errorDiv.textContent = 'El nombre solo puede contener letras';
+                errorDiv.classList.add('show');
+            } else {
+                inputNombre.classList.remove('input-error');
+                if (valor) inputNombre.classList.add('input-valid');
+                errorDiv.textContent = '';
+                errorDiv.classList.remove('show');
+            }
+        }
+
+        function validarDocumento() {
+            if (!documentoTocado) return; // No validar si no ha sido tocado
+            
+            const valor = inputDocumento.value.trim();
+            const regex = /^[0-9]+$/;
+            const esValido = valor === '' || regex.test(valor);
+            const errorDiv = document.getElementById('errorDocumento');
+            
+            if (valor && !esValido) {
+                inputDocumento.classList.add('input-error');
+                inputDocumento.classList.remove('input-valid');
+                errorDiv.textContent = 'El documento solo puede contener números';
+                errorDiv.classList.add('show');
+            } else {
+                inputDocumento.classList.remove('input-error');
+                if (valor) inputDocumento.classList.add('input-valid');
+                errorDiv.textContent = '';
+                errorDiv.classList.remove('show');
+            }
+        }
+
+        function validarTelefono() {
+            if (!telefonoTocado) return; // No validar si no ha sido tocado
+            
+            const valor = inputTelefono.value.trim();
+            const regex = /^[0-9]+$/;
+            const esValido = valor === '' || regex.test(valor);
+            const errorDiv = document.getElementById('errorTelefono');
+            
+            if (valor && !esValido) {
+                inputTelefono.classList.add('input-error');
+                inputTelefono.classList.remove('input-valid');
+                errorDiv.textContent = 'El teléfono solo puede contener números';
+                errorDiv.classList.add('show');
+            } else {
+                inputTelefono.classList.remove('input-error');
+                if (valor) inputTelefono.classList.add('input-valid');
+                errorDiv.textContent = '';
+                errorDiv.classList.remove('show');
+            }
+        }
+
+        function validarCorreo() {
+            if (!correoTocado) return; // No validar si no ha sido tocado
+            
+            const valor = inputCorreo.value.trim();
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const esValido = valor === '' || regex.test(valor);
+            const errorDiv = document.getElementById('errorCorreo');
+            
+            if (valor && !esValido) {
+                inputCorreo.classList.add('input-error');
+                inputCorreo.classList.remove('input-valid');
+                errorDiv.textContent = 'Formato de correo inválido';
+                errorDiv.classList.add('show');
+            } else {
+                inputCorreo.classList.remove('input-error');
+                if (valor) inputCorreo.classList.add('input-valid');
+                errorDiv.textContent = '';
+                errorDiv.classList.remove('show');
+            }
+        }
+
+        // Event listeners para marcar como tocado y validar en tiempo real
+        inputNombre.addEventListener('focus', () => nombreTocado = true);
+        inputNombre.addEventListener('input', validarNombre);
+        inputNombre.addEventListener('blur', validarNombre);
+        
+        inputDocumento.addEventListener('focus', () => documentoTocado = true);
+        inputDocumento.addEventListener('input', validarDocumento);
+        inputDocumento.addEventListener('blur', validarDocumento);
+        
+        inputTelefono.addEventListener('focus', () => telefonoTocado = true);
+        inputTelefono.addEventListener('input', validarTelefono);
+        inputTelefono.addEventListener('blur', validarTelefono);
+        
+        inputCorreo.addEventListener('focus', () => correoTocado = true);
+        inputCorreo.addEventListener('input', validarCorreo);
+        inputCorreo.addEventListener('blur', validarCorreo);
+
+        // Validar antes de enviar el formulario
+        form.addEventListener('submit', function(e) {
+            nombreTocado = true;
+            documentoTocado = true;
+            telefonoTocado = true;
+            correoTocado = true;
+            
+            validarNombre();
+            validarDocumento();
+            validarTelefono();
+            validarCorreo();
+
+            const hayErrores = inputNombre.classList.contains('input-error') ||
+                             inputDocumento.classList.contains('input-error') ||
+                             inputTelefono.classList.contains('input-error') ||
+                             inputCorreo.classList.contains('input-error');
+
+            if (hayErrores) {
+                e.preventDefault();
+            }
+        });
+
         function editarPacienteData(button) {
             document.getElementById('editId').value = button.getAttribute('data-id');
             document.getElementById('editNombre').value = button.getAttribute('data-nombre');
