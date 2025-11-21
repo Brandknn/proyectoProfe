@@ -63,6 +63,15 @@ public class PacienteController {
                 return "paciente";
             }
 
+            // Validar que el apellido no contenga números
+            if (paciente.getApellido() != null && paciente.getApellido().matches(".*\\d.*")) {
+                model.addAttribute("error", "El apellido no puede contener números.");
+                model.addAttribute("paciente", new Paciente());
+                List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
+                model.addAttribute("pacientes", pacientes);
+                return "paciente";
+            }
+
             // Validar que el documento solo contenga números
             if (paciente.getDocumento() != null && !paciente.getDocumento().matches("[0-9]+")) {
                 model.addAttribute("error", "El documento solo puede contener números.");
@@ -117,7 +126,7 @@ public class PacienteController {
             pacienteRepository.save(paciente);
             if (paciente.getCorreo() != null && !paciente.getCorreo().isEmpty()) {
                 String asunto = "Bienvenido a la clínica";
-                String mensaje = "Hola " + paciente.getNombre() + ", tu registro fue exitoso.";
+                String mensaje = "Hola " + paciente.getNombre() + " " + paciente.getApellido() + ", tu registro fue exitoso.";
                 emailService.enviarCorreo(paciente.getCorreo(), asunto, mensaje);
             }
         } catch (Exception e) {
