@@ -67,7 +67,7 @@ public class PacienteController {
             }
 
             // Validar que el teléfono sea válido (solo números y positivo)
-            if (paciente.getTelefono() <= 0) {
+            if (paciente.getTelefono() <= 0 && !String.valueOf(paciente.getTelefono()).matches("[0-9]+")) {
                 model.addAttribute("error", "El teléfono debe ser un número positivo.");
                 model.addAttribute("paciente", new Paciente());
                 List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
