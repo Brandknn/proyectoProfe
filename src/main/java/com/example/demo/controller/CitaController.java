@@ -92,6 +92,18 @@ public class CitaController {
                 return "redirect:/gestionCitas";
             }
 
+            // Validar que no se programe una cita en el pasado (solo si es para HOY)
+            java.time.LocalDate hoy = java.time.LocalDate.now();
+            if (cita.getFecha().isEqual(hoy)) {
+                java.time.LocalTime ahora = java.time.LocalTime.now();
+                if (cita.getHora().isBefore(ahora)) {
+                    redirectAttributes.addFlashAttribute("error",
+                            "No puede programar una cita para una hora que ya pasó. Hora actual: " +
+                                    ahora.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a")));
+                    return "redirect:/gestionCitas";
+                }
+            }
+
             // Validar disponibilidad del slot
             if (!horarioService.validarDisponibilidadSlot(medicoId, cita.getFecha(), cita.getHora())) {
                 // Determinar razón específica del rechazo
