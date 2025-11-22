@@ -12,8 +12,9 @@ public class Medico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String nombre;
+    private String apellido;
     private String cedula;
     private String email;
     private String password;
@@ -21,12 +22,12 @@ public class Medico {
     private String googleId;
     private Boolean perfilCompleto = false;
 
-    
-    public Medico() {}
+    public Medico() {
+    }
 
-    
-    public Medico(String nombre, String cedula, String email, String password) {
+    public Medico(String nombre, String apellido, String cedula, String email, String password) {
         this.nombre = nombre;
+        this.apellido = apellido;
         this.cedula = cedula;
         this.email = email;
         this.password = password;
@@ -47,6 +48,14 @@ public class Medico {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public String getCedula() {

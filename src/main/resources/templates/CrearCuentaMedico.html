@@ -10,30 +10,94 @@
     <div class="container">
         <h2>Registro de Médico</h2>
         <div th:if="${error}" class="toast error" th:text="${error}"></div>
-        <form th:action="@{/agregarMedico}" th:object="${medico}" method="post">
+        <form th:action="@{/agregarMedico}" th:object="${medico}" method="post" id="formMedico">
             <div class="form-group">
-                <label for="nombre">Nombre Completo</label>
-                <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Dr. Juan García" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="El nombre solo puede contener letras" required>
+                <label for="nombre">Nombre</label>
+                <input 
+                    type="text" 
+                    id="nombre" 
+                    th:field="*{nombre}" 
+                    placeholder="Ej: Juan" 
+                    pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+                    title="El nombre solo puede contener letras" 
+                    required>
+                <div class="field-error-message" id="errorNombre"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="apellido">Apellido</label>
+                <input 
+                    type="text" 
+                    id="apellido" 
+                    th:field="*{apellido}" 
+                    placeholder="Ej: García" 
+                    pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+                    title="El apellido solo puede contener letras" 
+                    required>
+                <div class="field-error-message" id="errorApellido"></div>
             </div>
             
             <div class="form-group">
                 <label for="cedula">Cédula Profesional</label>
-                <input type="text" id="cedula" th:field="*{cedula}" placeholder="Ej: 12345678" pattern="[0-9]+" title="La cédula solo puede contener números" required>
+                <input 
+                    type="text" 
+                    id="cedula" 
+                    th:field="*{cedula}" 
+                    placeholder="Ej: 12345678" 
+                    pattern="[0-9]{6,10}" 
+                    maxlength="10"
+                    title="La cédula debe tener entre 6 y 10 dígitos" 
+                    required>
+                <div class="field-error-message" id="errorCedula"></div>
             </div>
             
             <div class="form-group">
                 <label for="telefono">Teléfono</label>
-                <input type="number" id="telefono" th:field="*{telefono}" placeholder="Ej: 3001234567" min="0" title="El teléfono solo puede contener números" required>
+                <input 
+                    type="text" 
+                    id="telefono" 
+                    th:field="*{telefono}" 
+                    placeholder="Ej: 3001234567" 
+                    pattern="3[0-9]{9}" 
+                    maxlength="10"
+                    title="El teléfono debe tener 10 dígitos y empezar con 3" 
+                    required>
+                <div class="field-error-message" id="errorTelefono"></div>
             </div>
             
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" th:field="*{email}" placeholder="Ej: doctor@email.com" required>
+                <input 
+                    type="email" 
+                    id="email" 
+                    th:field="*{email}" 
+                    placeholder="Ej: doctor@email.com" 
+                    required>
+                <div class="field-error-message" id="errorEmail"></div>
             </div>
             
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" th:field="*{password}" placeholder="Ingrese una contraseña segura" required>
+                <input 
+                    type="password" 
+                    id="password" 
+                    th:field="*{password}" 
+                    placeholder="Ingrese una contraseña segura" 
+                    minlength="6"
+                    required>
+                <div class="field-error-message" id="errorPassword"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    placeholder="Vuelva a ingresar la contraseña" 
+                    minlength="6"
+                    required>
+                <div class="field-error-message" id="errorConfirmPassword"></div>
             </div>
             
             <button type="submit" class="btn-crear">Registrarse</button>
@@ -45,6 +109,344 @@
         
      
     <script>
+        // Referencias a inputs
+        const form = document.getElementById("formMedico");
+        const inputNombre = document.getElementById("nombre");
+        const inputApellido = document.getElementById("apellido");
+        const inputCedula = document.getElementById("cedula");
+        const inputTelefono = document.getElementById("telefono");
+        const inputEmail = document.getElementById("email");
+        const inputPassword = document.getElementById("password");
+        const inputConfirmPassword = document.getElementById("confirmPassword");
+
+        // Flags para saber si el usuario ha tocado cada campo
+        let nombreTocado = false;
+        let apellidoTocado = false;
+        let cedulaTocado = false;
+        let telefonoTocado = false;
+        let emailTocado = false;
+        let passwordTocado = false;
+        let confirmPasswordTocado = false;
+
+        // Función de validación para nombre
+        function validarNombre() {
+            if (!nombreTocado) return;
+
+            const valor = inputNombre.value.trim();
+            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            const esValido = valor === "" || regex.test(valor);
+            const errorDiv = document.getElementById("errorNombre");
+
+            if (valor && !esValido) {
+                inputNombre.classList.add("input-error");
+                inputNombre.classList.remove("input-valid");
+                errorDiv.textContent = "El nombre solo puede contener letras";
+                errorDiv.classList.add("show");
+            } else {
+                inputNombre.classList.remove("input-error");
+                if (valor && esValido) {
+                    inputNombre.classList.add("input-valid");
+                } else {
+                    inputNombre.classList.remove("input-valid");
+                }
+                errorDiv.textContent = "";
+                errorDiv.classList.remove("show");
+            }
+        }
+
+        // Función de validación para apellido
+        function validarApellido() {
+            if (!apellidoTocado) return;
+
+            const valor = inputApellido.value.trim();
+            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            const esValido = valor === "" || regex.test(valor);
+            const errorDiv = document.getElementById("errorApellido");
+
+            if (valor && !esValido) {
+                inputApellido.classList.add("input-error");
+                inputApellido.classList.remove("input-valid");
+                errorDiv.textContent = "El apellido solo puede contener letras";
+                errorDiv.classList.add("show");
+            } else {
+                inputApellido.classList.remove("input-error");
+                if (valor && esValido) {
+                    inputApellido.classList.add("input-valid");
+                } else {
+                    inputApellido.classList.remove("input-valid");
+                }
+                errorDiv.textContent = "";
+                errorDiv.classList.remove("show");
+            }
+        }
+
+        // Función de validación para cédula
+        async function validarCedula() {
+            if (!cedulaTocado) return;
+
+            const valor = inputCedula.value.trim();
+            const regex = /^[0-9]+$/;
+            const esValido = valor === "" || regex.test(valor);
+            const errorDiv = document.getElementById("errorCedula");
+
+            if (valor && !esValido) {
+                inputCedula.classList.add("input-error");
+                inputCedula.classList.remove("input-valid");
+                errorDiv.textContent = "La cédula solo puede contener números";
+                errorDiv.classList.add("show");
+                return;
+            }
+
+            if (valor && valor.length < 6) {
+                inputCedula.classList.add("input-error");
+                inputCedula.classList.remove("input-valid");
+                errorDiv.textContent = "La cédula debe tener al menos 6 dígitos";
+                errorDiv.classList.add("show");
+                return;
+            }
+
+            // Verificar duplicado
+            if (valor && esValido && valor.length >= 6) {
+                try {
+                    const response = await fetch(`/api/verificar-cedula-medico?cedula=${encodeURIComponent(valor)}`);
+                    const resultado = await response.text();
+                    
+                    if (resultado === "duplicado") {
+                        inputCedula.classList.add("input-error");
+                        inputCedula.classList.remove("input-valid");
+                        errorDiv.textContent = "Esta cédula ya está registrada";
+                        errorDiv.classList.add("show");
+                    } else {
+                        inputCedula.classList.remove("input-error");
+                        inputCedula.classList.add("input-valid");
+                        errorDiv.textContent = "";
+                        errorDiv.classList.remove("show");
+                    }
+                } catch (error) {
+                    console.error("Error al verificar cédula:", error);
+                }
+            } else {
+                inputCedula.classList.remove("input-error");
+                inputCedula.classList.remove("input-valid");
+                errorDiv.textContent = "";
+                errorDiv.classList.remove("show");
+            }
+        }
+
+        // Función de validación para teléfono
+        function validarTelefono() {
+            if (!telefonoTocado) return;
+
+            const valor = inputTelefono.value.trim();
+            const regex = /^3[0-9]{9}$/;
+            const esValido = regex.test(valor);
+            const errorDiv = document.getElementById("errorTelefono");
+
+            if (valor && !esValido) {
+                inputTelefono.classList.add("input-error");
+                inputTelefono.classList.remove("input-valid");
+                if (valor.length !== 10) {
+                    errorDiv.textContent = "El teléfono debe tener exactamente 10 dígitos";
+                } else {
+                    errorDiv.textContent = "El teléfono solo puede contener números";
+                }
+                errorDiv.classList.add("show");
+            } else {
+                inputTelefono.classList.remove("input-error");
+                if (valor && esValido) {
+                    inputTelefono.classList.add("input-valid");
+                } else {
+                    inputTelefono.classList.remove("input-valid");
+                }
+                errorDiv.textContent = "";
+                errorDiv.classList.remove("show");
+            }
+        }
+
+        // Función de validación para email
+        async function validarEmail() {
+            if (!emailTocado) return;
+
+            const valor = inputEmail.value.trim();
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const esValido = regex.test(valor);
+            const errorDiv = document.getElementById("errorEmail");
+
+            if (valor && !esValido) {
+                inputEmail.classList.add("input-error");
+                inputEmail.classList.remove("input-valid");
+                errorDiv.textContent = "Ingrese un email válido";
+                errorDiv.classList.add("show");
+                return;
+            }
+
+            // Verificar duplicado
+            if (valor && esValido) {
+                try {
+                    const response = await fetch(`/api/verificar-email-medico?email=${encodeURIComponent(valor)}`);
+                    const resultado = await response.text();
+                    
+                    if (resultado === "duplicado") {
+                        inputEmail.classList.add("input-error");
+                        inputEmail.classList.remove("input-valid");
+                        errorDiv.textContent = "Este email ya está registrado";
+                        errorDiv.classList.add("show");
+                    } else {
+                        inputEmail.classList.remove("input-error");
+                        inputEmail.classList.add("input-valid");
+                        errorDiv.textContent = "";
+                        errorDiv.classList.remove("show");
+                    }
+                } catch (error) {
+                    console.error("Error al verificar email:", error);
+                }
+            } else {
+                inputEmail.classList.remove("input-error");
+                inputEmail.classList.remove("input-valid");
+                errorDiv.textContent = "";
+                errorDiv.classList.remove("show");
+            }
+        }
+
+        // Función de validación para contraseña
+        function validarPassword() {
+            if (!passwordTocado) return;
+
+            const valor = inputPassword.value;
+            const errorDiv = document.getElementById("errorPassword");
+
+            if (valor && valor.length < 6) {
+                inputPassword.classList.add("input-error");
+                inputPassword.classList.remove("input-valid");
+                errorDiv.textContent = "La contraseña debe tener al menos 6 caracteres";
+                errorDiv.classList.add("show");
+            } else {
+                inputPassword.classList.remove("input-error");
+                if (valor && valor.length >= 6) {
+                    inputPassword.classList.add("input-valid");
+                } else {
+                    inputPassword.classList.remove("input-valid");
+                }
+                errorDiv.textContent = "";
+                errorDiv.classList.remove("show");
+            }
+            
+            // Re-validar confirmación si ya fue tocada
+            if (confirmPasswordTocado) {
+                validarConfirmPassword();
+            }
+        }
+
+        // Función de validación para confirmar contraseña
+        function validarConfirmPassword() {
+            if (!confirmPasswordTocado) return;
+
+            const valorPassword = inputPassword.value;
+            const valorConfirm = inputConfirmPassword.value;
+            const errorDiv = document.getElementById("errorConfirmPassword");
+
+            if (valorConfirm && valorConfirm !== valorPassword) {
+                inputConfirmPassword.classList.add("input-error");
+                inputConfirmPassword.classList.remove("input-valid");
+                errorDiv.textContent = "Las contraseñas no coinciden";
+                errorDiv.classList.add("show");
+            } else {
+                inputConfirmPassword.classList.remove("input-error");
+                if (valorConfirm && valorConfirm === valorPassword && valorPassword.length >= 6) {
+                    inputConfirmPassword.classList.add("input-valid");
+                } else {
+                    inputConfirmPassword.classList.remove("input-valid");
+                }
+                errorDiv.textContent = "";
+                errorDiv.classList.remove("show");
+            }
+        }
+
+        // Event listeners
+        inputNombre.addEventListener("focus", () => {
+            nombreTocado = true;
+            validarNombre();
+        });
+        inputNombre.addEventListener("input", validarNombre);
+
+        inputApellido.addEventListener("focus", () => {
+            apellidoTocado = true;
+            validarApellido();
+        });
+        inputApellido.addEventListener("input", validarApellido);
+
+        inputCedula.addEventListener("focus", () => {
+            cedulaTocado = true;
+            validarCedula();
+        });
+        inputCedula.addEventListener("input", validarCedula);
+        inputCedula.addEventListener("keypress", (e) => {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        inputTelefono.addEventListener("focus", () => {
+            telefonoTocado = true;
+            validarTelefono();
+        });
+        inputTelefono.addEventListener("input", validarTelefono);
+        inputTelefono.addEventListener("keypress", (e) => {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        inputEmail.addEventListener("focus", () => {
+            emailTocado = true;
+            validarEmail();
+        });
+        inputEmail.addEventListener("input", validarEmail);
+
+        inputPassword.addEventListener("focus", () => {
+            passwordTocado = true;
+            validarPassword();
+        });
+        inputPassword.addEventListener("input", validarPassword);
+
+        inputConfirmPassword.addEventListener("focus", () => {
+            confirmPasswordTocado = true;
+            validarConfirmPassword();
+        });
+        inputConfirmPassword.addEventListener("input", validarConfirmPassword);
+
+        // Validar antes de enviar el formulario
+        form.addEventListener("submit", function (e) {
+            nombreTocado = true;
+            apellidoTocado = true;
+            cedulaTocado = true;
+            telefonoTocado = true;
+            emailTocado = true;
+            passwordTocado = true;
+            confirmPasswordTocado = true;
+
+            validarNombre();
+            validarApellido();
+            validarCedula();
+            validarTelefono();
+            validarEmail();
+            validarPassword();
+            validarConfirmPassword();
+
+            const hayErrores =
+                inputNombre.classList.contains("input-error") ||
+                inputApellido.classList.contains("input-error") ||
+                inputCedula.classList.contains("input-error") ||
+                inputTelefono.classList.contains("input-error") ||
+                inputEmail.classList.contains("input-error") ||
+                inputPassword.classList.contains("input-error") ||
+                inputConfirmPassword.classList.contains("input-error");
+
+            if (hayErrores) {
+                e.preventDefault();
+            }
+        });
+
         // Auto-ocultar toast después de 5 segundos
         const toast = document.querySelector('.toast');
         if (toast) {
