@@ -30,6 +30,7 @@ public class HomeController {
     // ELIMINADO: @GetMapping("/dictamen") - Ahora está en DictamenController
     // ELIMINADO: @GetMapping("/horario") - Ahora está en HorarioController con lógica completa
     // prueba de si funciona git
+    // prueba de si funciona git
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password, Model model,
             jakarta.servlet.http.HttpSession session) {

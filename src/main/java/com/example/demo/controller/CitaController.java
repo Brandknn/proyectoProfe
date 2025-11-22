@@ -24,6 +24,7 @@ import com.example.demo.repository.DictamenRepository;
 import com.example.demo.repository.MedicoRepository;
 import com.example.demo.repository.PacienteRepository;
 import com.example.demo.service.EmailService;
+import com.example.demo.service.HorarioService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -34,14 +35,17 @@ public class CitaController {
     private final MedicoRepository medicoRepository;
     private final DictamenRepository dictamenRepository; // NUEVO
     private final EmailService emailService;
+    private final HorarioService horarioService;
 
     public CitaController(CitaRepository citaRepository, PacienteRepository pacienteRepository,
-            MedicoRepository medicoRepository, DictamenRepository dictamenRepository, EmailService emailService) {
+            MedicoRepository medicoRepository, DictamenRepository dictamenRepository,
+            EmailService emailService, HorarioService horarioService) {
         this.citaRepository = citaRepository;
         this.pacienteRepository = pacienteRepository;
         this.medicoRepository = medicoRepository;
         this.dictamenRepository = dictamenRepository; // NUEVO
         this.emailService = emailService;
+        this.horarioService = horarioService;
     }
 
     @GetMapping("/gestionCitas")
@@ -88,6 +92,26 @@ public class CitaController {
                 return "redirect:/gestionCitas";
             }
 
+            // Validar disponibilidad del slot
+            if (!horarioService.validarDisponibilidadSlot(medicoId, cita.getFecha(), cita.getHora())) {
+                // Determinar razón específica del rechazo
+                java.time.DayOfWeek diaSemana = cita.getFecha().getDayOfWeek();
+                int diaNum = diaSemana.getValue();
+                boolean tieneHorario = horarioService.obtenerHorarioDia(medicoId, diaNum).isPresent();
+
+                if (!tieneHorario) {
+                    String nombreDia = diaSemana.getDisplayName(
+                            java.time.format.TextStyle.FULL,
+                            java.util.Locale.forLanguageTag("es"));
+                    redirectAttributes.addFlashAttribute("error",
+                            "No tiene horario configurado para " + nombreDia
+                                    + ". Por favor configure su horario primero en la sección Horarios.");
+                } else {
+                    redirectAttributes.addFlashAttribute("error",
+                            "El horario seleccionado no está disponible. Puede estar ocupado o fuera de su rango de atención.");
+                }
+                return "redirect:/gestionCitas";
+            }
             cita.setMedicoId(medicoId);
             citaRepository.save(cita);
 
