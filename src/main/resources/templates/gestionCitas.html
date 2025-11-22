@@ -147,7 +147,6 @@
           <th>Fecha</th>
           <th>Hora</th>
           <th>Motivo</th>
-          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -157,17 +156,29 @@
           <td th:text="${cita.fecha}"></td>
           <td class="hora-cell" th:text="${cita.hora}"></td>
           <td th:text="${cita.motivo}"></td>
-          <td>
-            <form
-              method="POST"
-              action="/cambiarEstadoCita"
-              style="display: inline"
-            >
-              <input type="hidden" name="citaId" th:value="${cita.id}" />
+          <td class="acciones-cell">
+            <div class="acciones-container">
+              <!-- Formulario oculto para cambiar estado -->
+              <form
+                method="POST"
+                action="/cambiarEstadoCita"
+                th:id="'formEstado-' + ${cita.id}"
+                style="display: none"
+              >
+                <input type="hidden" name="citaId" th:value="${cita.id}" />
+                <input
+                  type="hidden"
+                  name="nuevoEstado"
+                  th:id="'inputEstado-' + ${cita.id}"
+                />
+              </form>
+
+              <!-- Select de Estado -->
               <select
-                name="nuevoEstado"
-                onchange="if(confirm('¿Cambiar estado de la cita?')) this.form.submit();"
-                style="padding: 5px; border: 1px solid #ccc; border-radius: 4px"
+                class="estado-select"
+                th:data-id="${cita.id}"
+                th:data-actual="${cita.estado.name()}"
+                onchange="confirmarCambioEstado(this)"
               >
                 <option
                   value="PENDIENTE"
@@ -176,16 +187,16 @@
                   Pendiente
                 </option>
                 <option
-                  value="CANCELADO"
-                  th:selected="${cita.estado.name() == 'CANCELADO'}"
+                  value="CANCELADA"
+                  th:selected="${cita.estado.name() == 'CANCELADA'}"
                 >
-                  Cancelado
+                  Cancelada
                 </option>
                 <option
-                  value="COMPLETADO"
-                  th:selected="${cita.estado.name() == 'COMPLETADO'}"
+                  value="COMPLETADA"
+                  th:selected="${cita.estado.name() == 'COMPLETADA'}"
                 >
-                  Completado
+                  Completada
                 </option>
                 <option
                   value="NO_ASISTIO"
@@ -194,75 +205,150 @@
                   No Asistió
                 </option>
               </select>
-            </form>
-          </td>
-          <td>
-            <button
-              class="btn-editar"
-              th:attr="data-id=${cita.id}, data-paciente=${cita.pacienteId}, data-fecha=${cita.fecha}, data-hora=${cita.hora}, data-motivo=${cita.motivo}, data-estado=${cita.estado}"
-              onclick="editarCitaData(this)"
-            >
-              Editar
-            </button>
-            <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
-              <button type="button" class="btn-dictamen">Dictamen</button>
-            </a>
-            <form
-              th:action="@{/eliminarCita}"
-              method="post"
-              style="display: inline"
-              onsubmit="return confirm('¿Está seguro de eliminar esta cita?');"
-            >
-              <input type="hidden" name="id" th:value="${cita.id}" />
-              <button type="submit" class="btn-eliminar">Eliminar</button>
-            </form>
+
+              <!-- Botones -->
+              <button
+                class="btn-editar"
+                th:attr="data-id=${cita.id}, data-paciente=${cita.pacienteId}, data-fecha=${cita.fecha}, data-hora=${cita.hora}, data-motivo=${cita.motivo}, data-estado=${cita.estado.name()}"
+                onclick="editarCitaData(this)"
+              >
+                Editar
+              </button>
+
+              <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
+                <button type="button" class="btn-dictamen">Dictamen</button>
+              </a>
+
+              <button
+                class="btn-eliminar"
+                th:onclick="'confirmarEliminar(' + ${cita.id} + ')'"
+              >
+                Eliminar
+              </button>
+
+              <!-- Formulario oculto para eliminar -->
+              <form
+                th:action="@{/eliminarCita}"
+                method="post"
+                th:id="'formEliminar-' + ${cita.id}"
+                style="display: none"
+              >
+                <input type="hidden" name="id" th:value="${cita.id}" />
+              </form>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <div id="modalEditar">
+    <!-- Modal Editar -->
+    <div id="modalEditar" class="modal">
       <div class="modal-content">
-        <span class="close" onclick="cerrarModal()">&times;</span>
+        <span class="close" onclick="cerrarModal('modalEditar')">&times;</span>
         <h2>Editar Cita</h2>
         <form action="/actualizarCita" method="post">
           <input type="hidden" id="editId" name="id" />
 
-          <label>Paciente:</label>
-          <select id="editPaciente" name="pacienteId" required>
-            <option
-              th:each="pac : ${pacientes}"
-              th:value="${pac.id}"
-              th:text="${pac.nombre}"
-            ></option></select
-          ><br /><br />
+          <div class="form-group">
+            <label>Paciente:</label>
+            <select id="editPaciente" name="pacienteId" required>
+              <option
+                th:each="pac : ${pacientes}"
+                th:value="${pac.id}"
+                th:text="${pac.nombre}"
+              ></option>
+            </select>
+          </div>
 
-          <label>Fecha:</label>
-          <input type="date" id="editFecha" name="fecha" required /><br /><br />
+          <div class="form-group">
+            <label>Fecha:</label>
+            <input type="date" id="editFecha" name="fecha" required />
+          </div>
 
-          <label>Hora:</label>
-          <input type="time" id="editHora" name="hora" required /><br /><br />
+          <div class="form-group">
+            <label>Hora:</label>
+            <input type="time" id="editHora" name="hora" required />
+          </div>
 
-          <label>Motivo:</label>
-          <input
-            type="text"
-            id="editMotivo"
-            name="motivo"
-            required
-          /><br /><br />
+          <div class="form-group">
+            <label>Motivo:</label>
+            <input type="text" id="editMotivo" name="motivo" required />
+          </div>
 
-          <label>Estado:</label>
-          <select id="editEstado" name="estado" required>
-            <option value="Pendiente">Pendiente</option></select
-          ><br /><br />
-
-          <button type="submit">Actualizar</button>
-          <button type="button" onclick="cerrarModal()">Cancelar</button>
+          <div class="modal-buttons">
+            <button
+              type="button"
+              class="btn-cancelar"
+              onclick="cerrarModal('modalEditar')"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn-confirmar">Actualizar</button>
+          </div>
         </form>
       </div>
     </div>
 
+    <!-- Modal Confirmar Eliminación -->
+    <div id="modalEliminar" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="cerrarModal('modalEliminar')"
+          >&times;</span
+        >
+        <h2>Confirmar Eliminación</h2>
+        <p>
+          ¿Está seguro de que desea eliminar esta cita? Esta acción no se puede
+          deshacer.
+        </p>
+        <div class="modal-buttons">
+          <button
+            type="button"
+            class="btn-cancelar"
+            onclick="cerrarModal('modalEliminar')"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn-confirmar"
+            id="btnConfirmarEliminar"
+            style="background-color: #dc3545"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Confirmar Cambio de Estado -->
+    <div id="modalEstado" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="cerrarModalEstado()">&times;</span>
+        <h2>Cambiar Estado</h2>
+        <p>
+          ¿Desea cambiar el estado de la cita a
+          <strong id="textoNuevoEstado"></strong>?
+        </p>
+        <div class="modal-buttons">
+          <button
+            type="button"
+            class="btn-cancelar"
+            onclick="cerrarModalEstado()"
+          >
+            Cancelar
+          </button>
+          <button type="button" class="btn-confirmar" id="btnConfirmarEstado">
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
+      // Variables globales para manejo de estado
+      let estadoSelectActual = null;
+      let estadoAnterior = null;
+
       // Convertir horas de formato 24h a 12h con AM/PM
       function convertirHora24a12(hora24) {
         const [horas, minutos] = hora24.split(":");
@@ -281,6 +367,7 @@
         });
       });
 
+      // Funciones para Modal Editar
       function editarCitaData(button) {
         document.getElementById("editId").value =
           button.getAttribute("data-id");
@@ -292,21 +379,62 @@
           button.getAttribute("data-hora");
         document.getElementById("editMotivo").value =
           button.getAttribute("data-motivo");
-        document.getElementById("editEstado").value =
-          button.getAttribute("data-estado");
-        document.getElementById("modalEditar").style.display = "block";
+
+        document.getElementById("modalEditar").style.display = "flex";
       }
 
-      function cerrarModal() {
-        document.getElementById("modalEditar").style.display = "none";
+      // Funciones para Modal Eliminar
+      let idCitaAEliminar = null;
+      function confirmarEliminar(id) {
+        idCitaAEliminar = id;
+        document.getElementById("modalEliminar").style.display = "flex";
+
+        document.getElementById("btnConfirmarEliminar").onclick = function () {
+          document.getElementById("formEliminar-" + idCitaAEliminar).submit();
+        };
       }
 
+      // Funciones para Modal Estado
+      function confirmarCambioEstado(selectElement) {
+        estadoSelectActual = selectElement;
+        estadoAnterior = selectElement.getAttribute("data-actual");
+        const nuevoEstado = selectElement.value;
+        const textoEstado =
+          selectElement.options[selectElement.selectedIndex].text;
+        const citaId = selectElement.getAttribute("data-id");
+
+        document.getElementById("textoNuevoEstado").textContent = textoEstado;
+        document.getElementById("modalEstado").style.display = "flex";
+
+        document.getElementById("btnConfirmarEstado").onclick = function () {
+          document.getElementById("inputEstado-" + citaId).value = nuevoEstado;
+          document.getElementById("formEstado-" + citaId).submit();
+        };
+      }
+
+      function cerrarModalEstado() {
+        if (estadoSelectActual) {
+          estadoSelectActual.value = estadoAnterior; // Revertir cambio
+        }
+        document.getElementById("modalEstado").style.display = "none";
+      }
+
+      // Función genérica para cerrar modales
+      function cerrarModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+
+      // Cerrar modales al hacer clic fuera
       window.onclick = function (event) {
-        const modal = document.getElementById("modalEditar");
-        if (event.target == modal) {
-          cerrarModal();
+        if (event.target.classList.contains("modal")) {
+          if (event.target.id === "modalEstado") {
+            cerrarModalEstado();
+          } else {
+            event.target.style.display = "none";
+          }
         }
       };
+
       // Establecer fecha mínima a hoy
       document.addEventListener("DOMContentLoaded", function () {
         const fechaInput = document.getElementById("fechaCita");

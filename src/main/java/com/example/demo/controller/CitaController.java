@@ -196,16 +196,93 @@ public class CitaController {
     }
 
     @PostMapping("/actualizarCita")
-    public String actualizarCita(@ModelAttribute Cita cita, HttpSession session) {
+    public String actualizarCita(@ModelAttribute Cita cita, HttpSession session,
+            RedirectAttributes redirectAttributes) {
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null || cita == null || cita.getId() == null) {
             return "redirect:/login";
         }
 
-        Optional<Cita> citaExistente = citaRepository.findById(cita.getId());
-        if (citaExistente.isPresent() && citaExistente.get().getMedicoId().equals(medicoId)) {
-            cita.setMedicoId(medicoId);
-            citaRepository.save(cita);
+        try {
+            Optional<Cita> citaExistenteOpt = citaRepository.findById(cita.getId());
+            if (citaExistenteOpt.isPresent() && citaExistenteOpt.get().getMedicoId().equals(medicoId)) {
+                Cita citaExistente = citaExistenteOpt.get();
+
+                // Validar que no se mueva a una fecha pasada
+                java.time.LocalDate hoy = java.time.LocalDate.now();
+                if (cita.getFecha().isBefore(hoy)) {
+                    redirectAttributes.addFlashAttribute("error", "No se puede mover una cita a una fecha pasada.");
+                    return "redirect:/gestionCitas";
+                }
+
+                // Si cambia fecha u hora, validar disponibilidad
+                if (!cita.getFecha().equals(citaExistente.getFecha())
+                        || !cita.getHora().equals(citaExistente.getHora())) {
+                    if (!horarioService.validarDisponibilidadSlot(medicoId, cita.getFecha(), cita.getHora())) {
+                        redirectAttributes.addFlashAttribute("error",
+                                "El nuevo horario seleccionado no está disponible.");
+                        return "redirect:/gestionCitas";
+                    }
+                }
+
+                citaExistente.setPacienteId(cita.getPacienteId());
+                citaExistente.setFecha(cita.getFecha());
+                citaExistente.setHora(cita.getHora());
+                citaExistente.setMotivo(cita.getMotivo());
+
+                citaRepository.save(citaExistente);
+                redirectAttributes.addFlashAttribute("mensaje", "Cita actualizada exitosamente.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Cita no encontrada o no autorizada.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar la cita: " + e.getMessage());
+        }
+
+        return "redirect:/gestionCitas";
+    }
+
+    @PostMapping("/cambiarEstadoCita")
+    public String cambiarEstadoCita(@RequestParam Long citaId, @RequestParam String nuevoEstado, HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        Long medicoId = (Long) session.getAttribute("medicoId");
+        if (medicoId == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            Optional<Cita> citaOpt = citaRepository.findById(citaId);
+            if (citaOpt.isPresent() && citaOpt.get().getMedicoId().equals(medicoId)) {
+                Cita cita = citaOpt.get();
+                EstadoCita estadoEnum = EstadoCita.valueOf(nuevoEstado);
+
+                // Validaciones de negocio
+                java.time.LocalDate hoy = java.time.LocalDate.now();
+                java.time.LocalTime ahora = java.time.LocalTime.now();
+                boolean esFuturo = cita.getFecha().isAfter(hoy)
+                        || (cita.getFecha().isEqual(hoy) && cita.getHora().isAfter(ahora));
+
+                if (esFuturo && (estadoEnum == EstadoCita.COMPLETADA || estadoEnum == EstadoCita.NO_ASISTIO)) {
+                    redirectAttributes.addFlashAttribute("error",
+                            "No se puede marcar como Completada o No Asistió una cita futura.");
+                    return "redirect:/gestionCitas";
+                }
+
+                if (!esFuturo && estadoEnum == EstadoCita.CANCELADA && cita.getEstado() != EstadoCita.PENDIENTE) {
+                    // Permitir cancelar si estaba pendiente, pero advertir si ya pasó (aunque la
+                    // lógica de negocio podría variar,
+                    // generalmente cancelar algo pasado es raro a menos que sea para corregir un
+                    // error)
+                }
+
+                cita.setEstado(estadoEnum);
+                citaRepository.save(cita);
+                redirectAttributes.addFlashAttribute("mensaje", "Estado actualizado a: " + estadoEnum.getDescripcion());
+            }
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", "Estado inválido.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al cambiar el estado: " + e.getMessage());
         }
 
         return "redirect:/gestionCitas";

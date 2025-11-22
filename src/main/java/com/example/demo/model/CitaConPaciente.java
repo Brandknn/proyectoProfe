@@ -10,7 +10,7 @@ public class CitaConPaciente {
     private LocalDate fecha;
     private LocalTime hora;
     private String motivo;
-    private String estado;
+    private EstadoCita estado;
 
     public CitaConPaciente(Cita cita, String pacienteNombre) {
         this.id = cita.getId();
@@ -19,7 +19,7 @@ public class CitaConPaciente {
         this.fecha = cita.getFecha();
         this.hora = cita.getHora();
         this.motivo = cita.getMotivo();
-        this.estado = cita.getEstado().getDescripcion(); // Convertir enum a String
+        this.estado = cita.getEstado();
     }
 
     public Long getId() {
@@ -46,7 +46,7 @@ public class CitaConPaciente {
         return motivo;
     }
 
-    public String getEstado() {
+    public EstadoCita getEstado() {
         return estado;
     }
 }

@@ -163,23 +163,31 @@
             >
               Editar
             </button>
+
+            <button
+              class="btn-eliminar"
+              th:onclick="'confirmarEliminar(' + ${pac.id} + ')'"
+            >
+              Eliminar
+            </button>
+
             <form
               th:action="@{/eliminarPaciente}"
               method="post"
-              style="display: inline"
-              onsubmit="return confirm('¿Está seguro de eliminar este paciente?');"
+              th:id="'formEliminar-' + ${pac.id}"
+              style="display: none"
             >
               <input type="hidden" name="id" th:value="${pac.id}" />
-              <button type="submit" class="btn-eliminar">Eliminar</button>
             </form>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <div id="modalEditar">
+    <!-- Modal Editar -->
+    <div id="modalEditar" class="modal">
       <div class="modal-content">
-        <span class="close" onclick="cerrarModal()">&times;</span>
+        <span class="close" onclick="cerrarModal('modalEditar')">&times;</span>
         <h2>Editar Paciente</h2>
         <form action="/actualizarPaciente" method="post">
           <input type="hidden" id="editId" name="id" />
@@ -227,9 +235,48 @@
             required
           /><br /><br />
 
-          <button type="submit">Actualizar</button>
-          <button type="button" onclick="cerrarModal()">Cancelar</button>
+          <div class="modal-buttons">
+            <button
+              type="button"
+              class="btn-cancelar"
+              onclick="cerrarModal('modalEditar')"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn-confirmar">Actualizar</button>
+          </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Modal Confirmar Eliminación -->
+    <div id="modalEliminar" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="cerrarModal('modalEliminar')"
+          >&times;</span
+        >
+        <h2>Confirmar Eliminación</h2>
+        <p>
+          ¿Está seguro de que desea eliminar este paciente? Esta acción no se
+          puede deshacer.
+        </p>
+        <div class="modal-buttons">
+          <button
+            type="button"
+            class="btn-cancelar"
+            onclick="cerrarModal('modalEliminar')"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn-confirmar"
+            id="btnConfirmarEliminar"
+            style="background-color: #dc3545"
+          >
+            Eliminar
+          </button>
+        </div>
       </div>
     </div>
 
@@ -500,17 +547,29 @@
           button.getAttribute("data-telefono");
         document.getElementById("editCorreo").value =
           button.getAttribute("data-correo");
-        document.getElementById("modalEditar").style.display = "block";
+        document.getElementById("modalEditar").style.display = "flex";
       }
 
-      function cerrarModal() {
-        document.getElementById("modalEditar").style.display = "none";
+      // Funciones para Modal Eliminar
+      let idPacienteAEliminar = null;
+      function confirmarEliminar(id) {
+        idPacienteAEliminar = id;
+        document.getElementById("modalEliminar").style.display = "flex";
+
+        document.getElementById("btnConfirmarEliminar").onclick = function () {
+          document
+            .getElementById("formEliminar-" + idPacienteAEliminar)
+            .submit();
+        };
+      }
+
+      function cerrarModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
       }
 
       window.onclick = function (event) {
-        const modal = document.getElementById("modalEditar");
-        if (event.target == modal) {
-          cerrarModal();
+        if (event.target.classList.contains("modal")) {
+          event.target.style.display = "none";
         }
       };
 
