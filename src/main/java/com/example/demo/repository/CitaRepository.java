@@ -14,6 +14,16 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
     List<Cita> findByMedicoId(Long medicoId);
 
     List<Cita> findByMedicoIdOrderByFechaAscHoraAsc(Long medicoId);
+    
+    /**
+     * Busca citas por médico y fecha específica
+     */
+    List<Cita> findByMedicoIdAndFecha(Long medicoId, java.time.LocalDate fecha);
+    
+    /**
+     * Busca si existe una cita en un horario específico
+     */
+    boolean existsByMedicoIdAndFechaAndHora(Long medicoId, java.time.LocalDate fecha, java.time.LocalTime hora);
 
     @Modifying
     @Transactional

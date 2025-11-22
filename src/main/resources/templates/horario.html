@@ -1,9 +1,127 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <link rel="stylesheet" href="/estilosAdministrativos.css" />
     <meta charset="UTF-8" />
-    <title>Horario Médico</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuración de Horarios</title>
+    <link rel="stylesheet" href="/estilosAdministrativos.css" />
+    <link rel="stylesheet" href="/mensajes-comunes.css" />
+    <style>
+      .horario-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+      }
+
+      .horario-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .dia-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .dia-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .dia-header h3 {
+        margin: 0;
+        flex: 1;
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 24px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 24px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: #4caf50;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+
+      .horario-inputs {
+        display: none;
+      }
+
+      .horario-inputs.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      .form-group input[type="time"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .btn-save {
+        background: #667eea;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 20px;
+      }
+
+      .btn-save:hover {
+        background: #5568d3;
+      }
+    </style>
   </head>
   <body>
     <nav>
@@ -12,52 +130,314 @@
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>
         <a href="/dictamen">Dictámenes</a>
-        <a href="/horario">Horarios</a>
+        <a href="/horario" class="active">Horarios</a>
         <a href="/PerfilMedicoAjustes">Perfil Médico</a>
       </div>
     </nav>
 
-    <h1>Horario de Atención</h1>
+    <!-- Mensajes de éxito/error -->
+    <div th:if="${mensaje}" class="mensaje-exito">
+      <span th:text="${mensaje}"></span>
+    </div>
+    <div th:if="${error}" class="mensaje-error">
+      <span th:text="${error}"></span>
+    </div>
 
-    <h2>Agregar Horario</h2>
-    <form>
-      <label>Día de la Semana:</label>
-      <select name="dia_semana">
-        <option>Lunes</option>
-        <option>Martes</option>
-        <option>Miércoles</option>
-        <option>Jueves</option>
-        <option>Viernes</option>
-        <option>Sábado</option></select
-      ><br /><br />
+    <div class="horario-container">
+      <h1>Configuración de Horarios</h1>
+      <p>
+        Configure sus horarios de atención para cada día de la semana. Los
+        pacientes solo podrán agendar citas dentro de estos horarios.
+      </p>
 
-      <label>Hora de Inicio:</label>
-      <input type="time" name="hora_inicio" /><br /><br />
+      <form action="/guardarHorario" method="post">
+        <div class="horario-grid">
+          <!-- LUNES -->
+          <div class="dia-card">
+            <div class="dia-header">
+              <h3>Lunes</h3>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  name="dia1_activo"
+                  th:checked="${horariosPorDia.containsKey(1)}"
+                  onchange="toggleHorario(1)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div
+              id="horario-1"
+              class="horario-inputs"
+              th:classappend="${horariosPorDia.containsKey(1)} ? 'active'"
+            >
+              <div class="form-group">
+                <label>Hora de Inicio:</label>
+                <input
+                  type="time"
+                  name="dia1_inicio"
+                  th:value="${horariosPorDia.get(1)?.horaInicio}"
+                />
+              </div>
+              <div class="form-group">
+                <label>Hora de Fin:</label>
+                <input
+                  type="time"
+                  name="dia1_fin"
+                  th:value="${horariosPorDia.get(1)?.horaFin}"
+                />
+              </div>
+            </div>
+          </div>
 
-      <label>Hora de Fin:</label>
-      <input type="time" name="hora_fin" /><br /><br />
+          <!-- MARTES -->
+          <div class="dia-card">
+            <div class="dia-header">
+              <h3>Martes</h3>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  name="dia2_activo"
+                  th:checked="${horariosPorDia.containsKey(2)}"
+                  onchange="toggleHorario(2)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div
+              id="horario-2"
+              class="horario-inputs"
+              th:classappend="${horariosPorDia.containsKey(2)} ? 'active'"
+            >
+              <div class="form-group">
+                <label>Hora de Inicio:</label>
+                <input
+                  type="time"
+                  name="dia2_inicio"
+                  th:value="${horariosPorDia.get(2)?.horaInicio}"
+                />
+              </div>
+              <div class="form-group">
+                <label>Hora de Fin:</label>
+                <input
+                  type="time"
+                  name="dia2_fin"
+                  th:value="${horariosPorDia.get(2)?.horaFin}"
+                />
+              </div>
+            </div>
+          </div>
 
-      <button type="submit">Guardar Horario</button>
-    </form>
+          <!-- MIÉRCOLES -->
+          <div class="dia-card">
+            <div class="dia-header">
+              <h3>Miércoles</h3>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  name="dia3_activo"
+                  th:checked="${horariosPorDia.containsKey(3)}"
+                  onchange="toggleHorario(3)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div
+              id="horario-3"
+              class="horario-inputs"
+              th:classappend="${horariosPorDia.containsKey(3)} ? 'active'"
+            >
+              <div class="form-group">
+                <label>Hora de Inicio:</label>
+                <input
+                  type="time"
+                  name="dia3_inicio"
+                  th:value="${horariosPorDia.get(3)?.horaInicio}"
+                />
+              </div>
+              <div class="form-group">
+                <label>Hora de Fin:</label>
+                <input
+                  type="time"
+                  name="dia3_fin"
+                  th:value="${horariosPorDia.get(3)?.horaFin}"
+                />
+              </div>
+            </div>
+          </div>
 
-    <h2>Horarios Registrados</h2>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Día</th>
-          <th>Inicio</th>
-          <th>Fin</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Lunes</td>
-          <td>08:00</td>
-          <td>12:00</td>
-          <td><button>Editar</button> <button>Eliminar</button></td>
-        </tr>
-      </tbody>
-    </table>
+          <!-- JUEVES -->
+          <div class="dia-card">
+            <div class="dia-header">
+              <h3>Jueves</h3>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  name="dia4_activo"
+                  th:checked="${horariosPorDia.containsKey(4)}"
+                  onchange="toggleHorario(4)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div
+              id="horario-4"
+              class="horario-inputs"
+              th:classappend="${horariosPorDia.containsKey(4)} ? 'active'"
+            >
+              <div class="form-group">
+                <label>Hora de Inicio:</label>
+                <input
+                  type="time"
+                  name="dia4_inicio"
+                  th:value="${horariosPorDia.get(4)?.horaInicio}"
+                />
+              </div>
+              <div class="form-group">
+                <label>Hora de Fin:</label>
+                <input
+                  type="time"
+                  name="dia4_fin"
+                  th:value="${horariosPorDia.get(4)?.horaFin}"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- VIERNES -->
+          <div class="dia-card">
+            <div class="dia-header">
+              <h3>Viernes</h3>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  name="dia5_activo"
+                  th:checked="${horariosPorDia.containsKey(5)}"
+                  onchange="toggleHorario(5)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div
+              id="horario-5"
+              class="horario-inputs"
+              th:classappend="${horariosPorDia.containsKey(5)} ? 'active'"
+            >
+              <div class="form-group">
+                <label>Hora de Inicio:</label>
+                <input
+                  type="time"
+                  name="dia5_inicio"
+                  th:value="${horariosPorDia.get(5)?.horaInicio}"
+                />
+              </div>
+              <div class="form-group">
+                <label>Hora de Fin:</label>
+                <input
+                  type="time"
+                  name="dia5_fin"
+                  th:value="${horariosPorDia.get(5)?.horaFin}"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- SÁBADO -->
+          <div class="dia-card">
+            <div class="dia-header">
+              <h3>Sábado</h3>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  name="dia6_activo"
+                  th:checked="${horariosPorDia.containsKey(6)}"
+                  onchange="toggleHorario(6)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div
+              id="horario-6"
+              class="horario-inputs"
+              th:classappend="${horariosPorDia.containsKey(6)} ? 'active'"
+            >
+              <div class="form-group">
+                <label>Hora de Inicio:</label>
+                <input
+                  type="time"
+                  name="dia6_inicio"
+                  th:value="${horariosPorDia.get(6)?.horaInicio}"
+                />
+              </div>
+              <div class="form-group">
+                <label>Hora de Fin:</label>
+                <input
+                  type="time"
+                  name="dia6_fin"
+                  th:value="${horariosPorDia.get(6)?.horaFin}"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- DOMINGO -->
+          <div class="dia-card">
+            <div class="dia-header">
+              <h3>Domingo</h3>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  name="dia7_activo"
+                  th:checked="${horariosPorDia.containsKey(7)}"
+                  onchange="toggleHorario(7)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div
+              id="horario-7"
+              class="horario-inputs"
+              th:classappend="${horariosPorDia.containsKey(7)} ? 'active'"
+            >
+              <div class="form-group">
+                <label>Hora de Inicio:</label>
+                <input
+                  type="time"
+                  name="dia7_inicio"
+                  th:value="${horariosPorDia.get(7)?.horaInicio}"
+                />
+              </div>
+              <div class="form-group">
+                <label>Hora de Fin:</label>
+                <input
+                  type="time"
+                  name="dia7_fin"
+                  th:value="${horariosPorDia.get(7)?.horaFin}"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-save">💾 Guardar Horarios</button>
+      </form>
+    </div>
+
+    <script>
+      function toggleHorario(dia) {
+        const horarioDiv = document.getElementById(`horario-${dia}`);
+        if (horarioDiv) {
+          horarioDiv.classList.toggle("active");
+        }
+      }
+
+      // Auto-ocultar mensajes después de 5 segundos
+      setTimeout(() => {
+        const mensajes = document.querySelectorAll(
+          ".mensaje-exito, .mensaje-error"
+        );
+        mensajes.forEach((m) => (m.style.display = "none"));
+      }, 5000);
+    </script>
   </body>
 </html>

@@ -19,7 +19,7 @@ public class CitaConPaciente {
         this.fecha = cita.getFecha();
         this.hora = cita.getHora();
         this.motivo = cita.getMotivo();
-        this.estado = cita.getEstado();
+        this.estado = cita.getEstado().getDescripcion(); // Convertir enum a String
     }
 
     public Long getId() {

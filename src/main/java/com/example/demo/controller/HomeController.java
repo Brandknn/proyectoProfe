@@ -17,7 +17,6 @@ public class HomeController {
     @Autowired
     private MedicoRepository medicoRepository;
 
-    // holaaaaaaaa
     @GetMapping("/")
     public String index() {
         return "index";
@@ -29,12 +28,8 @@ public class HomeController {
     }
 
     // ELIMINADO: @GetMapping("/dictamen") - Ahora está en DictamenController
-
-    @GetMapping("/horario")
-    public String horario() {
-        return "horario";
-    }
-
+    // ELIMINADO: @GetMapping("/horario") - Ahora está en HorarioController con lógica completa
+    // prueba de si funciona git
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password, Model model,
             jakarta.servlet.http.HttpSession session) {

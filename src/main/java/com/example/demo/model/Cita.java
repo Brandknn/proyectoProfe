@@ -15,7 +15,10 @@ public class Cita {
     private String motivo;
     private LocalDate fecha;
     private LocalTime hora;
-    private String estado;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoCita estado = EstadoCita.PENDIENTE;
     
     @Column(name = "medico_id")
     private Long medicoId;
@@ -59,11 +62,11 @@ public class Cita {
         this.hora = hora;
     }
 
-    public String getEstado() {
+    public EstadoCita getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoCita estado) {
         this.estado = estado;
     }
 
