@@ -157,7 +157,45 @@
           <td th:text="${cita.fecha}"></td>
           <td class="hora-cell" th:text="${cita.hora}"></td>
           <td th:text="${cita.motivo}"></td>
-          <td th:text="${cita.estado}"></td>
+          <td>
+            <form
+              method="POST"
+              action="/cambiarEstadoCita"
+              style="display: inline"
+            >
+              <input type="hidden" name="citaId" th:value="${cita.id}" />
+              <select
+                name="nuevoEstado"
+                onchange="if(confirm('¿Cambiar estado de la cita?')) this.form.submit();"
+                style="padding: 5px; border: 1px solid #ccc; border-radius: 4px"
+              >
+                <option
+                  value="PENDIENTE"
+                  th:selected="${cita.estado.name() == 'PENDIENTE'}"
+                >
+                  Pendiente
+                </option>
+                <option
+                  value="CANCELADO"
+                  th:selected="${cita.estado.name() == 'CANCELADO'}"
+                >
+                  Cancelado
+                </option>
+                <option
+                  value="COMPLETADO"
+                  th:selected="${cita.estado.name() == 'COMPLETADO'}"
+                >
+                  Completado
+                </option>
+                <option
+                  value="NO_ASISTIO"
+                  th:selected="${cita.estado.name() == 'NO_ASISTIO'}"
+                >
+                  No Asistió
+                </option>
+              </select>
+            </form>
+          </td>
           <td>
             <button
               class="btn-editar"

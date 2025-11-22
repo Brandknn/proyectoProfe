@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.Cita;
 import com.example.demo.model.CitaConPaciente;
+import com.example.demo.model.EstadoCita;
 import com.example.demo.model.Medico;
 import com.example.demo.model.Paciente;
 import com.example.demo.repository.CitaRepository;
