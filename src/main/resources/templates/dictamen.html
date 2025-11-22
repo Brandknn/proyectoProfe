@@ -24,6 +24,22 @@
         font-size: 16px;
       }
 
+      .paciente-header {
+        background-color: #1976d2;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .paciente-header h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
       .form-dictamen {
         background-color: white;
         padding: 30px;
@@ -191,6 +207,11 @@
 
       <!-- Verificar que cita no sea null -->
       <div th:if="${cita != null}">
+        <!-- HEADER CON NOMBRE DEL PACIENTE -->
+        <div class="paciente-header" th:if="${paciente != null}">
+          <h2>👤 <span th:text="${paciente.nombre}" style=" color: #f6f8fb"></span></h2>
+        </div>
+
         <!-- Información de la cita -->
         <div class="info-cita">
           <h3 style="margin-top: 0; color: #1976d2">

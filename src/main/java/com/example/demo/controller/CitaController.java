@@ -20,6 +20,7 @@ import com.example.demo.model.CitaConPaciente;
 import com.example.demo.model.Medico;
 import com.example.demo.model.Paciente;
 import com.example.demo.repository.CitaRepository;
+import com.example.demo.repository.DictamenRepository;
 import com.example.demo.repository.MedicoRepository;
 import com.example.demo.repository.PacienteRepository;
 import com.example.demo.service.EmailService;
@@ -31,13 +32,15 @@ public class CitaController {
     private final CitaRepository citaRepository;
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
+    private final DictamenRepository dictamenRepository; // NUEVO
     private final EmailService emailService;
 
     public CitaController(CitaRepository citaRepository, PacienteRepository pacienteRepository,
-            MedicoRepository medicoRepository, EmailService emailService) {
+            MedicoRepository medicoRepository, DictamenRepository dictamenRepository, EmailService emailService) {
         this.citaRepository = citaRepository;
         this.pacienteRepository = pacienteRepository;
         this.medicoRepository = medicoRepository;
+        this.dictamenRepository = dictamenRepository; // NUEVO
         this.emailService = emailService;
     }
 
@@ -76,19 +79,17 @@ public class CitaController {
         }
 
         try {
-            // Validar que el pacienteId no sea nulo
             if (cita.getPacienteId() == null) {
                 redirectAttributes.addFlashAttribute("error", "Paciente no seleccionado");
                 return "redirect:/gestionCitas";
             }
-            // Validar que la fecha y hora no sean nulas
             if (cita.getFecha() == null || cita.getHora() == null) {
                 redirectAttributes.addFlashAttribute("error", "Fecha y hora requeridas");
                 return "redirect:/gestionCitas";
             }
 
             cita.setMedicoId(medicoId);
-            Cita citaGuardada = citaRepository.save(cita);
+            citaRepository.save(cita);
 
             Optional<Paciente> pacienteOpt = pacienteRepository.findById(cita.getPacienteId());
             Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
@@ -125,7 +126,6 @@ public class CitaController {
                 }
             }
 
-            // Volver a gestión de citas
             redirectAttributes.addFlashAttribute("mensaje", "Cita creada exitosamente");
             return "redirect:/gestionCitas";
 
@@ -136,15 +136,23 @@ public class CitaController {
     }
 
     @PostMapping("/eliminarCita")
-    public String eliminarCita(@RequestParam Long id, HttpSession session) {
+    public String eliminarCita(@RequestParam Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null || id == null) {
             return "redirect:/login";
         }
 
-        Optional<Cita> citaOpt = id != null ? citaRepository.findById(id) : Optional.empty();
-        if (citaOpt.isPresent() && citaOpt.get().getMedicoId().equals(medicoId)) {
-            citaRepository.deleteById(id);
+        try {
+            Optional<Cita> citaOpt = citaRepository.findById(id);
+            if (citaOpt.isPresent() && citaOpt.get().getMedicoId().equals(medicoId)) {
+                // PRIMERO eliminar el dictamen asociado (si existe)
+                dictamenRepository.deleteByCitaId(id);
+                // LUEGO eliminar la cita
+                citaRepository.deleteById(id);
+                redirectAttributes.addFlashAttribute("mensaje", "Cita eliminada exitosamente");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar la cita: " + e.getMessage());
         }
 
         return "redirect:/gestionCitas";
@@ -157,7 +165,7 @@ public class CitaController {
             return "redirect:/login";
         }
 
-        Optional<Cita> citaExistente = cita.getId() != null ? citaRepository.findById(cita.getId()) : Optional.empty();
+        Optional<Cita> citaExistente = citaRepository.findById(cita.getId());
         if (citaExistente.isPresent() && citaExistente.get().getMedicoId().equals(medicoId)) {
             cita.setMedicoId(medicoId);
             citaRepository.save(cita);
@@ -166,10 +174,9 @@ public class CitaController {
         return "redirect:/gestionCitas";
     }
 
-    // ELIMINADO EL MÉTODO DUPLICADO @PostMapping("/gestionCitas")
-
     @GetMapping("/limpiar-bd")
     public String limpiarBD() {
+        dictamenRepository.deleteAll(); // Eliminar dictámenes primero
         citaRepository.deleteAll();
         pacienteRepository.deleteAll();
         medicoRepository.deleteAll();

@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html lang="es">
     <head>
       <link rel="stylesheet" href="/estilosAdministrativos.css" />
@@ -58,9 +58,7 @@
 
         <label>Estado:</label>
         <select th:field="*{estado}" name="estado" required>
-          <option value="Pendiente">Pendiente</option>
-          <option value="Completada">Completada</option>
-          <option value="Cancelada">Cancelada</option></select
+          <option value="Pendiente">Pendiente</option></select
         ><br /><br />
 
         <button type="submit">Guardar Cita</button>
@@ -96,13 +94,6 @@
               <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
                 <button type="button" class="btn-dictamen">Dictamen</button>
               </a>
-
-               <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
-                      <button style="background-color: #4CAF50; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer;">
-                          Dictamen
-                      </button>
-                  </a>
-
               <form
                 th:action="@{/eliminarCita}"
                 method="post"
@@ -149,9 +140,7 @@
 
             <label>Estado:</label>
             <select id="editEstado" name="estado" required>
-              <option value="Pendiente">Pendiente</option>
-              <option value="Completada">Completada</option>
-              <option value="Cancelada">Cancelada</option></select
+              <option value="Pendiente">Pendiente</option></select
             ><br /><br />
 
             <button type="submit">Actualizar</button>
