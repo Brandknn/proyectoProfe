@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+//verficar git
     // Handler centralizado para actualizar estado
     function applyToggleState(checked) {
         if (checked) {
