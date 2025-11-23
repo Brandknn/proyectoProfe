@@ -21,7 +21,7 @@ public class Paciente {
     @Column(nullable = false)
     private String apellido;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String documento;
 
     private String correo;

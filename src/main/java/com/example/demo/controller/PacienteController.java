@@ -90,10 +90,10 @@ public class PacienteController {
                 return "paciente";
             }
 
-            // Validar que el documento no esté duplicado
-            Paciente pacienteExistente = pacienteRepository.findByDocumento(paciente.getDocumento());
+            // Validar que el documento no esté duplicado para este médico
+            Paciente pacienteExistente = pacienteRepository.findByDocumentoAndMedicoId(paciente.getDocumento(), medicoId);
             if (pacienteExistente != null) {
-                model.addAttribute("error", "El documento ya está registrado en el sistema.");
+                model.addAttribute("error", "Ya tienes un paciente registrado con este documento.");
                 model.addAttribute("paciente", new Paciente());
                 List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
                 model.addAttribute("pacientes", pacientes);
@@ -194,8 +194,8 @@ public class PacienteController {
             return "error";
         }
 
-        Paciente paciente = pacienteRepository.findByDocumento(documento);
-        if (paciente != null && paciente.getMedicoId().equals(medicoId)) {
+        Paciente paciente = pacienteRepository.findByDocumentoAndMedicoId(documento, medicoId);
+        if (paciente != null) {
             return "duplicado";
         }
         return "disponible";
