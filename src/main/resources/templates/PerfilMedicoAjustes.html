@@ -6,11 +6,24 @@
     <link rel="stylesheet" href="/estilosAdministrativos.css" />
     <link rel="stylesheet" href="/mensajes-comunes.css" />
   </head>
- <body class="dark-mode">
-     <input type="checkbox" id="theme-toggle" style="display: none;">
-    
+  <body class="dark-mode">
+    <input type="checkbox" id="theme-toggle" style="display: none" />
+
     <!-- Label que actúa como botón -->
-    <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px;">🌙</label>
+    <label
+      for="theme-toggle"
+      style="
+        cursor: pointer;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #005b9f;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+      "
+      >🌙</label
+    >
     <nav>
       <p class="logo">Médico Independiente</p>
       <div class="nav_bar">
@@ -24,11 +37,11 @@
       </div>
     </nav>
 
-    <div class="info-box" >
+    <div class="info-box">
       <h3>Información de la cuenta</h3>
-      <p><strong style="color: black;">Email:</strong> <span th:text="${medico.email}" style="color: black;"></span></p>
-      <p th:if="${medico.googleId != null && medico.googleId != ''}"  style="color: black;">
-        <strong style="color: black;"> Cuenta vinculada con:</strong> Google OAuth
+      <p><strong>Email:</strong> <span th:text="${medico.email}"></span></p>
+      <p th:if="${medico.googleId != null && medico.googleId != ''}">
+        <strong>Cuenta vinculada con:</strong> Google OAuth
       </p>
     </div>
 
@@ -78,6 +91,6 @@
 
       <button type="submit">Cambiar Contraseña</button>
     </form>
-     <script src="dark-mode.js"></script>
+    <script src="dark-mode.js"></script>
   </body>
 </html>

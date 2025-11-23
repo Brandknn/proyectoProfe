@@ -208,3 +208,96 @@
   margin-top: 0;
   color: #333;
 }
+
+/* ==================== DARK MODE STYLES ==================== */
+
+.dark-mode .container-dictamen {
+  color: #e0e0e0;
+}
+
+.dark-mode .info-cita {
+  background-color: #2d2d2d;
+  border-left-color: #42a5f5;
+}
+
+.dark-mode .info-cita p {
+  color: #e0e0e0;
+}
+
+.dark-mode .info-cita h3 {
+  color: #64b5f6;
+}
+
+.dark-mode .paciente-header {
+  background-color: #1565c0;
+}
+
+.dark-mode .form-dictamen {
+  background-color: #2d2d2d;
+}
+
+.dark-mode .form-dictamen label {
+  color: #e0e0e0;
+}
+
+.dark-mode .form-dictamen textarea {
+  background-color: #1e1e1e;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+.dark-mode .form-dictamen textarea:focus {
+  border-color: #42a5f5;
+}
+
+.dark-mode .form-dictamen h2 {
+  color: #e0e0e0;
+}
+
+.dark-mode .historial-section {
+  background-color: #2d2d2d;
+}
+
+.dark-mode .historial-section h2 {
+  color: #64b5f6;
+  border-bottom-color: #444;
+}
+
+.dark-mode .tabla-historial th {
+  background-color: #1565c0;
+}
+
+.dark-mode .tabla-historial td {
+  border-bottom-color: #444;
+  color: #e0e0e0;
+}
+
+.dark-mode .tabla-historial tr:hover {
+  background-color: #3a3a3a;
+}
+
+.dark-mode .char-counter {
+  color: #aaa;
+}
+
+.dark-mode .mensaje-error {
+  background-color: #4a1f1f;
+  color: #ff8a80;
+  border-left-color: #ff5252;
+}
+
+.dark-mode .mensaje-exito {
+  background-color: #1f4a2f;
+  color: #81c784;
+  border-left-color: #4caf50;
+}
+
+.dark-mode .mensaje-warning {
+  background-color: #4a3f1f;
+  color: #ffd54f;
+  border-left-color: #ffb74d;
+}
+
+.dark-mode .mensaje-vacio {
+  color: #777;
+}
