@@ -73,7 +73,23 @@
       </div>
 
       <div th:if="${error}" class="error-message">
-        Error al iniciar sesión. Verifica tus credenciales.
+        <span th:if="${param.error != null and param.error[0] == 'oauth2'}">
+          Error al iniciar sesión con Google. Por favor, intente nuevamente.
+        </span>
+        <span
+          th:if="${param.error != null and param.error[0] == 'principal-null'}"
+        >
+          No se pudo obtener información de Google. Verifique los permisos.
+        </span>
+        <span th:if="${param.error != null and param.error[0] == 'no-email'}">
+          Google no proporcionó un email. Verifique la configuración de su
+          cuenta.
+        </span>
+        <span
+          th:if="${param.error == null or (param.error[0] != 'oauth2' and param.error[0] != 'principal-null' and param.error[0] != 'no-email')}"
+        >
+          Error al iniciar sesión. Verifica tus credenciales.
+        </span>
       </div>
 
       <div class="footer">
@@ -84,5 +100,24 @@
         </p>
       </div>
     </div>
+
+    <script>
+      // Auto-ocultar mensajes después de 7 segundos
+      const errorMessage = document.querySelector(".error-message");
+      const successMessage = document.querySelector(".success-message");
+
+      function hideMessage(element) {
+        if (element) {
+          setTimeout(function () {
+            element.style.opacity = "0";
+            element.style.transition = "opacity 0.5s";
+            setTimeout(() => element.remove(), 500);
+          }, 7000);
+        }
+      }
+
+      hideMessage(errorMessage);
+      hideMessage(successMessage);
+    </script>
   </body>
 </html>

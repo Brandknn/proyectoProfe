@@ -16,4 +16,6 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
     Optional<Medico> findByGoogleId(String googleId);
 
     Optional<Medico> findByCedula(String cedula);
+
+    Optional<Medico> findByTelefono(String telefono);
 }

@@ -96,6 +96,16 @@ public class SecurityConfig {
                 } catch (Throwable ignored) {
                 }
                 System.err.println("[OAuth2 Failure] " + exception.getClass().getSimpleName() + " -> " + details);
+
+                // Limpiar sesión OAuth2
+                var session = request.getSession(false);
+                if (session != null) {
+                    session.removeAttribute("oauthEmail");
+                    session.removeAttribute("oauthName");
+                    session.removeAttribute("oauthGoogleId");
+                    session.invalidate();
+                }
+
                 response.sendRedirect("/login?error=oauth2");
             }
         };

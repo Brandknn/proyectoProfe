@@ -42,51 +42,308 @@
 
       <div th:if="${error}" class="error-message" th:text="${error}"></div>
 
-      <form th:action="@{/completar-registro-google}" method="POST">
+      <form
+        th:action="@{/completar-registro-google}"
+        method="POST"
+        id="registroForm"
+      >
         <div class="form-group">
-          <label for="nombre"
-            >Nombre Completo <span class="required">*</span></label
-          >
+          <label for="nombre">Nombre</label>
           <input
             type="text"
             id="nombre"
             name="nombre"
             th:value="${nombre}"
             required
-            placeholder="Ej: Dr. Juan García López"
+            minlength="2"
+            maxlength="50"
+            th:attr="pattern='[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+'"
+            title="Solo letras y espacios (2-50 caracteres)"
           />
+          <span class="validation-message" id="nombreError"></span>
         </div>
 
         <div class="form-group">
-          <label for="documento"
-            >Número de Documento <span class="required">*</span></label
-          >
+          <label for="apellido">Apellido</label>
+          <input
+            type="text"
+            id="apellido"
+            name="apellido"
+            th:value="${apellido}"
+            required
+            minlength="2"
+            maxlength="50"
+            th:attr="pattern='[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+'"
+            title="Solo letras y espacios (2-50 caracteres)"
+          />
+          <span class="validation-message" id="apellidoError"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="documento">Documento</label>
           <input
             type="text"
             id="documento"
             name="documento"
             th:value="${documento}"
             required
-            placeholder="Ej: 12345678A"
+            minlength="6"
+            maxlength="10"
+            th:attr="pattern='[0-9]{6,10}'"
+            title="Solo números (6-10 dígitos)"
           />
+          <span class="validation-message" id="documentoError"></span>
         </div>
 
         <div class="form-group">
-          <label for="telefono">Teléfono <span class="required">*</span></label>
+          <label for="telefono">Teléfono</label>
           <input
             type="tel"
             id="telefono"
             name="telefono"
             th:value="${telefono}"
             required
-            placeholder="Ej: +34 912345678"
+            minlength="10"
+            maxlength="10"
+            th:attr="pattern='3[0-9]{9}'"
+            title="Debe comenzar con 3 y tener 10 dígitos"
           />
+          <span class="validation-message" id="telefonoError"></span>
         </div>
 
-        <button type="submit">Completar Registro</button>
+        <button type="submit" id="submitBtn">Completar Registro</button>
       </form>
 
       <p class="footer-text">Tus datos están seguros y protegidos</p>
     </div>
+
+    <script th:inline="none">
+      // Validaciones en tiempo real
+      const form = document.getElementById("registroForm");
+      const nombreInput = document.getElementById("nombre");
+      const apellidoInput = document.getElementById("apellido");
+      const documentoInput = document.getElementById("documento");
+      const telefonoInput = document.getElementById("telefono");
+      const submitBtn = document.getElementById("submitBtn");
+
+      // Expresiones regulares
+      const nombreRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+      const documentoRegex = /^[0-9]{6,10}$/;
+      const telefonoRegex = /^3[0-9]{9}$/;
+
+      // Variables para rastrear si el usuario ha tocado cada campo
+      let nombreTocado = false;
+      let apellidoTocado = false;
+      let documentoTocado = false;
+      let telefonoTocado = false;
+
+      // Función para validar nombre
+      function validarNombre() {
+        if (!nombreTocado) return true; // No validar si no ha sido tocado
+
+        const valor = nombreInput.value.trim();
+        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+        const esValido = valor === "" || regex.test(valor);
+        const errorDiv = document.getElementById("nombreError");
+
+        if (valor && !esValido) {
+          nombreInput.classList.add("input-error");
+          nombreInput.classList.remove("input-valid");
+          errorDiv.textContent = "El nombre solo puede contener letras";
+          errorDiv.classList.add("show");
+          return false;
+        } else {
+          nombreInput.classList.remove("input-error");
+          if (valor && esValido) {
+            nombreInput.classList.add("input-valid");
+          } else {
+            nombreInput.classList.remove("input-valid");
+          }
+          errorDiv.textContent = "";
+          errorDiv.classList.remove("show");
+          return valor !== "" && esValido;
+        }
+      }
+
+      // Función para validar apellido
+      function validarApellido() {
+        if (!apellidoTocado) return true; // No validar si no ha sido tocado
+
+        const valor = apellidoInput.value.trim();
+        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+        const esValido = valor === "" || regex.test(valor);
+        const errorDiv = document.getElementById("apellidoError");
+
+        if (valor && !esValido) {
+          apellidoInput.classList.add("input-error");
+          apellidoInput.classList.remove("input-valid");
+          errorDiv.textContent = "El apellido solo puede contener letras";
+          errorDiv.classList.add("show");
+          return false;
+        } else {
+          apellidoInput.classList.remove("input-error");
+          if (valor && esValido) {
+            apellidoInput.classList.add("input-valid");
+          } else {
+            apellidoInput.classList.remove("input-valid");
+          }
+          errorDiv.textContent = "";
+          errorDiv.classList.remove("show");
+          return valor !== "" && esValido;
+        }
+      }
+
+      // Función para validar documento
+      function validarDocumento() {
+        if (!documentoTocado) return true; // No validar si no ha sido tocado
+
+        const valor = documentoInput.value.trim();
+        const regex = /^[0-9]+$/;
+        const esValido = valor === "" || regex.test(valor);
+        const errorDiv = document.getElementById("documentoError");
+
+        if (valor && !esValido) {
+          documentoInput.classList.add("input-error");
+          documentoInput.classList.remove("input-valid");
+          errorDiv.textContent = "El documento solo puede contener números";
+          errorDiv.classList.add("show");
+          return false;
+        } else if (valor && valor.length < 6) {
+          documentoInput.classList.add("input-error");
+          documentoInput.classList.remove("input-valid");
+          errorDiv.textContent = "El documento debe tener al menos 6 dígitos";
+          errorDiv.classList.add("show");
+          return false;
+        } else {
+          documentoInput.classList.remove("input-error");
+          if (valor && esValido) {
+            documentoInput.classList.add("input-valid");
+          } else {
+            documentoInput.classList.remove("input-valid");
+          }
+          errorDiv.textContent = "";
+          errorDiv.classList.remove("show");
+          return valor !== "" && esValido && valor.length >= 6;
+        }
+      }
+
+      // Función para validar teléfono
+      function validarTelefono() {
+        if (!telefonoTocado) return true;
+
+        const valor = telefonoInput.value.trim();
+        const regex = /^3[0-9]{9}$/; // Debe empezar con 3 y tener exactamente 10 dígitos
+        const esValido = valor === "" || regex.test(valor);
+        const errorDiv = document.getElementById("telefonoError");
+
+        if (valor && !esValido) {
+          telefonoInput.classList.add("input-error");
+          telefonoInput.classList.remove("input-valid");
+          errorDiv.textContent = "Número incorrecto";
+          errorDiv.classList.add("show");
+          return false;
+        } else {
+          telefonoInput.classList.remove("input-error");
+          if (valor && esValido) {
+            telefonoInput.classList.add("input-valid");
+          } else {
+            telefonoInput.classList.remove("input-valid");
+          }
+          errorDiv.textContent = "";
+          errorDiv.classList.remove("show");
+          return valor !== "" && esValido;
+        }
+      }
+
+      // Sanitización de inputs para prevenir XSS
+      function sanitizeInput(input) {
+        const div = document.createElement("div");
+        div.textContent = input;
+        return div.innerHTML;
+      }
+
+      // Event listeners para validación en tiempo real
+      nombreInput.addEventListener("focus", () => {
+        nombreTocado = true;
+        validarNombre();
+      });
+      nombreInput.addEventListener("input", validarNombre);
+
+      apellidoInput.addEventListener("focus", () => {
+        apellidoTocado = true;
+        validarApellido();
+      });
+      apellidoInput.addEventListener("input", validarApellido);
+
+      documentoInput.addEventListener("focus", () => {
+        documentoTocado = true;
+        validarDocumento();
+      });
+      documentoInput.addEventListener("input", validarDocumento);
+
+      telefonoInput.addEventListener("focus", () => {
+        telefonoTocado = true;
+        validarTelefono();
+      });
+      telefonoInput.addEventListener("input", validarTelefono);
+
+      // Prevenir caracteres peligrosos
+      [nombreInput, apellidoInput, documentoInput, telefonoInput].forEach(
+        (input) => {
+          input.addEventListener("keypress", function (e) {
+            const char = String.fromCharCode(e.which);
+            const dangerousChars = ["<", ">", '"', "'", ";", "(", ")"];
+
+            if (dangerousChars.includes(char)) {
+              e.preventDefault();
+              return false;
+            }
+          });
+        }
+      );
+
+      // Validación final antes de enviar
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const nombreValido = validarNombre();
+        const apellidoValido = validarApellido();
+        const documentoValido = validarDocumento();
+        const telefonoValido = validarTelefono();
+
+        if (
+          nombreValido &&
+          apellidoValido &&
+          documentoValido &&
+          telefonoValido
+        ) {
+          // Sanitizar valores antes de enviar
+          nombreInput.value = sanitizeInput(nombreInput.value.trim());
+          apellidoInput.value = sanitizeInput(apellidoInput.value.trim());
+          documentoInput.value = sanitizeInput(documentoInput.value.trim());
+          telefonoInput.value = sanitizeInput(telefonoInput.value.trim());
+
+          // Deshabilitar botón para evitar doble envío
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Procesando...";
+
+          form.submit();
+        } else {
+          alert(
+            "Por favor, corrija los errores en el formulario antes de continuar"
+          );
+        }
+      });
+
+      // Auto-ocultar mensaje de error después de 5 segundos
+      const errorMessage = document.querySelector(".error-message");
+      if (errorMessage) {
+        setTimeout(function () {
+          errorMessage.style.opacity = "0";
+          errorMessage.style.transition = "opacity 0.5s";
+          setTimeout(() => errorMessage.remove(), 500);
+        }, 5000);
+      }
+    </script>
   </body>
 </html>
