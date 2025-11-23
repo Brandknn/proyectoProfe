@@ -1,0 +1,153 @@
+/* ==================== RESPONSIVE UTILITIES ==================== */
+
+/* Asegurar que tablas no se desborden */
+.tabla-historial,
+.tabla-citas,
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .tabla-historial,
+  .tabla-citas,
+  table {
+    font-size: 14px;
+  }
+
+  .tabla-historial th,
+  .tabla-historial td,
+  .tabla-citas th,
+  .tabla-citas td,
+  table th,
+  table td {
+    padding: 8px 4px;
+  }
+}
+
+/* Contenedores responsivos */
+.container,
+.container-dictamen,
+.paciente-container {
+  max-width: 100%;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .container,
+  .container-dictamen,
+  .paciente-container {
+    padding: 0 20px;
+  }
+}
+
+/* Botones responsivos */
+button,
+.btn,
+.btn-guardar,
+.btn-volver,
+.btn-primary,
+.btn-secondary {
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  button,
+  .btn,
+  .btn-guardar,
+  .btn-volver {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+/* Formularios responsivos */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  input[type="time"],
+  select,
+  textarea {
+    width: 100%;
+  }
+}
+
+/* Navegación responsiva */
+nav {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .nav_bar {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav_bar a {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+}
+
+/* Modales responsivos */
+.modal-contenido,
+.modal-content {
+  max-width: 95%;
+  margin: 10px auto;
+}
+
+@media (min-width: 768px) {
+  .modal-contenido,
+  .modal-content {
+    max-width: 600px;
+  }
+}
+
+/* Grids responsivos */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+@media (min-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Ocultar scroll horizontal en body */
+body {
+  overflow-x: hidden;
+}
+
+/* Imágenes responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+}
