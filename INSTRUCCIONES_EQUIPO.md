@@ -15,7 +15,40 @@ git clone https://github.com/Brandknn/proyectoProfe.git
 cd proyectoProfe
 ```
 
-### **2. Cambiar a la rama de desarrollo**
+### **2. Configurar la Base de Datos (IMPORTANTE - HACER PRIMERO)**
+
+El proyecto necesita **1,050 registros** en la base de datos para funcionar correctamente.
+
+#### **📝 Pasos con MySQL Workbench (RECOMENDADO):**
+
+1. **Abrir MySQL Workbench**
+2. **Conectarse** a su servidor MySQL local (usuario: `root`, contraseña: la de cada uno)
+3. **Crear la base de datos** si no existe:
+   - Click derecho en el panel izquierdo → "Create Schema"
+   - Nombre: `medico`
+   - Click en "Apply"
+4. **Seleccionar la base de datos:**
+   - Click en `medico` en el panel izquierdo
+5. **Importar los registros:**
+   - Ir a: **File** → **Open SQL Script...**
+   - Navegar a la carpeta del proyecto
+   - Buscar: `Evidencia_BD_1000_Registros/insert_1000_registros.sql`
+   - Click en **"Open"**
+6. **Ejecutar el script:**
+   - Click en el botón ⚡ **"Execute"** (o presionar Ctrl+Shift+Enter)
+   - Esperar 1-2 minutos (va a insertar 1,050 registros)
+7. **Verificar:**
+   ```sql
+   SELECT COUNT(*) FROM medicos;    -- Debe dar 50
+   SELECT COUNT(*) FROM paciente;   -- Debe dar 400
+   SELECT COUNT(*) FROM cita;       -- Debe dar 600
+   ```
+
+✅ **Listo** - Ahora tienen la base de datos completa con todos los registros.
+
+---
+
+### **3. Cambiar a la rama de desarrollo**
 
 ```bash
 git checkout desarrollo
