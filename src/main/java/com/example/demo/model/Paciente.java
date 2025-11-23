@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+//verificar git
+
 @Entity
 @Table(name = "paciente")
 public class Paciente {
