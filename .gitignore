@@ -31,3 +31,17 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Logs ###
+*.log
+app.log
+server.log
+
+### Database Backups ###
+database_backup.sql
+*.backup.sql
+
+### Temporary Scripts ###
+replace_*.py
+nuevos_metodos.java
+

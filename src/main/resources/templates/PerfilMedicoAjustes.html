@@ -26,9 +26,9 @@
 
     <div class="info-box" >
       <h3>Información de la cuenta</h3>
-      <p><strong style="color: black;">Email:</strong> <span th:text="${medico.email}" style="color: black;"></span></p>
-      <p th:if="${medico.googleId != null && medico.googleId != ''}"  style="color: black;">
-        <strong style="color: black;"> Cuenta vinculada con:</strong> Google OAuth
+      <p><strong >Email:</strong> <span th:text="${medico.email}" ></span></p>
+      <p th:if="${medico.googleId != null && medico.googleId != ''}"  >
+        <strong > Cuenta vinculada con:</strong> Google OAuth
       </p>
     </div>
 
