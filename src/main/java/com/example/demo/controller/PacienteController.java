@@ -25,12 +25,14 @@ public class PacienteController {
     private final PacienteRepository pacienteRepository;
     private final CitaRepository citaRepository;
     private final EmailService emailService;
+    private final com.example.demo.repository.MedicoRepository medicoRepository;
 
     public PacienteController(PacienteRepository pacienteRepository, CitaRepository citaRepository,
-            EmailService emailService) {
+            EmailService emailService, com.example.demo.repository.MedicoRepository medicoRepository) {
         this.pacienteRepository = pacienteRepository;
         this.citaRepository = citaRepository;
         this.emailService = emailService;
+        this.medicoRepository = medicoRepository;
     }
 
     @GetMapping("/paciente")
@@ -38,6 +40,12 @@ public class PacienteController {
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null) {
             return "redirect:/login";
+        }
+
+        // Obtener médico logueado para mostrar en navegación
+        Optional<com.example.demo.model.Medico> medicoOpt = medicoRepository.findById(medicoId);
+        if (medicoOpt.isPresent()) {
+            model.addAttribute("medicoLogueado", medicoOpt.get());
         }
 
         model.addAttribute("paciente", new Paciente());
@@ -91,7 +99,8 @@ public class PacienteController {
             }
 
             // Validar que el documento no esté duplicado para este médico
-            Paciente pacienteExistente = pacienteRepository.findByDocumentoAndMedicoId(paciente.getDocumento(), medicoId);
+            Paciente pacienteExistente = pacienteRepository.findByDocumentoAndMedicoId(paciente.getDocumento(),
+                    medicoId);
             if (pacienteExistente != null) {
                 model.addAttribute("error", "Ya tienes un paciente registrado con este documento.");
                 model.addAttribute("paciente", new Paciente());

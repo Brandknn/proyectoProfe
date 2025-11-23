@@ -169,3 +169,29 @@
   border-radius: 4px;
   box-sizing: border-box;
 }
+
+/* Fix para botones en tablas que se ven aplastados */
+.acciones-cell button,
+.acciones-cell a,
+.btn-editar,
+.btn-dictamen,
+.btn-eliminar {
+  white-space: nowrap;
+  min-width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+}
+
+/* Asegurar que la celda de acciones tenga suficiente espacio */
+.acciones-cell {
+  white-space: nowrap;
+  min-width: 250px;
+}
+
+.acciones-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}

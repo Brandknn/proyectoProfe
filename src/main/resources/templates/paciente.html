@@ -28,7 +28,13 @@
         "
         >🌙</label
       >
-      <p class="logo">Médico Independiente</p>
+      <p class="logo">
+        Dr.
+        <span
+          th:text="${medicoLogueado != null ? medicoLogueado.nombre + ' ' + medicoLogueado.apellido : 'Médico Independiente'}"
+          >Médico Independiente</span
+        >
+      </p>
       <div class="nav_bar">
         <a href="/paciente" class="active">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>

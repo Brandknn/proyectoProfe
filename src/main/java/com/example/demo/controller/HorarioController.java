@@ -22,13 +22,16 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class HorarioController {
-    
+
     private final HorarioService horarioService;
-    
-    public HorarioController(HorarioService horarioService) {
+    private final com.example.demo.repository.MedicoRepository medicoRepository;
+
+    public HorarioController(HorarioService horarioService,
+            com.example.demo.repository.MedicoRepository medicoRepository) {
         this.horarioService = horarioService;
+        this.medicoRepository = medicoRepository;
     }
-    
+
     /**
      * Muestra la página de configuración de horarios
      */
@@ -38,10 +41,16 @@ public class HorarioController {
         if (medicoId == null) {
             return "redirect:/login";
         }
-        
+
+        // Obtener médico logueado para mostrar en navegación
+        java.util.Optional<com.example.demo.model.Medico> medicoOpt = medicoRepository.findById(medicoId);
+        if (medicoOpt.isPresent()) {
+            model.addAttribute("medicoLogueado", medicoOpt.get());
+        }
+
         // Obtener horarios existentes del médico
         List<HorarioMedico> horarios = horarioService.obtenerHorariosMedico(medicoId);
-        
+
         // Crear mapa con horarios por día (1-7)
         Map<Integer, HorarioMedico> horariosPorDia = new HashMap<>();
         for (HorarioMedico horario : horarios) {
@@ -49,11 +58,11 @@ public class HorarioController {
                 horariosPorDia.put(horario.getDiaSemana(), horario);
             }
         }
-        
+
         model.addAttribute("horariosPorDia", horariosPorDia);
         return "horario";
     }
-    
+
     /**
      * Guarda la configuración de horario
      */
@@ -62,46 +71,47 @@ public class HorarioController {
             @RequestParam Map<String, String> params,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
-        
+
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null) {
             return "redirect:/login";
         }
-        
+
         try {
             // Procesar horarios para cada día (1-7: Lunes-Domingo)
             for (int dia = 1; dia <= 7; dia++) {
                 String keyActivo = "dia" + dia + "_activo";
                 String keyInicio = "dia" + dia + "_inicio";
                 String keyFin = "dia" + dia + "_fin";
-                
+
                 boolean activo = params.containsKey(keyActivo) && "on".equals(params.get(keyActivo));
-                
+
                 if (activo) {
                     String horaInicio = params.get(keyInicio);
                     String horaFin = params.get(keyFin);
-                    
-                    if (horaInicio != null && !horaInicio.isEmpty() && 
-                        horaFin != null && !horaFin.isEmpty()) {
-                        
+
+                    if (horaInicio != null && !horaInicio.isEmpty() &&
+                            horaFin != null && !horaFin.isEmpty()) {
+
                         LocalTime inicio = LocalTime.parse(horaInicio);
                         LocalTime fin = LocalTime.parse(horaFin);
-                        
+
                         // Validar que inicio sea antes que fin
                         if (inicio.isAfter(fin) || inicio.equals(fin)) {
-                            redirectAttributes.addFlashAttribute("error", 
-                                "La hora de inicio debe ser anterior a la hora de fin para el día " + obtenerNombreDia(dia));
+                            redirectAttributes.addFlashAttribute("error",
+                                    "La hora de inicio debe ser anterior a la hora de fin para el día "
+                                            + obtenerNombreDia(dia));
                             return "redirect:/horario";
                         }
-                        
+
                         // Validar que no afecte citas existentes
                         if (!horarioService.validarModificacionHorario(medicoId, dia, inicio, fin)) {
-                            redirectAttributes.addFlashAttribute("error", 
-                                "No se puede modificar el horario del " + obtenerNombreDia(dia) + 
-                                " porque hay citas agendadas fuera del nuevo rango de horas.");
+                            redirectAttributes.addFlashAttribute("error",
+                                    "No se puede modificar el horario del " + obtenerNombreDia(dia) +
+                                            " porque hay citas agendadas fuera del nuevo rango de horas.");
                             return "redirect:/horario";
                         }
-                        
+
                         horarioService.guardarHorario(medicoId, dia, inicio, fin);
                     }
                 } else {
@@ -109,16 +119,16 @@ public class HorarioController {
                     horarioService.desactivarHorario(medicoId, dia);
                 }
             }
-            
+
             redirectAttributes.addFlashAttribute("mensaje", "Horario configurado exitosamente");
             return "redirect:/horario";
-            
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al guardar el horario: " + e.getMessage());
             return "redirect:/horario";
         }
     }
-    
+
     /**
      * API para obtener slots disponibles de una fecha
      */
@@ -127,33 +137,33 @@ public class HorarioController {
             @RequestParam String fecha,
             HttpSession session,
             Model model) {
-        
+
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null) {
             return "error";
         }
-        
+
         try {
             LocalDate fechaConsulta = LocalDate.parse(fecha);
             List<SlotDisponibilidad> slots = horarioService.calcularSlotsDisponibles(medicoId, fechaConsulta);
-            
+
             model.addAttribute("slots", slots);
             model.addAttribute("fecha", fechaConsulta);
-            
+
             // Retornar fragment HTML para actualizar el calendario
             return "fragments/slots :: slotsLista";
-            
+
         } catch (Exception e) {
             model.addAttribute("error", "Error al obtener slots: " + e.getMessage());
             return "error";
         }
     }
-    
+
     /**
      * Utilidad para obtener nombre del día en español
      */
     private String obtenerNombreDia(int dia) {
-        String[] dias = {"", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"};
+        String[] dias = { "", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" };
         return dias[dia];
     }
 }

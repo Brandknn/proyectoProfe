@@ -56,6 +56,12 @@ public class CitaController {
             return "redirect:/login";
         }
 
+        // Obtener médico logueado para mostrar en navegación
+        Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
+        if (medicoOpt.isPresent()) {
+            model.addAttribute("medicoLogueado", medicoOpt.get());
+        }
+
         model.addAttribute("cita", new Cita());
         List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
         model.addAttribute("pacientes", pacientes);
@@ -302,6 +308,12 @@ public class CitaController {
             return "redirect:/login";
         }
 
+        // Obtener médico logueado para mostrar en navegación
+        java.util.Optional<com.example.demo.model.Medico> medicoOpt = medicoRepository.findById(medicoId);
+        if (medicoOpt.isPresent()) {
+            model.addAttribute("medicoLogueado", medicoOpt.get());
+        }
+
         // Obtener todas las citas ordenadas
         List<Cita> todasLasCitas = citaRepository.findByMedicoIdOrderByFechaAscHoraAsc(medicoId);
 
@@ -338,6 +350,12 @@ public class CitaController {
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null) {
             return "redirect:/login";
+        }
+
+        // Obtener médico logueado para mostrar en navegación
+        java.util.Optional<com.example.demo.model.Medico> medicoOpt = medicoRepository.findById(medicoId);
+        if (medicoOpt.isPresent()) {
+            model.addAttribute("medicoLogueado", medicoOpt.get());
         }
 
         // Obtener todas las citas para el calendario

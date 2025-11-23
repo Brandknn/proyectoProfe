@@ -26,7 +26,9 @@
       >🌙</label
     >
     <nav>
-      <p class="logo">Médico Independiente</p>
+      <p class="logo">
+        Dr. <span th:text="${medico.nombre} + ' ' + ${medico.apellido}"></span>
+      </p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>
@@ -35,6 +37,11 @@
         <a href="/dictamen">Dictámenes</a>
         <a href="/horario">Horarios</a>
         <a href="/PerfilMedicoAjustes" class="active">Perfil Médico</a>
+        <form action="/logout" method="post" style="display: inline">
+          <button type="submit" class="btn-logout" title="Cerrar Sesión">
+            🚪 Salir
+          </button>
+        </form>
       </div>
     </nav>
 
@@ -92,6 +99,26 @@
 
       <button type="submit">Cambiar Contraseña</button>
     </form>
+
+    <div
+      style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px"
+    >
+      <h3>Sesión</h3>
+      <form action="/logout" method="post">
+        <button
+          type="submit"
+          class="btn-logout"
+          style="
+            background-color: #dc3545;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+          "
+        >
+          🚪 Cerrar Sesión
+        </button>
+      </form>
+    </div>
     <script src="dark-mode.js"></script>
   </body>
 </html>
