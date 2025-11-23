@@ -437,12 +437,16 @@
         }
       };
 
-      // Establecer fecha mínima a hoy
+      // Establecer fecha mínima a hoy (permite seleccionar el día de hoy)
       document.addEventListener("DOMContentLoaded", function () {
         const fechaInput = document.getElementById("fechaCita");
         if (fechaInput) {
-          const hoy = new Date().toISOString().split("T")[0];
-          fechaInput.setAttribute("min", hoy);
+          const hoy = new Date();
+          const year = hoy.getFullYear();
+          const month = String(hoy.getMonth() + 1).padStart(2, "0");
+          const day = String(hoy.getDate()).padStart(2, "0");
+          const fechaMinima = `${year}-${month}-${day}`;
+          fechaInput.setAttribute("min", fechaMinima);
         }
       });
     </script>
