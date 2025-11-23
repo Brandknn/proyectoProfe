@@ -6,7 +6,11 @@
     <title>Crear Cuenta Médico</title>
     <link rel="stylesheet" href="/CrearCuentaMedico.css">
     <link rel="stylesheet" href="/mensajes-comunes.css">
-<body>
+ <body class="dark-mode">
+       <input type="checkbox" id="theme-toggle" style="display: none;">
+       
+    <!-- Label que actúa como botón -->
+    <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px;">🌙</label>
     <div class="container">
         <h2>Registro de Médico</h2>
         <div th:if="${error}" class="toast error" th:text="${error}"></div>
@@ -458,5 +462,6 @@
             }, 5000);
         }
     </script>
+     <script src="dark-mode.js"></script>
 </body>
 </html>

@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="/mensajes-comunes.css" />
     <link rel="stylesheet" href="/horario.css" />
   </head>
-  <body>
+ <body class="dark-mode">
+     <input type="checkbox" id="theme-toggle" style="display: none;">
+    
+    <!-- Label que actúa como botón -->
+    <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px; z-index: 999;">🌙</label>
     <nav>
       <p class="logo">Médico Independiente</p>
       <div class="nav_bar">
@@ -1012,5 +1016,6 @@
         mensajes.forEach((m) => (m.style.display = "none"));
       }, 5000);
     </script>
+    <script src="dark-mode.js"></script>
   </body>
 </html>

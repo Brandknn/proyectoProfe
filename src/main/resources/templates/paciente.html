@@ -10,6 +10,10 @@
   </head>
   <body>
     <nav>
+       <input type="checkbox" id="theme-toggle" style="display: none;">
+    
+    <!-- Label que actúa como botón -->
+    <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px;">🌙</label>
       <p class="logo">Médico Independiente</p>
       <div class="nav_bar">
         <a href="/paciente" class="active">Pacientes</a>
@@ -546,5 +550,6 @@
         }, 5000);
       });
     </script>
+    <script src="dark-mode.js"></script>
   </body>
 </html>
