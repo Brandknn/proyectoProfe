@@ -8,13 +8,33 @@
     <link rel="stylesheet" href="/mensajes-comunes.css" />
     <link rel="stylesheet" href="/horario.css" />
   </head>
- <body class="dark-mode">
-     <input type="checkbox" id="theme-toggle" style="display: none;">
-    
+  <body class="dark-mode">
+    <input type="checkbox" id="theme-toggle" style="display: none" />
+
     <!-- Label que actúa como botón -->
-    <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px; z-index: 999;">🌙</label>
+    <label
+      for="theme-toggle"
+      style="
+        cursor: pointer;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #005b9f;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 999;
+      "
+      >🌙</label
+    >
     <nav>
-      <p class="logo">Médico Independiente</p>
+      <p class="logo">
+        Dr.
+        <span
+          th:text="${medicoLogueado != null ? medicoLogueado.nombre + ' ' + medicoLogueado.apellido : 'Médico Independiente'}"
+          >Médico Independiente</span
+        >
+      </p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>
@@ -38,7 +58,7 @@
       <h1>Configuración de Horarios</h1>
       <p>
         Nota: Configure sus horarios de atención para cada día de la semana. Los
-        pacientes solo podrán agendar citas dentro de estos horarios. 
+        pacientes solo podrán agendar citas dentro de estos horarios.
       </p>
 
       <!-- Tabla resumen de horarios -->
@@ -56,51 +76,97 @@
           <tbody>
             <tr>
               <td>Lunes</td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(1) ? 'Sí' : 'No'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(1) ? horariosPorDia.get(1).horaInicio : '-'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(1) ? horariosPorDia.get(1).horaFin : '-'}"></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(1) ? 'Sí' : 'No'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(1) ? horariosPorDia.get(1).horaInicio : '-'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(1) ? horariosPorDia.get(1).horaFin : '-'}"
+              ></td>
             </tr>
             <tr>
               <td>Martes</td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(2) ? 'Sí' : 'No'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(2) ? horariosPorDia.get(2).horaInicio : '-'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(2) ? horariosPorDia.get(2).horaFin : '-'}"></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(2) ? 'Sí' : 'No'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(2) ? horariosPorDia.get(2).horaInicio : '-'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(2) ? horariosPorDia.get(2).horaFin : '-'}"
+              ></td>
             </tr>
             <tr>
               <td>Miércoles</td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(3) ? 'Sí' : 'No'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(3) ? horariosPorDia.get(3).horaInicio : '-'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(3) ? horariosPorDia.get(3).horaFin : '-'}"></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(3) ? 'Sí' : 'No'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(3) ? horariosPorDia.get(3).horaInicio : '-'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(3) ? horariosPorDia.get(3).horaFin : '-'}"
+              ></td>
             </tr>
             <tr>
               <td>Jueves</td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(4) ? 'Sí' : 'No'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(4) ? horariosPorDia.get(4).horaInicio : '-'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(4) ? horariosPorDia.get(4).horaFin : '-'}"></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(4) ? 'Sí' : 'No'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(4) ? horariosPorDia.get(4).horaInicio : '-'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(4) ? horariosPorDia.get(4).horaFin : '-'}"
+              ></td>
             </tr>
             <tr>
               <td>Viernes</td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(5) ? 'Sí' : 'No'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(5) ? horariosPorDia.get(5).horaInicio : '-'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(5) ? horariosPorDia.get(5).horaFin : '-'}"></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(5) ? 'Sí' : 'No'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(5) ? horariosPorDia.get(5).horaInicio : '-'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(5) ? horariosPorDia.get(5).horaFin : '-'}"
+              ></td>
             </tr>
             <tr>
               <td>Sábado</td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(6) ? 'Sí' : 'No'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(6) ? horariosPorDia.get(6).horaInicio : '-'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(6) ? horariosPorDia.get(6).horaFin : '-'}"></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(6) ? 'Sí' : 'No'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(6) ? horariosPorDia.get(6).horaInicio : '-'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(6) ? horariosPorDia.get(6).horaFin : '-'}"
+              ></td>
             </tr>
             <tr>
               <td>Domingo</td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(7) ? 'Sí' : 'No'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(7) ? horariosPorDia.get(7).horaInicio : '-'}"></td>
-              <td th:text="${horariosPorDia != null and horariosPorDia.containsKey(7) ? horariosPorDia.get(7).horaFin : '-'}"></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(7) ? 'Sí' : 'No'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(7) ? horariosPorDia.get(7).horaInicio : '-'}"
+              ></td>
+              <td
+                th:text="${horariosPorDia != null and horariosPorDia.containsKey(7) ? horariosPorDia.get(7).horaFin : '-'}"
+              ></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <form th:if="${horariosPorDia != null}" action="/guardarHorario" method="post">
+      <form
+        th:if="${horariosPorDia != null}"
+        action="/guardarHorario"
+        method="post"
+      >
         <div class="horario-grid">
           <!-- LUNES -->
           <div class="dia-card">
@@ -1059,7 +1125,10 @@
       </form>
 
       <div th:if="${horariosPorDia == null}" class="mensaje-error">
-        <span>No se pudieron cargar los horarios. Intente recargar o contacte al administrador.</span>
+        <span
+          >No se pudieron cargar los horarios. Intente recargar o contacte al
+          administrador.</span
+        >
       </div>
     </div>
 

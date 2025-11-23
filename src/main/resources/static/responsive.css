@@ -1,12 +1,11 @@
 /* ==================== RESPONSIVE UTILITIES ==================== */
 
-/* Asegurar que tablas no se desborden */
+/* Tablas responsivas - NO usar display:block */
 .tabla-historial,
 .tabla-citas,
 table {
   width: 100%;
-  overflow-x: auto;
-  display: block;
+  border-collapse: collapse;
 }
 
 @media (max-width: 768px) {

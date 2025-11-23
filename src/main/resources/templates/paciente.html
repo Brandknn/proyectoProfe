@@ -1,10 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <link rel="stylesheet" href="/estilosAdministrativos.css" />
+    <link rel="stylesheet" href="/gestionCitas.css" />
+    <link rel="stylesheet" href="/mensajes-comunes.css" />
+    <link rel="stylesheet" href="/paciente.css" />
+    <meta charset="UTF-8" />
+    <title>Gestión de Pacientes</title>
+  </head>
   <body class="dark-mode">
     <nav>
-       <input type="checkbox" id="theme-toggle" style="display: none;">
-    
-    <!-- Label que actúa como botón -->
-    <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px; z-index: 1000;" >🌙</label>
-      <p class="logo">Médico Independiente</p>
+      <input type="checkbox" id="theme-toggle" style="display: none" />
+
+      <!-- Label que actúa como botón -->
+      <label
+        for="theme-toggle"
+        style="
+          cursor: pointer;
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: #005b9f;
+          color: white;
+          padding: 10px;
+          border-radius: 5px;
+          z-index: 1000;
+        "
+        >🌙</label
+      >
+      <p class="logo">
+        Dr.
+        <span
+          th:text="${medicoLogueado != null ? medicoLogueado.nombre + ' ' + medicoLogueado.apellido : 'Médico Independiente'}"
+          >Médico Independiente</span
+        >
+      </p>
       <div class="nav_bar">
         <a href="/paciente" class="active">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>

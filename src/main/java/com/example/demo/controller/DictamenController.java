@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,9 +16,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.Cita;
 import com.example.demo.model.Dictamen;
+import com.example.demo.model.Medico;
 import com.example.demo.model.Paciente;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.DictamenRepository;
+import com.example.demo.repository.MedicoRepository;
 import com.example.demo.repository.PacienteRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,11 +37,20 @@ public class DictamenController {
     @Autowired
     private PacienteRepository pacienteRepository;
 
+    @Autowired
+    private MedicoRepository medicoRepository;
+
     @GetMapping("/dictamen")
     public String listarDictamenes(Model model, HttpSession session) {
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null) {
             return "redirect:/login";
+        }
+
+        // Obtener médico logueado para mostrar en navegación
+        Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
+        if (medicoOpt.isPresent()) {
+            model.addAttribute("medicoLogueado", medicoOpt.get());
         }
 
         try {
@@ -76,6 +88,12 @@ public class DictamenController {
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null) {
             return "redirect:/login";
+        }
+
+        // Obtener médico logueado para mostrar en navegación
+        Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
+        if (medicoOpt.isPresent()) {
+            model.addAttribute("medicoLogueado", medicoOpt.get());
         }
 
         try {
