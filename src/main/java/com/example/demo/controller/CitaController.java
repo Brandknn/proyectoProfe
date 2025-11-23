@@ -24,6 +24,7 @@ import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.DictamenRepository;
 import com.example.demo.repository.MedicoRepository;
 import com.example.demo.repository.PacienteRepository;
+import com.example.demo.service.CitaImageService;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.HorarioService;
 
@@ -37,16 +38,18 @@ public class CitaController {
     private final DictamenRepository dictamenRepository; // NUEVO
     private final EmailService emailService;
     private final HorarioService horarioService;
+    private final CitaImageService citaImageService;
 
     public CitaController(CitaRepository citaRepository, PacienteRepository pacienteRepository,
             MedicoRepository medicoRepository, DictamenRepository dictamenRepository,
-            EmailService emailService, HorarioService horarioService) {
+            EmailService emailService, HorarioService horarioService, CitaImageService citaImageService) {
         this.citaRepository = citaRepository;
         this.pacienteRepository = pacienteRepository;
         this.medicoRepository = medicoRepository;
         this.dictamenRepository = dictamenRepository; // NUEVO
         this.emailService = emailService;
         this.horarioService = horarioService;
+        this.citaImageService = citaImageService;
     }
 
     @GetMapping("/gestionCitas")
@@ -160,7 +163,30 @@ public class CitaController {
                                 horaFormateada,
                                 cita.getMotivo());
 
-                        emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
+                        try {
+                            // Generar imagen de la cita
+                            String nombreCompleto = paciente.getNombre() + " " + paciente.getApellido();
+                            String nombreMedico = "Dr. " + medico.getNombre() + " " + medico.getApellido();
+                            byte[] imagenCita = citaImageService.generarImagenCita(
+                                nombreCompleto, 
+                                nombreMedico, 
+                                cita.getFecha(), 
+                                cita.getHora(), 
+                                cita.getMotivo()
+                            );
+                            
+                            // Enviar correo con imagen adjunta
+                            emailService.enviarCorreoConAdjunto(
+                                paciente.getCorreo(), 
+                                asunto, 
+                                mensaje,
+                                imagenCita,
+                                "confirmacion_cita.png"
+                            );
+                        } catch (Exception e) {
+                            // Si falla la generación de imagen, enviar correo sin adjunto
+                            emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
+                        }
                     }
                 }
             }
