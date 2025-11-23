@@ -8,6 +8,12 @@
   display: flex;
   gap: 20px;
   align-items: flex-end;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .filtros-container {
+  background-color: #2a2a2a; /* Gris oscuro */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Sombra más oscura */
 }
 
 .filtro-group {
@@ -20,6 +26,11 @@
   font-weight: bold;
   font-size: 14px;
   color: #555;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .filtro-group label {
+  color: #e0e0e0; /* Texto claro */
 }
 
 .filtro-group input,
@@ -28,6 +39,14 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   min-width: 200px;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .filtro-group input,
+body.dark-mode .filtro-group select {
+  background: #333; /* Gris oscuro */
+  border: 1px solid #555;
+  color: #e0e0e0; /* Texto claro */
 }
 
 .badge {
@@ -36,21 +55,45 @@
   font-size: 12px;
   font-weight: bold;
   text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .badge-completada {
   background-color: #d4edda;
   color: #155724;
 }
+
+body.dark-mode .badge-completada {
+  background-color: #2a5a2a; /* Verde oscuro */
+  color: #d4edda; /* Verde claro */
+}
+
 .badge-cancelada {
   background-color: #f8d7da;
   color: #721c24;
 }
+
+body.dark-mode .badge-cancelada {
+  background-color: #5a2a2a; /* Rojo oscuro */
+  color: #f8d7da; /* Rojo claro */
+}
+
 .badge-no_asistio {
   background-color: #fff3cd;
   color: #856404;
 }
+
+body.dark-mode .badge-no_asistio {
+  background-color: #5a5a2a; /* Amarillo oscuro */
+  color: #fff3cd; /* Amarillo claro */
+}
+
 .badge-pendiente {
   background-color: #cce5ff;
   color: #004085;
+}
+
+body.dark-mode .badge-pendiente {
+  background-color: #2a4a5a; /* Azul oscuro */
+  color: #cce5ff; /* Azul claro */
 }
