@@ -20,7 +20,7 @@
 }
 
 .calendar-nav button {
-  background-color: #f8f9fa;
+  background-color: #0077c8;
   border: 1px solid #ddd;
   padding: 8px 15px;
   border-radius: 5px;
@@ -30,7 +30,7 @@
 }
 
 .calendar-nav button:hover {
-  background-color: #e2e6ea;
+  background-color: #56a7f7;
 }
 
 .calendar-grid {
