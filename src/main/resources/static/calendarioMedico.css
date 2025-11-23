@@ -1,0 +1,127 @@
+/* Estilos del Calendario */
+.calendar-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  color: #0077c8;
+  text-transform: capitalize;
+}
+
+.calendar-nav button {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.calendar-nav button:hover {
+  background-color: #e2e6ea;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.day-name {
+  text-align: center;
+  font-weight: bold;
+  color: #666;
+  padding: 10px 0;
+  background-color: #f1f3f5;
+  border-radius: 5px;
+}
+
+.day-cell {
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  min-height: 120px;
+  padding: 10px;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+
+.day-cell:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.day-cell.today {
+  border: 2px solid #0077c8;
+  background-color: #f8fbff;
+}
+
+.day-number {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.day-cell.other-month {
+  background-color: #f9f9f9;
+  color: #ccc;
+}
+
+.event-pill {
+  font-size: 11px;
+  padding: 4px 6px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white;
+  transition: transform 0.1s;
+}
+
+.event-pill:hover {
+  transform: scale(1.02);
+  z-index: 2;
+}
+
+.event-pendiente {
+  background-color: #0077c8;
+}
+.event-completada {
+  background-color: #28a745;
+}
+.event-cancelada {
+  background-color: #dc3545;
+}
+.event-no_asistio {
+  background-color: #ffc107;
+  color: #333;
+}
+
+/* Tooltip/Modal simple para detalles */
+.event-details {
+  display: none;
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  width: 200px;
+  font-size: 12px;
+  top: 100%;
+  left: 0;
+}

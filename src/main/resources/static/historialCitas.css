@@ -1,0 +1,56 @@
+/* Estilos específicos para el historial */
+.filtros-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filtro-group label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #555;
+}
+
+.filtro-group input,
+.filtro-group select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  min-width: 200px;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.badge-completada {
+  background-color: #d4edda;
+  color: #155724;
+}
+.badge-cancelada {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+.badge-no_asistio {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.badge-pendiente {
+  background-color: #cce5ff;
+  color: #004085;
+}

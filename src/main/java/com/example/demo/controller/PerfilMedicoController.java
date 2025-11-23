@@ -30,6 +30,7 @@ public class PerfilMedicoController {
             return "redirect:/login";
         }
 
+        //prueba git
         Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
         if (medicoOpt.isPresent()) {
             model.addAttribute("medico", medicoOpt.get());

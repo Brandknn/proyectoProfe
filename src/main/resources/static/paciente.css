@@ -1,0 +1,39 @@
+input[type="text"],
+input[type="email"] {
+  border: 1px solid #ccc !important;
+  transition: border-color 0.3s, background-color 0.3s;
+  outline: none !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus {
+  outline: none !important;
+}
+
+input[type="text"]:invalid,
+input[type="email"]:invalid {
+  box-shadow: none !important;
+}
+
+input.input-error {
+  border: 2px solid #dc3545 !important;
+  background-color: #ffe6e6 !important;
+}
+
+input.input-valid {
+  border: 2px solid #28a745 !important;
+  background-color: #fff !important;
+}
+
+.field-error-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 2px;
+  margin-bottom: 8px;
+  display: none;
+  padding: 2px 0;
+}
+
+.field-error-message.show {
+  display: block;
+}

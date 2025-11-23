@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
+    <meta charset="UTF-8" />
     <link rel="stylesheet" href="/estilosAdministrativos.css" />
     <link rel="stylesheet" href="/gestionCitas.css" />
-    <meta charset="UTF-8" />
     <title>Gestión de Citas</title>
   </head>
   <body>
@@ -11,7 +11,9 @@
       <p class="logo">Médico Independiente</p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
-        <a href="/gestionCitas">Gestión de Citas</a>
+        <a href="/gestionCitas" class="active">Gestión de Citas</a>
+        <a href="/historialCitas">Historial</a>
+        <a href="/calendarioMedico">Calendario</a>
         <a href="/dictamen">Dictámenes</a>
         <a href="/horario">Horarios</a>
         <a href="/PerfilMedicoAjustes">Perfil Médico</a>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Historial de Citas</title>
+    <link rel="stylesheet" href="/estilosAdministrativos.css" />
+    <link rel="stylesheet" href="/historialCitas.css" />
+  </head>
+  <body>
+    <nav>
+      <p class="logo">Médico Independiente</p>
+      <div class="nav_bar">
+        <a href="/paciente">Pacientes</a>
+        <a href="/gestionCitas">Gestión de Citas</a>
+        <a href="/historialCitas" class="active">Historial</a>
+        <a href="/calendarioMedico">Calendario</a>
+        <a href="/dictamen">Dictámenes</a>
+        <a href="/horario">Horarios</a>
+        <a href="/PerfilMedicoAjustes">Perfil Médico</a>
+      </div>
+    </nav>
+
+    <h1>Historial de Citas</h1>
+
+    <div class="filtros-container">
+      <div class="filtro-group">
+        <label>Buscar Paciente:</label>
+        <input
+          type="text"
+          id="busquedaPaciente"
+          placeholder="Nombre del paciente..."
+          onkeyup="filtrarTabla()"
+        />
+      </div>
+      <div class="filtro-group">
+        <label>Filtrar por Estado:</label>
+        <select id="filtroEstado" onchange="filtrarTabla()">
+          <option value="">Todos</option>
+          <option value="COMPLETADA">Completada</option>
+          <option value="CANCELADA">Cancelada</option>
+          <option value="NO_ASISTIO">No Asistió</option>
+          <option value="PENDIENTE">Pendiente (Pasada)</option>
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label>Fecha:</label>
+        <input type="date" id="filtroFecha" onchange="filtrarTabla()" />
+      </div>
+    </div>
+
+    <table border="1" id="tablaHistorial">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Paciente</th>
+          <th>Motivo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="cita : ${citas}" class="fila-cita">
+          <td th:text="${cita.fecha}"></td>
+          <td class="hora-cell" th:text="${cita.hora}"></td>
+          <td th:text="${cita.pacienteNombre}" class="nombre-paciente"></td>
+          <td th:text="${cita.motivo}"></td>
+          <td>
+            <span
+              th:class="'badge badge-' + ${#strings.toLowerCase(cita.estado.name())}"
+              th:text="${cita.estado.descripcion}"
+              th:data-estado="${cita.estado.name()}"
+            >
+            </span>
+          </td>
+          <td>
+            <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
+              <button type="button" class="btn-dictamen">Ver Dictamen</button>
+            </a>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(citas)}">
+          <td colspan="6" style="text-align: center; padding: 20px">
+            No hay citas en el historial.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      // Convertir horas
+      document.addEventListener("DOMContentLoaded", function () {
+        const horasCells = document.querySelectorAll(".hora-cell");
+        horasCells.forEach((cell) => {
+          const hora24 = cell.textContent.trim();
+          cell.textContent = convertirHora24a12(hora24);
+        });
+      });
+
+      function convertirHora24a12(hora24) {
+        const [horas, minutos] = hora24.split(":");
+        let hora = parseInt(horas);
+        const ampm = hora >= 12 ? "PM" : "AM";
+        hora = hora % 12 || 12;
+        return `${hora}:${minutos} ${ampm}`;
+      }
+
+      // Lógica de Filtrado
+      function filtrarTabla() {
+        const busqueda = document
+          .getElementById("busquedaPaciente")
+          .value.toLowerCase();
+        const estado = document.getElementById("filtroEstado").value;
+        const fecha = document.getElementById("filtroFecha").value;
+
+        const filas = document.querySelectorAll(".fila-cita");
+
+        filas.forEach((fila) => {
+          const nombre = fila
+            .querySelector(".nombre-paciente")
+            .textContent.toLowerCase();
+          const estadoBadge = fila
+            .querySelector(".badge")
+            .getAttribute("data-estado");
+          const fechaCita = fila.querySelector("td:first-child").textContent;
+
+          const coincideNombre = nombre.includes(busqueda);
+          const coincideEstado = estado === "" || estadoBadge === estado;
+          const coincideFecha = fecha === "" || fechaCita === fecha;
+
+          if (coincideNombre && coincideEstado && coincideFecha) {
+            fila.style.display = "";
+          } else {
+            fila.style.display = "none";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

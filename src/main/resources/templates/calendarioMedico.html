@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Calendario Médico</title>
+    <link rel="stylesheet" href="/estilosAdministrativos.css" />
+    <link rel="stylesheet" href="/calendarioMedico.css" />
+  </head>
+  <body>
+    <nav>
+      <p class="logo">Médico Independiente</p>
+      <div class="nav_bar">
+        <a href="/paciente">Pacientes</a>
+        <a href="/gestionCitas">Gestión de Citas</a>
+        <a href="/historialCitas">Historial</a>
+        <a href="/calendarioMedico" class="active">Calendario</a>
+        <a href="/dictamen">Dictámenes</a>
+        <a href="/horario">Horarios</a>
+        <a href="/PerfilMedicoAjustes">Perfil Médico</a>
+      </div>
+    </nav>
+
+    <h1>Calendario Médico</h1>
+
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <div class="calendar-nav">
+          <button onclick="cambiarMes(-1)">&#8592; Anterior</button>
+        </div>
+        <h2 id="mesAnio"></h2>
+        <div class="calendar-nav">
+          <button onclick="cambiarMes(1)">Siguiente &#8594;</button>
+        </div>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Días de la semana -->
+        <div class="day-name">Dom</div>
+        <div class="day-name">Lun</div>
+        <div class="day-name">Mar</div>
+        <div class="day-name">Mié</div>
+        <div class="day-name">Jue</div>
+        <div class="day-name">Vie</div>
+        <div class="day-name">Sáb</div>
+        <!-- Las celdas se generarán con JS -->
+      </div>
+    </div>
+
+    <!-- Modal de Detalles de Cita -->
+    <div id="modalDetalle" class="modal">
+      <div class="modal-content" style="max-width: 400px">
+        <span
+          class="close"
+          onclick="document.getElementById('modalDetalle').style.display='none'"
+          >&times;</span
+        >
+        <h3 id="detalleTitulo">Detalle de Cita</h3>
+        <p><strong>Paciente:</strong> <span id="detallePaciente"></span></p>
+        <p><strong>Hora:</strong> <span id="detalleHora"></span></p>
+        <p><strong>Motivo:</strong> <span id="detalleMotivo"></span></p>
+        <p><strong>Estado:</strong> <span id="detalleEstado"></span></p>
+        <div class="modal-buttons">
+          <button
+            type="button"
+            class="btn-confirmar"
+            onclick="document.getElementById('modalDetalle').style.display='none'"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      const eventos = /*[[${eventos}]]*/ [];
+      /*]]>*/
+
+      let fechaActual = new Date();
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderCalendar(fechaActual);
+      });
+
+      function cambiarMes(delta) {
+        fechaActual.setMonth(fechaActual.getMonth() + delta);
+        renderCalendar(fechaActual);
+      }
+
+      function renderCalendar(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+
+        // Actualizar header
+        const opciones = { month: "long", year: "numeric" };
+        document.getElementById("mesAnio").textContent =
+          date.toLocaleDateString("es-ES", opciones);
+
+        const grid = document.getElementById("calendarGrid");
+        // Limpiar grid manteniendo los headers
+        while (grid.children.length > 7) {
+          grid.removeChild(grid.lastChild);
+        }
+
+        const primerDiaMes = new Date(year, month, 1);
+        const ultimoDiaMes = new Date(year, month + 1, 0);
+        const diasEnMes = ultimoDiaMes.getDate();
+        const diaInicioSemana = primerDiaMes.getDay(); // 0 = Domingo
+
+        // Días del mes anterior
+        const ultimoDiaMesAnterior = new Date(year, month, 0).getDate();
+        for (let i = diaInicioSemana - 1; i >= 0; i--) {
+          const cell = createDayCell(ultimoDiaMesAnterior - i, true);
+          grid.appendChild(cell);
+        }
+
+        // Días del mes actual
+        const hoy = new Date();
+        for (let i = 1; i <= diasEnMes; i++) {
+          const esHoy =
+            i === hoy.getDate() &&
+            month === hoy.getMonth() &&
+            year === hoy.getFullYear();
+          const cell = createDayCell(i, false, esHoy, year, month);
+          grid.appendChild(cell);
+        }
+
+        // Días del mes siguiente (para completar la cuadrícula si es necesario)
+        const totalCells = diaInicioSemana + diasEnMes;
+        const nextMonthDays = 42 - totalCells; // 6 filas * 7 cols = 42
+        if (nextMonthDays < 7) {
+          // Solo llenar si queda espacio en la última fila visual
+          for (let i = 1; i <= nextMonthDays; i++) {
+            const cell = createDayCell(i, true);
+            grid.appendChild(cell);
+          }
+        }
+      }
+
+      function createDayCell(
+        dayNumber,
+        isOtherMonth,
+        isToday = false,
+        year = 0,
+        month = 0
+      ) {
+        const cell = document.createElement("div");
+        cell.className = `day-cell ${isOtherMonth ? "other-month" : ""} ${
+          isToday ? "today" : ""
+        }`;
+
+        const numberDiv = document.createElement("div");
+        numberDiv.className = "day-number";
+        numberDiv.textContent = dayNumber;
+        cell.appendChild(numberDiv);
+
+        if (!isOtherMonth) {
+          // Buscar eventos para este día
+          const fechaStr = `${year}-${String(month + 1).padStart(
+            2,
+            "0"
+          )}-${String(dayNumber).padStart(2, "0")}`;
+          const eventosDia = eventos.filter((e) => e.fecha === fechaStr);
+
+          eventosDia.sort((a, b) => a.hora.localeCompare(b.hora));
+
+          eventosDia.forEach((evento) => {
+            const pill = document.createElement("div");
+            pill.className = `event-pill event-${evento.estado.toLowerCase()}`;
+            pill.textContent = `${convertirHora(evento.hora)} - ${
+              evento.paciente.split(" ")[0]
+            }`;
+            pill.onclick = (e) => {
+              e.stopPropagation();
+              mostrarDetalle(evento);
+            };
+            cell.appendChild(pill);
+          });
+        }
+
+        return cell;
+      }
+
+      function convertirHora(hora24) {
+        const [horas, minutos] = hora24.split(":");
+        let hora = parseInt(horas);
+        const ampm = hora >= 12 ? "PM" : "AM";
+        hora = hora % 12 || 12;
+        return `${hora}:${minutos}${ampm}`;
+      }
+
+      function mostrarDetalle(evento) {
+        document.getElementById("detallePaciente").textContent =
+          evento.paciente;
+        document.getElementById("detalleHora").textContent = convertirHora(
+          evento.hora
+        );
+        document.getElementById("detalleMotivo").textContent = evento.motivo;
+        document.getElementById("detalleEstado").textContent = evento.estado;
+        document.getElementById("modalDetalle").style.display = "flex";
+      }
+    </script>
+  </body>
+</html>

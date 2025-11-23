@@ -128,38 +128,40 @@ public class CitaController {
             cita.setMedicoId(medicoId);
             citaRepository.save(cita);
 
-            Optional<Paciente> pacienteOpt = pacienteRepository.findById(cita.getPacienteId());
-            Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
+            if (cita.getPacienteId() != null) {
+                Optional<Paciente> pacienteOpt = pacienteRepository.findById(cita.getPacienteId());
+                Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
 
-            if (pacienteOpt.isPresent() && medicoOpt.isPresent()) {
-                Paciente paciente = pacienteOpt.get();
-                Medico medico = medicoOpt.get();
+                if (pacienteOpt.isPresent() && medicoOpt.isPresent()) {
+                    Paciente paciente = pacienteOpt.get();
+                    Medico medico = medicoOpt.get();
 
-                if (paciente.getCorreo() != null && !paciente.getCorreo().isEmpty() && medico.getEmail() != null) {
-                    DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm a");
+                    if (paciente.getCorreo() != null && !paciente.getCorreo().isEmpty() && medico.getEmail() != null) {
+                        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm a");
 
-                    String fechaFormateada = cita.getFecha().format(formatoFecha);
-                    String horaFormateada = cita.getHora().format(formatoHora);
+                        String fechaFormateada = cita.getFecha().format(formatoFecha);
+                        String horaFormateada = cita.getHora().format(formatoHora);
 
-                    String asunto = "Confirmación de Cita Médica";
-                    String mensaje = String.format(
-                            "Estimado(a) %s,\n\n" +
-                                    "Se le ha asignado una cita médica con los siguientes detalles:\n\n" +
-                                    "Médico: %s\n" +
-                                    "Fecha: %s\n" +
-                                    "Hora: %s\n" +
-                                    "Motivo: %s\n\n" +
-                                    "Por favor, asegúrese de asistir puntualmente.\n\n" +
-                                    "Saludos cordiales,\n" +
-                                    "Consultorio Médico",
-                            paciente.getNombre() + " " + paciente.getApellido(),
-                            medico.getNombre(),
-                            fechaFormateada,
-                            horaFormateada,
-                            cita.getMotivo());
+                        String asunto = "Confirmación de Cita Médica";
+                        String mensaje = String.format(
+                                "Estimado(a) %s,\n\n" +
+                                        "Se le ha asignado una cita médica con los siguientes detalles:\n\n" +
+                                        "Médico: %s\n" +
+                                        "Fecha: %s\n" +
+                                        "Hora: %s\n" +
+                                        "Motivo: %s\n\n" +
+                                        "Por favor, asegúrese de asistir puntualmente.\n\n" +
+                                        "Saludos cordiales,\n" +
+                                        "Consultorio Médico",
+                                paciente.getNombre() + " " + paciente.getApellido(),
+                                medico.getNombre(),
+                                fechaFormateada,
+                                horaFormateada,
+                                cita.getMotivo());
 
-                    emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
+                        emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
+                    }
                 }
             }
 
@@ -181,12 +183,15 @@ public class CitaController {
 
         try {
             Optional<Cita> citaOpt = citaRepository.findById(id);
-            if (citaOpt.isPresent() && citaOpt.get().getMedicoId().equals(medicoId)) {
-                // PRIMERO eliminar el dictamen asociado (si existe)
-                dictamenRepository.deleteByCitaId(id);
-                // LUEGO eliminar la cita
-                citaRepository.deleteById(id);
-                redirectAttributes.addFlashAttribute("mensaje", "Cita eliminada exitosamente");
+            if (citaOpt.isPresent()) {
+                Long citaMedicoId = citaOpt.get().getMedicoId();
+                if (citaMedicoId != null && citaMedicoId.equals(medicoId)) {
+                    // PRIMERO eliminar el dictamen asociado (si existe)
+                    dictamenRepository.deleteByCitaId(id);
+                    // LUEGO eliminar la cita
+                    citaRepository.deleteById(id);
+                    redirectAttributes.addFlashAttribute("mensaje", "Cita eliminada exitosamente");
+                }
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al eliminar la cita: " + e.getMessage());
@@ -205,7 +210,9 @@ public class CitaController {
 
         try {
             Optional<Cita> citaExistenteOpt = citaRepository.findById(cita.getId());
-            if (citaExistenteOpt.isPresent() && citaExistenteOpt.get().getMedicoId().equals(medicoId)) {
+            if (citaExistenteOpt.isPresent() &&
+                    citaExistenteOpt.get().getMedicoId() != null &&
+                    citaExistenteOpt.get().getMedicoId().equals(medicoId)) {
                 Cita citaExistente = citaExistenteOpt.get();
 
                 // Validar que no se mueva a una fecha pasada
@@ -286,6 +293,76 @@ public class CitaController {
         }
 
         return "redirect:/gestionCitas";
+    }
+
+    @GetMapping("/historialCitas")
+    public String mostrarHistorialCitas(Model model, HttpSession session) {
+        Long medicoId = (Long) session.getAttribute("medicoId");
+        if (medicoId == null) {
+            return "redirect:/login";
+        }
+
+        // Obtener todas las citas ordenadas
+        List<Cita> todasLasCitas = citaRepository.findByMedicoIdOrderByFechaAscHoraAsc(medicoId);
+
+        // Obtener pacientes para mapear nombres
+        List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
+        Map<Long, String> pacienteNombres = new HashMap<>();
+        for (Paciente p : pacientes) {
+            pacienteNombres.put(p.getId(), p.getNombre() + " " + p.getApellido());
+        }
+
+        // Filtrar citas pasadas o finalizadas
+        List<CitaConPaciente> historial = new ArrayList<>();
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        java.time.LocalTime ahora = java.time.LocalTime.now();
+
+        for (Cita cita : todasLasCitas) {
+            boolean esPasado = cita.getFecha().isBefore(hoy)
+                    || (cita.getFecha().isEqual(hoy) && cita.getHora().isBefore(ahora));
+            boolean esFinalizado = cita.getEstado() == EstadoCita.COMPLETADA || cita.getEstado() == EstadoCita.CANCELADA
+                    || cita.getEstado() == EstadoCita.NO_ASISTIO;
+
+            if (esPasado || esFinalizado) {
+                String nombrePaciente = pacienteNombres.getOrDefault(cita.getPacienteId(), "Paciente no encontrado");
+                historial.add(new CitaConPaciente(cita, nombrePaciente));
+            }
+        }
+
+        model.addAttribute("citas", historial);
+        return "historialCitas";
+    }
+
+    @GetMapping("/calendarioMedico")
+    public String mostrarCalendarioMedico(Model model, HttpSession session) {
+        Long medicoId = (Long) session.getAttribute("medicoId");
+        if (medicoId == null) {
+            return "redirect:/login";
+        }
+
+        // Obtener todas las citas para el calendario
+        List<Cita> citas = citaRepository.findByMedicoId(medicoId);
+
+        // Mapear nombres de pacientes
+        List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
+        Map<Long, String> pacienteNombres = new HashMap<>();
+        for (Paciente p : pacientes) {
+            pacienteNombres.put(p.getId(), p.getNombre() + " " + p.getApellido());
+        }
+
+        List<Map<String, Object>> eventos = new ArrayList<>();
+        for (Cita cita : citas) {
+            Map<String, Object> evento = new HashMap<>();
+            evento.put("fecha", cita.getFecha().toString()); // YYYY-MM-DD
+            evento.put("hora", cita.getHora().toString());
+            evento.put("paciente", pacienteNombres.getOrDefault(cita.getPacienteId(), "Desconocido"));
+            evento.put("estado", cita.getEstado().name());
+            evento.put("motivo", cita.getMotivo());
+            eventos.add(evento);
+        }
+
+        model.addAttribute("eventos", eventos);
+        return "calendarioMedico";
     }
 
     @GetMapping("/limpiar-bd")
