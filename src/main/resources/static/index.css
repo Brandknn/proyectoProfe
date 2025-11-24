@@ -103,8 +103,7 @@ nav.scrolled {
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, rgba(27, 132, 212, 0.85) 0%, rgba(0, 91, 159, 0.85) 100%), 
-              url('/medico.png') center top/cover no-repeat;
+  background: url('/medico.png') center top/cover no-repeat;
   background-position: center 30%;
   color: white;
   padding: 0;
