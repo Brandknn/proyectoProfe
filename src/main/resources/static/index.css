@@ -54,7 +54,6 @@ nav.scrolled {
 .nav_bar {
   display: flex;
   gap: 2rem;
-  align-items: center;
 }
 
 .nav_bar a {
