@@ -89,6 +89,9 @@
         type="text"
         name="telefono"
         th:value="${medico.telefono}"
+        pattern="3[0-9]{9}"
+        maxlength="10"
+        title="El teléfono debe tener 10 dígitos y comenzar con 3"
         required
       /><br /><br />
 
