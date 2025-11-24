@@ -7,32 +7,12 @@
     <link rel="stylesheet" href="/calendarioMedico.css" />
   </head>
   <body class="dark-mode">
-    <input type="checkbox" id="theme-toggle" style="display: none" />
-
+       <input type="checkbox" id="theme-toggle" style="display: none;">
+    
     <!-- Label que actúa como botón -->
-    <label
-      for="theme-toggle"
-      style="
-        cursor: pointer;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #005b9f;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        z-index: 999;
-      "
-      >🌙</label
-    >
+    <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px; z-index: 999;">🌙</label>
     <nav>
-      <p class="logo">
-        Dr.
-        <span
-          th:text="${medicoLogueado != null ? medicoLogueado.nombre + ' ' + medicoLogueado.apellido : 'Médico Independiente'}"
-          >Médico Independiente</span
-        >
-      </p>
+      <p class="logo">Médico Independiente</p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>
@@ -51,7 +31,7 @@
         <div class="calendar-nav">
           <button onclick="cambiarMes(-1)">&#8592; Anterior</button>
         </div>
-        <h2 id="mesAnio" style="color: #005b9f"></h2>
+        <h2 id="mesAnio" style="color: #005b9f;"></h2>
         <div class="calendar-nav">
           <button onclick="cambiarMes(1)">Siguiente &#8594;</button>
         </div>
@@ -224,6 +204,6 @@
         document.getElementById("modalDetalle").style.display = "flex";
       }
     </script>
-    <script src="dark-mode.js"></script>
+      <script src="dark-mode.js"></script>
   </body>
 </html>

@@ -27,13 +27,7 @@
       >🌙</label
     >
     <nav>
-      <p class="logo">
-        Dr.
-        <span
-          th:text="${medicoLogueado != null ? medicoLogueado.nombre + ' ' + medicoLogueado.apellido : 'Médico Independiente'}"
-          >Médico Independiente</span
-        >
-      </p>
+      <p class="logo">Médico Independiente</p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas" class="active">Gestión de Citas</a>
@@ -46,6 +40,7 @@
     </nav>
 
     <h1>Gestión de Citas</h1>
+
     <!-- Mensajes de error y éxito -->
     <div
       th:if="${error}"

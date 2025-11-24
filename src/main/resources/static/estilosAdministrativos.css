@@ -442,28 +442,3 @@ a:hover {
         transition: color 0.3s ease;
     }
 }
-
-/* Botón de cerrar sesión */
-.btn-logout {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-  white-space: nowrap;
-}
-
-.btn-logout:hover {
-  background-color: #c82333;
-}
-
-.dark-mode .btn-logout {
-  background-color: #ff5252;
-}
-
-.dark-mode .btn-logout:hover {
-  background-color: #ff1744;
-}
