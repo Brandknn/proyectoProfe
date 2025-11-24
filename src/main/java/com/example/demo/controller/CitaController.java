@@ -292,7 +292,7 @@ public class CitaController {
      * 
      * return "redirect:/gestionCitas";
      * }
-     */"
+     */
 
     @PostMapping("/cambiarEstadoCita")
     public String cambiarEstadoCita(@RequestParam Long citaId, @RequestParam String nuevoEstado, HttpSession session,
