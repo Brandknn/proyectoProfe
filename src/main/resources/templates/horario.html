@@ -17,7 +17,9 @@
     <!-- Label que actúa como botón -->
     <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px; z-index: 999;">🌙</label>
     <nav>
-      <p class="logo">Médico Independiente</p>
+      <p class="logo">
+        Dr. <span th:text="${medico != null ? medico.nombre + ' ' + medico.apellido : 'Médico Independiente'}">Médico Independiente</span>
+      </p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas">Gestión de Citas</a>

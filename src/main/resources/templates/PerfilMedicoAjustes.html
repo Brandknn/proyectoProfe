@@ -30,7 +30,7 @@
     >
     <nav>
       <p class="logo">
-        Dr. <span th:text="${medico.nombre} + ' ' + ${medico.apellido}"></span>
+        Dr. <span th:text="${medico != null ? medico.nombre + ' ' + medico.apellido : 'Médico Independiente'}">Médico Independiente</span>
       </p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>

@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.Paciente;
+import com.example.demo.model.Medico;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.PacienteRepository;
+import com.example.demo.repository.MedicoRepository;
 import com.example.demo.service.EmailService;
 
 import jakarta.servlet.http.HttpSession;
@@ -25,12 +27,14 @@ public class PacienteController {
     private final PacienteRepository pacienteRepository;
     private final CitaRepository citaRepository;
     private final EmailService emailService;
+    private final MedicoRepository medicoRepository;
 
     public PacienteController(PacienteRepository pacienteRepository, CitaRepository citaRepository,
-            EmailService emailService) {
+            EmailService emailService, MedicoRepository medicoRepository) {
         this.pacienteRepository = pacienteRepository;
         this.citaRepository = citaRepository;
         this.emailService = emailService;
+        this.medicoRepository = medicoRepository;
     }
 
     @GetMapping("/paciente")
@@ -40,6 +44,7 @@ public class PacienteController {
             return "redirect:/login";
         }
 
+        medicoRepository.findById(medicoId).ifPresent(medico -> model.addAttribute("medico", medico));
         model.addAttribute("paciente", new Paciente());
         List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
         model.addAttribute("pacientes", pacientes);

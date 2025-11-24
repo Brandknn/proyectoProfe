@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.HorarioMedico;
 import com.example.demo.model.SlotDisponibilidad;
+import com.example.demo.repository.MedicoRepository;
 import com.example.demo.service.HorarioService;
 
 import jakarta.servlet.http.HttpSession;
@@ -24,9 +25,11 @@ import jakarta.servlet.http.HttpSession;
 public class HorarioController {
     
     private final HorarioService horarioService;
+    private final MedicoRepository medicoRepository;
     
-    public HorarioController(HorarioService horarioService) {
+    public HorarioController(HorarioService horarioService, MedicoRepository medicoRepository) {
         this.horarioService = horarioService;
+        this.medicoRepository = medicoRepository;
     }
     
     /**
@@ -39,6 +42,7 @@ public class HorarioController {
             return "redirect:/login";
         }
         
+        medicoRepository.findById(medicoId).ifPresent(medico -> model.addAttribute("medico", medico));
         // Obtener horarios existentes del médico
         List<HorarioMedico> horarios = horarioService.obtenerHorariosMedico(medicoId);
         
