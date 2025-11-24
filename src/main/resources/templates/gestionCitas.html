@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/estilosAdministrativos.css" />
     <link rel="stylesheet" href="/responsive.css" />
     <link rel="stylesheet" href="/gestionCitas.css" />
+    <link rel="stylesheet" href="/historialCitas.css" />
     <link rel="stylesheet" href="/dropdown-menu.css" />
     <link
       rel="stylesheet"
@@ -188,7 +189,35 @@
     </form>
 
     <h2>Listado de Citas</h2>
-    <table border="1">
+
+    <!-- Filtros de Búsqueda -->
+    <div class="filtros-container">
+      <div class="filtro-group">
+        <label>Buscar Paciente:</label>
+        <input
+          type="text"
+          id="busquedaPaciente"
+          placeholder="Nombre del paciente..."
+          onkeyup="filtrarTablaCitas()"
+        />
+      </div>
+      <div class="filtro-group">
+        <label>Filtrar por Estado:</label>
+        <select id="filtroEstado" onchange="filtrarTablaCitas()">
+          <option value="">Todos</option>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="COMPLETADA">Completada</option>
+          <option value="CANCELADA">Cancelada</option>
+          <option value="NO_ASISTIO">No Asistió</option>
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label>Fecha:</label>
+        <input type="date" id="filtroFecha" onchange="filtrarTablaCitas()" />
+      </div>
+    </div>
+
+    <table border="1" id="tablaCitas">
       <thead>
         <tr>
           <th>Paciente</th>
@@ -199,9 +228,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr th:each="cita : ${citas}">
-          <td th:text="${cita.pacienteNombre}"></td>
-          <td th:text="${cita.fecha}"></td>
+        <tr th:each="cita : ${citas}" class="fila-cita">
+          <td th:text="${cita.pacienteNombre}" class="nombre-paciente"></td>
+          <td th:text="${cita.fecha}" class="fecha-cita"></td>
           <td class="hora-cell" th:text="${cita.hora}"></td>
           <td th:text="${cita.motivo}"></td>
           <td class="acciones-cell">
@@ -427,6 +456,34 @@
           fechaInput.setAttribute("min", fechaMinima);
         }
       });
+
+      // Función de filtrado de citas
+      function filtrarTablaCitas() {
+        const busqueda = document
+          .getElementById("busquedaPaciente")
+          .value.toLowerCase();
+        const estado = document.getElementById("filtroEstado").value;
+        const fecha = document.getElementById("filtroFecha").value;
+
+        const filas = document.querySelectorAll(".fila-cita");
+
+        filas.forEach((fila) => {
+          const nombre = fila
+            .querySelector(".nombre-paciente")
+            .textContent.toLowerCase();
+          const estadoBadge = fila
+            .querySelector(".estado-select")
+            .getAttribute("data-actual");
+          const fechaCita = fila.querySelector(".fecha-cita").textContent;
+
+          const coincideNombre = nombre.includes(busqueda);
+          const coincideEstado = estado === "" || estadoBadge === estado;
+          const coincideFecha = fecha === "" || fechaCita === fecha;
+
+          fila.style.display =
+            coincideNombre && coincideEstado && coincideFecha ? "" : "none";
+        });
+      }
     </script>
     <script src="dark-mode.js"></script>
     <script src="dropdown-menu.js"></script>

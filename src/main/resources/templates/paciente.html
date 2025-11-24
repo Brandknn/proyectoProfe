@@ -5,22 +5,42 @@
     <link rel="stylesheet" href="/gestionCitas.css" />
     <link rel="stylesheet" href="/mensajes-comunes.css" />
     <link rel="stylesheet" href="/paciente.css" />
+    <link rel="stylesheet" href="/historialCitas.css" />
     <link rel="stylesheet" href="/dropdown-menu.css" />
     <meta charset="UTF-8" />
     <title>Gestión de Pacientes</title>
     <link rel="icon" type="image/png" href="/icono.png" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
   </head>
   <body class="dark-mode">
+    <input type="checkbox" id="theme-toggle" style="display: none" />
 
-  <input type="checkbox" id="theme-toggle" style="display: none">
-    
     <!-- Label que actúa como botón -->
-    <label for="theme-toggle" style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; background: #005b9f; color: white; padding: 10px; border-radius: 5px;">🌙</label>
+    <label
+      for="theme-toggle"
+      style="
+        cursor: pointer;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #005b9f;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+      "
+      >🌙</label
+    >
 
     <nav>
       <p class="logo">
-        Dr. <span th:text="${medico != null ? medico.nombre + ' ' + medico.apellido : 'Médico Independiente'}">Médico Independiente</span>
+        Dr.
+        <span
+          th:text="${medico != null ? medico.nombre + ' ' + medico.apellido : 'Médico Independiente'}"
+          >Médico Independiente</span
+        >
       </p>
       <div class="nav_bar">
         <a href="/paciente" class="active">Pacientes</a>
@@ -31,13 +51,14 @@
         <a href="/horario">Horarios</a>
         <div class="dropdown">
           <a href="#" class="dropdown-toggle">
-            <i class="fas fa-cog"></i> Ajustes <i class="fas fa-chevron-down"></i>
+            <i class="fas fa-cog"></i> Ajustes
+            <i class="fas fa-chevron-down"></i>
           </a>
           <div class="dropdown-menu">
             <a href="/PerfilMedicoAjustes" class="dropdown-item">
               <i class="fas fa-user-md"></i> Perfil Médico
             </a>
-            <form action="/logout" method="post" style="margin: 0;">
+            <form action="/logout" method="post" style="margin: 0">
               <button type="submit" class="dropdown-item logout-item">
                 <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
               </button>
@@ -124,7 +145,21 @@
     </form>
 
     <h2>Listado de Pacientes</h2>
-    <table border="1">
+
+    <!-- Filtros de Búsqueda -->
+    <div class="filtros-container">
+      <div class="filtro-group">
+        <label>Buscar Paciente:</label>
+        <input
+          type="text"
+          id="busquedaPaciente"
+          placeholder="Nombre, apellido o documento..."
+          onkeyup="filtrarTablaPacientes()"
+        />
+      </div>
+    </div>
+
+    <table border="1" id="tablaPacientes">
       <thead>
         <tr>
           <th>Nombre</th>
@@ -136,10 +171,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr th:each="pac : ${pacientes}">
-          <td th:text="${pac.nombre}"></td>
-          <td th:text="${pac.apellido}"></td>
-          <td th:text="${pac.documento}"></td>
+        <tr th:each="pac : ${pacientes}" class="fila-paciente">
+          <td th:text="${pac.nombre}" class="nombre-paciente"></td>
+          <td th:text="${pac.apellido}" class="apellido-paciente"></td>
+          <td th:text="${pac.documento}" class="documento-paciente"></td>
           <td th:text="${pac.telefono}"></td>
           <td th:text="${pac.correo}"></td>
           <td>
@@ -570,6 +605,33 @@
           }, 300);
         }, 5000);
       });
+
+      // Función de filtrado de pacientes
+      function filtrarTablaPacientes() {
+        const busqueda = document
+          .getElementById("busquedaPaciente")
+          .value.toLowerCase();
+        const filas = document.querySelectorAll(".fila-paciente");
+
+        filas.forEach((fila) => {
+          const nombre = fila
+            .querySelector(".nombre-paciente")
+            .textContent.toLowerCase();
+          const apellido = fila
+            .querySelector(".apellido-paciente")
+            .textContent.toLowerCase();
+          const documento = fila
+            .querySelector(".documento-paciente")
+            .textContent.toLowerCase();
+
+          const coincide =
+            nombre.includes(busqueda) ||
+            apellido.includes(busqueda) ||
+            documento.includes(busqueda);
+
+          fila.style.display = coincide ? "" : "none";
+        });
+      }
     </script>
     <script src="dark-mode.js"></script>
     <script src="dropdown-menu.js"></script>

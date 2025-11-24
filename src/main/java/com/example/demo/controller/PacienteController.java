@@ -96,7 +96,8 @@ public class PacienteController {
             }
 
             // Validar que el documento no esté duplicado para este médico
-            Paciente pacienteExistente = pacienteRepository.findByDocumentoAndMedicoId(paciente.getDocumento(), medicoId);
+            Paciente pacienteExistente = pacienteRepository.findByDocumentoAndMedicoId(paciente.getDocumento(),
+                    medicoId);
             if (pacienteExistente != null) {
                 model.addAttribute("error", "Ya tienes un paciente registrado con este documento.");
                 model.addAttribute("paciente", new Paciente());
@@ -175,17 +176,45 @@ public class PacienteController {
     }
 
     @PostMapping("/actualizarPaciente")
-    public String actualizarPaciente(@ModelAttribute Paciente paciente, HttpSession session) {
+    public String actualizarPaciente(@ModelAttribute Paciente paciente, HttpSession session,
+            RedirectAttributes redirectAttributes) {
         Long medicoId = (Long) session.getAttribute("medicoId");
         if (medicoId == null || paciente == null || paciente.getId() == null) {
             return "redirect:/login";
         }
 
-        Optional<Paciente> pacienteExistente = paciente.getId() != null ? pacienteRepository.findById(paciente.getId())
-                : Optional.empty();
-        if (pacienteExistente.isPresent() && pacienteExistente.get().getMedicoId().equals(medicoId)) {
+        try {
+            Optional<Paciente> pacienteExistenteOpt = pacienteRepository.findById(paciente.getId());
+            if (pacienteExistenteOpt.isEmpty() || !pacienteExistenteOpt.get().getMedicoId().equals(medicoId)) {
+                redirectAttributes.addFlashAttribute("error", "Paciente no encontrado o no autorizado.");
+                return "redirect:/paciente";
+            }
+
+            // Validar documento duplicado (excepto a sí mismo)
+            Paciente pacienteConMismoDoc = pacienteRepository.findByDocumentoAndMedicoId(
+                    paciente.getDocumento(), medicoId);
+            if (pacienteConMismoDoc != null && !pacienteConMismoDoc.getId().equals(paciente.getId())) {
+                redirectAttributes.addFlashAttribute("error",
+                        "Ya tienes otro paciente registrado con este documento.");
+                return "redirect:/paciente";
+            }
+
+            // Validar teléfono duplicado (excepto a sí mismo)
+            Paciente pacienteConMismoTel = pacienteRepository.findByTelefono(paciente.getTelefono());
+            if (pacienteConMismoTel != null && !pacienteConMismoTel.getId().equals(paciente.getId())) {
+                redirectAttributes.addFlashAttribute("error",
+                        "El teléfono ya está registrado en otro paciente.");
+                return "redirect:/paciente";
+            }
+
+            // Todo válido, actualizar
             paciente.setMedicoId(medicoId);
             pacienteRepository.save(paciente);
+            redirectAttributes.addFlashAttribute("success", "Paciente actualizado exitosamente.");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al actualizar el paciente: " + e.getMessage());
         }
 
         return "redirect:/paciente";
