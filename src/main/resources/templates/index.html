@@ -4,12 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BESalud - Gestión de Citas Médicas</title>
+    <link rel="icon" type="image/png" href="/icono.png" />
     <link rel="stylesheet" href="/index.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   </head>
   <body>
     <!-- Navegación -->
     <nav>
       <a href="#inicio" class="logo">BESalud</a>
+      <button class="menu-toggle" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <div class="nav_bar">
         <a href="#inicio">Inicio</a>
         <a href="#funcionalidades">Funcionalidades</a>
@@ -34,7 +41,7 @@
 
       <div class="funcionalidades-grid">
         <div class="funcionalidad-card">
-          <div class="funcionalidad-icon">👥</div>
+          <div class="funcionalidad-icon"><i class="fas fa-users"></i></div>
           <h3>Gestión de Pacientes</h3>
           <p>
             Registra y administra la información de tus pacientes de forma
@@ -44,7 +51,7 @@
         </div>
 
         <div class="funcionalidad-card">
-          <div class="funcionalidad-icon">📅</div>
+          <div class="funcionalidad-icon"><i class="fas fa-calendar-alt"></i></div>
           <h3>Agenda Configurable</h3>
           <p>
             Organiza tus horarios de atención de manera flexible. Define
@@ -54,7 +61,7 @@
         </div>
 
         <div class="funcionalidad-card">
-          <div class="funcionalidad-icon">🔔</div>
+          <div class="funcionalidad-icon"><i class="fas fa-bell"></i></div>
           <h3>Confirmaciones y Recordatorios</h3>
           <p>
             Reduce inasistencias con notificaciones automáticas. Envía
@@ -63,7 +70,7 @@
         </div>
 
         <div class="funcionalidad-card">
-          <div class="funcionalidad-icon">📊</div>
+          <div class="funcionalidad-icon"><i class="fas fa-chart-bar"></i></div>
           <h3>Reportes Detallados</h3>
           <p>
             Visualiza estadísticas de citas atendidas, canceladas y no
@@ -72,7 +79,7 @@
         </div>
 
         <div class="funcionalidad-card">
-          <div class="funcionalidad-icon">🔄</div>
+          <div class="funcionalidad-icon"><i class="fas fa-sync-alt"></i></div>
           <h3>Reprogramación Fácil</h3>
           <p>
             Reprograma citas de manera sencilla sin conflictos. Gestiona
@@ -81,7 +88,7 @@
         </div>
 
         <div class="funcionalidad-card">
-          <div class="funcionalidad-icon">💻</div>
+          <div class="funcionalidad-icon"><i class="fas fa-laptop-medical"></i></div>
           <h3>Acceso Desde Cualquier Lugar</h3>
           <p>
             Aplicación web responsive adaptada a computadoras, tablets y
@@ -101,7 +108,7 @@
       <div class="pasos-grid">
         <div class="paso-card">
           <div class="paso-numero">1</div>
-          <div class="paso-icon">📝</div>
+          <div class="paso-icon"><i class="fas fa-user-plus"></i></div>
           <h3>Regístrate y Configura</h3>
           <p>
             Crea tu cuenta, personaliza tu perfil profesional y configura tus
@@ -113,7 +120,7 @@
 
         <div class="paso-card">
           <div class="paso-numero">2</div>
-          <div class="paso-icon">➕</div>
+          <div class="paso-icon"><i class="fas fa-calendar-plus"></i></div>
           <h3>Registra Pacientes y Citas</h3>
           <p>
             Ingresa la información de tus pacientes y agenda sus citas
@@ -126,7 +133,7 @@
 
         <div class="paso-card">
           <div class="paso-numero">3</div>
-          <div class="paso-icon">✅</div>
+          <div class="paso-icon"><i class="fas fa-chart-line"></i></div>
           <h3>Gestiona y Optimiza</h3>
           <p>
             Envía recordatorios, confirma asistencias, genera reportes y toma el
@@ -175,17 +182,18 @@
 
         <div class="footer-col">
           <h3>Contacto</h3>
-          <p>📧 info@besalud.com</p>
-          <p>📱 +57 300 123 4567</p>
-          <p>📍 Cartagena de Indias, Colombia</p>
+          <p><i class="fas fa-envelope"></i> besalud@gmail.com</p>
+          <p><i class="fas fa-phone"></i> +57 300 123 4567</p>
+          <p><i class="fas fa-map-marker-alt"></i> Cartagena de Indias, Colombia</p>
         </div>
 
         <div class="footer-col">
           <h3>Síguenos</h3>
           <div class="socials">
-            <a href="#">🌐</a>
-            <a href="#">🐦</a>
-            <a href="#">📘</a>
+            <a href="#" aria-label="Sitio web"><i class="fas fa-globe"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
       </div>
@@ -197,5 +205,59 @@
         </p>
       </div>
     </footer>
+
+    <script>
+      // Menú móvil
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navBar = document.querySelector('.nav_bar');
+      const navLinks = document.querySelectorAll('.nav_bar a');
+
+      menuToggle.addEventListener('click', () => {
+        navBar.classList.toggle('active');
+        menuToggle.classList.toggle('active');
+      });
+
+      // Cerrar menú al hacer clic en un enlace
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          navBar.classList.remove('active');
+          menuToggle.classList.remove('active');
+        });
+      });
+
+      // Animaciones al hacer scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+          }
+        });
+      }, observerOptions);
+
+      // Observar elementos
+      document.querySelectorAll('.funcionalidad-card, .paso-card').forEach(el => {
+        observer.observe(el);
+      });
+
+      // Cambiar estilo del nav al hacer scroll
+      let lastScroll = 0;
+      window.addEventListener('scroll', () => {
+        const nav = document.querySelector('nav');
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll > 50) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+
+        lastScroll = currentScroll;
+      });
+    </script>
   </body>
 </html>
