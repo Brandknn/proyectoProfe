@@ -18,6 +18,7 @@ import com.example.demo.model.Dictamen;
 import com.example.demo.model.Paciente;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.DictamenRepository;
+import com.example.demo.repository.MedicoRepository;
 import com.example.demo.repository.PacienteRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +35,9 @@ public class DictamenController {
     @Autowired
     private PacienteRepository pacienteRepository;
 
+    @Autowired
+    private MedicoRepository medicoRepository;
+
     @GetMapping("/dictamen")
     public String listarDictamenes(Model model, HttpSession session) {
         Long medicoId = (Long) session.getAttribute("medicoId");
@@ -41,6 +45,7 @@ public class DictamenController {
             return "redirect:/login";
         }
 
+        medicoRepository.findById(medicoId).ifPresent(medico -> model.addAttribute("medico", medico));
         try {
             List<Cita> citas = citaRepository.findByMedicoIdOrderByFechaAscHoraAsc(medicoId);
 

@@ -30,7 +30,9 @@
       >🌙</label
     >
     <nav>
-      <p class="logo">Médico Independiente</p>
+      <p class="logo">
+        Dr. <span th:text="${medico != null ? medico.nombre + ' ' + medico.apellido : 'Médico Independiente'}">Médico Independiente</span>
+      </p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
         <a href="/gestionCitas" class="active">Gestión de Citas</a>

@@ -1,18 +1,26 @@
 /* ==================== RESPONSIVE UTILITIES ==================== */
 
-/* Asegurar que tablas no se desborden */
+/* Contenedor para tablas responsivas */
 .tabla-historial,
-.tabla-citas,
-table {
+.tabla-citas {
   width: 100%;
   overflow-x: auto;
-  display: block;
+}
+
+table {
+  width: 100%;
+  table-layout: auto;
 }
 
 @media (max-width: 768px) {
   .tabla-historial,
-  .tabla-citas,
+  .tabla-citas {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
   table {
+    min-width: 600px;
     font-size: 14px;
   }
 

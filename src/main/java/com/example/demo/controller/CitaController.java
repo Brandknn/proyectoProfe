@@ -59,6 +59,7 @@ public class CitaController {
             return "redirect:/login";
         }
 
+        medicoRepository.findById(medicoId).ifPresent(medico -> model.addAttribute("medico", medico));
         model.addAttribute("cita", new Cita());
         List<Paciente> pacientes = pacienteRepository.findByMedicoId(medicoId);
         model.addAttribute("pacientes", pacientes);
@@ -328,6 +329,7 @@ public class CitaController {
             return "redirect:/login";
         }
 
+        medicoRepository.findById(medicoId).ifPresent(medico -> model.addAttribute("medico", medico));
         // Obtener todas las citas ordenadas
         List<Cita> todasLasCitas = citaRepository.findByMedicoIdOrderByFechaAscHoraAsc(medicoId);
 
@@ -366,6 +368,7 @@ public class CitaController {
             return "redirect:/login";
         }
 
+        medicoRepository.findById(medicoId).ifPresent(medico -> model.addAttribute("medico", medico));
         // Obtener todas las citas para el calendario
         List<Cita> citas = citaRepository.findByMedicoId(medicoId);
 
