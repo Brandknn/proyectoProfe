@@ -169,21 +169,19 @@ public class CitaController {
                             String nombreCompleto = paciente.getNombre() + " " + paciente.getApellido();
                             String nombreMedico = "Dr. " + medico.getNombre() + " " + medico.getApellido();
                             byte[] imagenCita = citaImageService.generarImagenCita(
-                                nombreCompleto, 
-                                nombreMedico, 
-                                cita.getFecha(), 
-                                cita.getHora(), 
-                                cita.getMotivo()
-                            );
-                            
+                                    nombreCompleto,
+                                    nombreMedico,
+                                    cita.getFecha(),
+                                    cita.getHora(),
+                                    cita.getMotivo());
+
                             // Enviar correo con imagen adjunta
                             emailService.enviarCorreoConAdjunto(
-                                paciente.getCorreo(), 
-                                asunto, 
-                                mensaje,
-                                imagenCita,
-                                "confirmacion_cita.png"
-                            );
+                                    paciente.getCorreo(),
+                                    asunto,
+                                    mensaje,
+                                    imagenCita,
+                                    "confirmacion_cita.png");
                         } catch (Exception e) {
                             // Si falla la generación de imagen, enviar correo sin adjunto
                             emailService.enviarCorreo(medico.getEmail(), paciente.getCorreo(), asunto, mensaje);
@@ -227,54 +225,74 @@ public class CitaController {
         return "redirect:/gestionCitas";
     }
 
-    @PostMapping("/actualizarCita")
-    public String actualizarCita(@ModelAttribute Cita cita, HttpSession session,
-            RedirectAttributes redirectAttributes) {
-        Long medicoId = (Long) session.getAttribute("medicoId");
-        if (medicoId == null || cita == null || cita.getId() == null) {
-            return "redirect:/login";
-        }
-
-        try {
-            Optional<Cita> citaExistenteOpt = citaRepository.findById(cita.getId());
-            if (citaExistenteOpt.isPresent() &&
-                    citaExistenteOpt.get().getMedicoId() != null &&
-                    citaExistenteOpt.get().getMedicoId().equals(medicoId)) {
-                Cita citaExistente = citaExistenteOpt.get();
-
-                // Validar que no se mueva a una fecha pasada
-                java.time.LocalDate hoy = java.time.LocalDate.now();
-                if (cita.getFecha().isBefore(hoy)) {
-                    redirectAttributes.addFlashAttribute("error", "No se puede mover una cita a una fecha pasada.");
-                    return "redirect:/gestionCitas";
-                }
-
-                // Si cambia fecha u hora, validar disponibilidad
-                if (!cita.getFecha().equals(citaExistente.getFecha())
-                        || !cita.getHora().equals(citaExistente.getHora())) {
-                    if (!horarioService.validarDisponibilidadSlot(medicoId, cita.getFecha(), cita.getHora())) {
-                        redirectAttributes.addFlashAttribute("error",
-                                "El nuevo horario seleccionado no está disponible.");
-                        return "redirect:/gestionCitas";
-                    }
-                }
-
-                citaExistente.setPacienteId(cita.getPacienteId());
-                citaExistente.setFecha(cita.getFecha());
-                citaExistente.setHora(cita.getHora());
-                citaExistente.setMotivo(cita.getMotivo());
-
-                citaRepository.save(citaExistente);
-                redirectAttributes.addFlashAttribute("mensaje", "Cita actualizada exitosamente.");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Cita no encontrada o no autorizada.");
-            }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al actualizar la cita: " + e.getMessage());
-        }
-
-        return "redirect:/gestionCitas";
-    }
+    /*
+     * ENDPOINT DESHABILITADO - Removido por riesgos de seguridad y lógica de
+     * negocio incorrecta
+     * 
+     * Problemas identificados:
+     * - Permite cambiar paciente de una cita (ilógico en el mundo real)
+     * - Permite asignar pacientes de otros médicos
+     * - Crea inconsistencias en el historial
+     * 
+     * TODO: Implementar funcionalidad "Reprogramar cita" que solo permita cambiar
+     * fecha/hora
+     * manteniendo el mismo paciente y motivo.
+     */
+    /*
+     * @PostMapping("/actualizarC ita")
+     * public String actualizarCita(@ModelAttribute Cita cita, HttpSession session,
+     * RedirectAttributes redirectAttributes) {
+     * Long medicoId = (Long) session.getAttribute("medicoId");
+     * if (medicoId == null || cita == null || cita.getId() == null) {
+     * return "redirect:/login";
+     * }
+     * 
+     * try {
+     * Optional<Cita> citaExistenteOpt = citaRepository.findById(cita.getId());
+     * if (citaExistenteOpt.isPresent() &&
+     * citaExistenteOpt.get().getMedicoId() != null &&
+     * citaExistenteOpt.get().getMedicoId().equals(medicoId)) {
+     * Cita citaExistente = citaExistenteOpt.get();
+     * 
+     * // Validar que no se mueva a una fecha pasada
+     * java.time.LocalDate hoy = java.time.LocalDate.now();
+     * if (cita.getFecha().isBefore(hoy)) {
+     * redirectAttributes.addFlashAttribute("error",
+     * "No se puede mover una cita a una fecha pasada.");
+     * return "redirect:/gestionCitas";
+     * }
+     * 
+     * // Si cambia fecha u hora, validar disponibilidad
+     * if (!cita.getFecha().equals(citaExistente.getFecha())
+     * || !cita.getHora().equals(citaExistente.getHora())) {
+     * if (!horarioService.validarDisponibilidadSlot(medicoId, cita.getFecha(),
+     * cita.getHora())) {
+     * redirectAttributes.addFlashAttribute("error",
+     * "El nuevo horario seleccionado no está disponible.");
+     * return "redirect:/gestionCitas";
+     * }
+     * }
+     * 
+     * citaExistente.setPacienteId(cita.getPacienteId());
+     * citaExistente.setFecha(cita.getFecha());
+     * citaExistente.setHora(cita.getHora());
+     * citaExistente.setMotivo(cita.getMotivo());
+     * 
+     * citaRepository.save(citaExistente);
+     * redirectAttributes.addFlashAttribute("mensaje",
+     * "Cita actualizada exitosamente.");
+     * } else {
+     * redirectAttributes.addFlashAttribute("error",
+     * "Cita no encontrada o no autorizada.");
+     * }
+     * } catch (Exception e) {
+     * redirectAttributes.addFlashAttribute("error", "Error al actualizar la cita: "
+     * + e.getMessage());
+     * }
+     * 
+     * return "redirect:/gestionCitas";
+     * }
+     */"
 
     @PostMapping("/cambiarEstadoCita")
     public String cambiarEstadoCita(@RequestParam Long citaId, @RequestParam String nuevoEstado, HttpSession session,
@@ -401,5 +419,23 @@ public class CitaController {
         pacienteRepository.deleteAll();
         medicoRepository.deleteAll();
         return "redirect:/";
-    }
-}
+    }}
+
+    
+    
+
+    
+    
+    
+        
+                
+        
+                
+
+        
+            
+            
+        
+    
+
+    

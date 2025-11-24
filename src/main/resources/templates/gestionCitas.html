@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="/responsive.css" />
     <link rel="stylesheet" href="/gestionCitas.css" />
     <link rel="stylesheet" href="/dropdown-menu.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
     <title>Gestión de Citas</title>
   </head>
   <body class="dark-mode">
@@ -31,7 +34,11 @@
     >
     <nav>
       <p class="logo">
-        Dr. <span th:text="${medico != null ? medico.nombre + ' ' + medico.apellido : 'Médico Independiente'}">Médico Independiente</span>
+        Dr.
+        <span
+          th:text="${medico != null ? medico.nombre + ' ' + medico.apellido : 'Médico Independiente'}"
+          >Médico Independiente</span
+        >
       </p>
       <div class="nav_bar">
         <a href="/paciente">Pacientes</a>
@@ -42,13 +49,14 @@
         <a href="/horario">Horarios</a>
         <div class="dropdown">
           <a href="#" class="dropdown-toggle">
-            <i class="fas fa-cog"></i> Ajustes <i class="fas fa-chevron-down"></i>
+            <i class="fas fa-cog"></i> Ajustes
+            <i class="fas fa-chevron-down"></i>
           </a>
           <div class="dropdown-menu">
             <a href="/PerfilMedicoAjustes" class="dropdown-item">
               <i class="fas fa-user-md"></i> Perfil Médico
             </a>
-            <form action="/logout" method="post" style="margin: 0;">
+            <form action="/logout" method="post" style="margin: 0">
               <button type="submit" class="dropdown-item logout-item">
                 <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
               </button>
@@ -247,14 +255,6 @@
               </select>
 
               <!-- Botones -->
-              <button
-                class="btn-editar"
-                th:attr="data-id=${cita.id}, data-paciente=${cita.pacienteId}, data-fecha=${cita.fecha}, data-hora=${cita.hora}, data-motivo=${cita.motivo}, data-estado=${cita.estado.name()}"
-                onclick="editarCitaData(this)"
-              >
-                Editar
-              </button>
-
               <a th:href="@{'/cita/' + ${cita.id} + '/dictamen'}">
                 <button type="button" class="btn-dictamen">Dictamen</button>
               </a>
@@ -281,53 +281,7 @@
       </tbody>
     </table>
 
-    <!-- Modal Editar -->
-    <div id="modalEditar" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="cerrarModal('modalEditar')">&times;</span>
-        <h2>Editar Cita</h2>
-        <form action="/actualizarCita" method="post">
-          <input type="hidden" id="editId" name="id" />
-
-          <div class="form-group">
-            <label>Paciente:</label>
-            <select id="editPaciente" name="pacienteId" required>
-              <option
-                th:each="pac : ${pacientes}"
-                th:value="${pac.id}"
-                th:text="${pac.nombre}"
-              ></option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Fecha:</label>
-            <input type="date" id="editFecha" name="fecha" required />
-          </div>
-
-          <div class="form-group">
-            <label>Hora:</label>
-            <input type="time" id="editHora" name="hora" required />
-          </div>
-
-          <div class="form-group">
-            <label>Motivo:</label>
-            <input type="text" id="editMotivo" name="motivo" required />
-          </div>
-
-          <div class="modal-buttons">
-            <button
-              type="button"
-              class="btn-cancelar"
-              onclick="cerrarModal('modalEditar')"
-            >
-              Cancelar
-            </button>
-            <button type="submit" class="btn-confirmar">Actualizar</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <!-- Modal Editar ELIMINADO - Funcionalidad removida por riesgos de seguridad -->
 
     <!-- Modal Confirmar Eliminación -->
     <div id="modalEliminar" class="modal">
@@ -407,21 +361,7 @@
         });
       });
 
-      // Funciones para Modal Editar
-      function editarCitaData(button) {
-        document.getElementById("editId").value =
-          button.getAttribute("data-id");
-        document.getElementById("editPaciente").value =
-          button.getAttribute("data-paciente");
-        document.getElementById("editFecha").value =
-          button.getAttribute("data-fecha");
-        document.getElementById("editHora").value =
-          button.getAttribute("data-hora");
-        document.getElementById("editMotivo").value =
-          button.getAttribute("data-motivo");
-
-        document.getElementById("modalEditar").style.display = "flex";
-      }
+      // Función editarCitaData ELIMINADA - Funcionalidad removida por riesgos de seguridad
 
       // Funciones para Modal Eliminar
       let idCitaAEliminar = null;
