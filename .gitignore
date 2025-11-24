@@ -40,8 +40,10 @@ server.log
 ### Database Backups ###
 database_backup.sql
 *.backup.sql
+*.bat
 
 ### Temporary Scripts ###
 replace_*.py
 nuevos_metodos.java
+hacer_backup.*
 
