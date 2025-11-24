@@ -1,3 +1,39 @@
+/* Dark mode para modales de paciente */
+body.dark-mode .modal-content {
+  background-color: #232323;
+  color: #e0e0e0;
+}
+
+body.dark-mode .modal-content h2,
+body.dark-mode .modal-content label,
+body.dark-mode .modal-content input,
+body.dark-mode .modal-content select {
+  color: #e0e0e0;
+}
+/* Dark mode para modales */
+.dark-mode .modal {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.dark-mode .modal-content {
+  background-color: #23272b !important;
+  color: #e0e0e0 !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.7) !important;
+}
+
+/* Botones en modal en dark mode */
+.dark-mode .modal-buttons .btn-confirmar,
+.dark-mode .modal-buttons .btn-cancelar {
+  background-color: #444 !important;
+  color: #fff !important;
+  border: none;
+}
+.dark-mode .modal-buttons .btn-confirmar:hover {
+  background-color: #218838 !important;
+}
+.dark-mode .modal-buttons .btn-cancelar:hover {
+  background-color: #5a6268 !important;
+}
 input[type="text"],
 input[type="email"] {
   border: 1px solid #ccc !important;

@@ -90,6 +90,19 @@
   animation: modalFadeIn 0.3s;
 }
 
+/* Dark mode para modales */
+body.dark-mode .modal-content {
+  background-color: #232323;
+  color: #e0e0e0;
+}
+
+body.dark-mode .modal-content h2,
+body.dark-mode .modal-content label,
+body.dark-mode .modal-content input,
+body.dark-mode .modal-content select {
+  color: #e0e0e0;
+}
+
 @keyframes modalFadeIn {
   from {
     opacity: 0;
