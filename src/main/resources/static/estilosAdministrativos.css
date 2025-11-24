@@ -42,16 +42,18 @@ body.dark-mode label {
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea {
-    background: #333;
+    background: #333 !important;
     border: 1px solid #555;
-    color: #e0e0e0;
+    color: #e0e0e0 !important;
 }
 
 body.dark-mode input:focus,
 body.dark-mode select:focus,
 body.dark-mode textarea:focus {
+    background: #333 !important;
     border-color: #cce7ff;
     box-shadow: 0 0 5px rgba(204, 231, 255, 0.5);
+    color: #e0e0e0 !important;
 }
 
 body.dark-mode button {
@@ -443,7 +445,7 @@ a:hover {
     }
 }
 
-/* Botón de cerrar sesión */
+/* Botï¿½n de cerrar sesiï¿½n */
 .btn-logout {
   background-color: #dc3545;
   color: white;

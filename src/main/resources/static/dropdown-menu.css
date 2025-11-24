@@ -1,0 +1,103 @@
+/* Estilos para el menú desplegable */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  min-width: 200px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  z-index: 1000;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.dropdown.active .dropdown-menu {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 12px 20px;
+  color: #005b9f;
+  text-decoration: none;
+  transition: all 0.3s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.dropdown-item:hover {
+  background: #f0f8ff;
+  color: #005b9f !important;
+}
+
+.dropdown-item i {
+  width: 18px;
+  color: #005b9f !important;
+}
+
+.logout-item {
+  border-top: 1px solid #eee;
+}
+
+.logout-item:hover {
+  background: #ffebee;
+  color: #dc3545;
+}
+
+.logout-item:hover i {
+  color: #dc3545;
+}
+
+/* Modo oscuro */
+body.dark-mode .dropdown-menu {
+  background: #2a2a2a;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .dropdown-item {
+  color: #005b9f !important;
+}
+
+body.dark-mode .dropdown-item:hover {
+  background: #333;
+  color: #005b9f !important;
+}
+
+body.dark-mode .logout-item {
+  border-top: 1px solid #444;
+}
+
+body.dark-mode .logout-item:hover {
+  background: #4a2020;
+  color: #ff5252;
+}
+
+body.dark-mode .logout-item:hover i {
+  color: #ff5252;
+}

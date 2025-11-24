@@ -18,11 +18,45 @@ input[type="email"]:invalid {
 input.input-error {
   border: 2px solid #dc3545 !important;
   background-color: #ffe6e6 !important;
+  color: #333 !important;
 }
 
 input.input-valid {
   border: 2px solid #28a745 !important;
   background-color: #fff !important;
+  color: #333 !important;
+}
+
+/* Modo oscuro - inputs con validación */
+.dark-mode input.input-error {
+  border: 2px solid #ff5252 !important;
+  background-color: #4a2020 !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-mode input.input-valid {
+  border: 2px solid #4caf50 !important;
+  background-color: #1a3a1a !important;
+  color: #e0e0e0 !important;
+}
+
+/* Asegurar que el texto sea visible en todos los estados */
+.dark-mode input[type="text"],
+.dark-mode input[type="email"],
+.dark-mode input[type="password"],
+.dark-mode input[type="date"],
+.dark-mode input[type="time"] {
+  background: #333 !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-mode input[type="text"]:focus,
+.dark-mode input[type="email"]:focus,
+.dark-mode input[type="password"]:focus,
+.dark-mode input[type="date"]:focus,
+.dark-mode input[type="time"]:focus {
+  background: #333 !important;
+  color: #e0e0e0 !important;
 }
 
 .field-error-message {

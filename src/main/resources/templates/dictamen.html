@@ -3,9 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <title>Dictamen Médico</title>
+    <link rel="icon" type="image/png" href="/icono.png" />
     <link rel="stylesheet" href="/estilosAdministrativos.css" />
     <link rel="stylesheet" href="/responsive.css" />
     <link rel="stylesheet" href="/dictamen.css" />
+    <link rel="stylesheet" href="/dropdown-menu.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   </head>
   <body class="dark-mode">
     <input type="checkbox" id="theme-toggle" style="display: none" />
@@ -40,7 +43,21 @@
         <a href="/calendarioMedico">Calendario</a>
         <a href="/dictamen" class="active">Dictámenes</a>
         <a href="/horario">Horarios</a>
-        <a href="/PerfilMedicoAjustes">Perfil Médico</a>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">
+            <i class="fas fa-cog"></i> Ajustes <i class="fas fa-chevron-down"></i>
+          </a>
+          <div class="dropdown-menu">
+            <a href="/PerfilMedicoAjustes" class="dropdown-item">
+              <i class="fas fa-user-md"></i> Perfil Médico
+            </a>
+            <form action="/logout" method="post" style="margin: 0;">
+              <button type="submit" class="dropdown-item logout-item">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -209,5 +226,6 @@
       };
     </script>
     <script src="dark-mode.js"></script>
+    <script src="dropdown-menu.js"></script>
   </body>
 </html>
