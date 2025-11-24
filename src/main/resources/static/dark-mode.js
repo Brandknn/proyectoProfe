@@ -5,15 +5,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Estado almacenado (string 'true' / 'false')
     const stored = localStorage.getItem('dark-mode');
-    const isDarkMode = stored === 'true';
+    console.log('Dark mode stored value:', stored);
+    
+    // Por defecto modo oscuro si no hay nada guardado
+    const isDarkMode = stored === null ? true : stored === 'true';
+    console.log('Is dark mode:', isDarkMode);
 
-    // Aplicar estado inicial basado en localStorage (seguro incluso si el body tiene clase por defecto)
+    // Aplicar estado inicial basado en localStorage
     if (isDarkMode) {
         body.classList.add('dark-mode');
         if (toggle) toggle.checked = true;
+        console.log('Applied dark mode');
     } else {
         body.classList.remove('dark-mode');
         if (toggle) toggle.checked = false;
+        console.log('Applied light mode');
+    }
+    
+    // Guardar el estado inicial si es la primera vez
+    if (stored === null) {
+        localStorage.setItem('dark-mode', 'true');
+        console.log('Saved initial dark mode to localStorage');
     }
 
     // Si no existe el checkbox, no fallar: intentamos sincronizar sólo con body/localStorage

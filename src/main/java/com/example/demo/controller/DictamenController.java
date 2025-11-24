@@ -83,6 +83,7 @@ public class DictamenController {
             return "redirect:/login";
         }
 
+        medicoRepository.findById(medicoId).ifPresent(medico -> model.addAttribute("medico", medico));
         try {
             Cita cita = citaRepository.findById(id).orElse(null);
 

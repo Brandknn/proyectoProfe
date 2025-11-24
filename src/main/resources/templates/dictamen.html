@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/dropdown-menu.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   </head>
-  <body class="dark-mode">
+  <body>
     <input type="checkbox" id="theme-toggle" style="display: none" />
 
     <!-- Label que actúa como botón -->
@@ -76,7 +76,7 @@
       <div th:if="${cita != null}">
         <!-- HEADER CON NOMBRE DEL PACIENTE -->
         <div class="paciente-header" th:if="${paciente != null}">
-          <h2>👤 <span th:text="${paciente.nombre}"></span></h2>
+          <h2>👤 <span th:text="${paciente.nombre}" style="color: #f9f9f9;"></span></h2>
         </div>
 
         <!-- Información de la cita -->
@@ -189,11 +189,15 @@
       </div>
     </div>
 
+    <script src="/dark-mode.js"></script>
+    <script src="/dropdown-menu.js"></script>
     <script>
       // Contador de caracteres
       function actualizarContador() {
         const textarea = document.getElementById("contenido");
         const contador = document.getElementById("charCounter");
+        if (!textarea || !contador) return;
+        
         const longitud = textarea.value.length;
         contador.textContent = longitud + " / 2000 caracteres";
 
@@ -217,11 +221,9 @@
       }
 
       // Inicializar contador al cargar la página
-      window.onload = function () {
+      document.addEventListener('DOMContentLoaded', function() {
         actualizarContador();
-      };
+      });
     </script>
-    <script src="dark-mode.js"></script>
-    <script src="dropdown-menu.js"></script>
   </body>
 </html>
